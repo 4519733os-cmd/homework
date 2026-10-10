@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ПРОЕКТ «ЗЕРКАЛО» // ТЕРМИНАЛ ДОПУСКА</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0f1d;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --border: #334155;
+      --cyan: #38bdf8;
+      --green: #10b981;
+      --red: #ef4444;
+      --purple: #c084fc;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(56, 189, 248, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(192, 132, 252, 0.1) 0%, transparent 50%);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .terminal-container {
+      width: 100%;
+      max-width: 820px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 24px rgba(56, 189, 248, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .terminal-header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: var(--red); }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: var(--green); }
+
+    .terminal-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      letter-spacing: 1px;
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .terminal-body {
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .badge-banner {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .badge-info h1 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+
+    .badge-info p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-tag {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .quote-box {
+      border-left: 3px solid var(--purple);
+      padding: 8px 16px;
+      background: rgba(192, 132, 252, 0.05);
+      font-style: italic;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .section-title::before {
+      content: '//';
+      color: var(--cyan);
+    }
+
+    .track-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 680px) {
+      .track-tabs { grid-template-columns: 1fr; }
+    }
+
+    .tab-btn {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: left;
+    }
+
+    .tab-btn span {
+      display: block;
+      font-size: 11px;
+      color: var(--cyan);
+      margin-top: 2px;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--cyan);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--cyan);
+      color: var(--text);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+    }
+
+    .tab-content {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: none;
+    }
+    .tab-content.active { display: block; }
+
+    .task-item {
+      margin-bottom: 20px;
+    }
+    .task-item:last-child { margin-bottom: 0; }
+
+    .task-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      margin-bottom: 8px;
+      display: block;
+      color: #e2e8f0;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .cyber-input, .cyber-textarea {
+      background: #090d16;
+      border: 1px solid var(--border);
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .cyber-input:focus, .cyber-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+    }
+
+    .cyber-btn {
+      background: var(--cyan);
+      color: #090d16;
+      border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .cyber-btn:hover {
+      background: #7dd3fc;
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    .cyber-btn-secondary {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+    }
+    .cyber-btn-secondary:hover {
+      background: rgba(56, 189, 248, 0.1);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    .feedback {
+      font-size: 12px;
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .feedback.success { color: var(--green); }
+    .feedback.error { color: var(--red); }
+
+    .bonus-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 100%);
+      border: 1px dashed var(--cyan);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .bonus-text h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--cyan);
+      margin-bottom: 4px;
+    }
+    .bonus-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .terminal-footer {
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      background: #090d16;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="terminal-container">
+    <!-- Шапка окна -->
+    <div class="terminal-header">
+      <div class="window-dots">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <div class="terminal-status">
+        <div class="status-pulse"></div>
+        SECURE_CHANNEL // LEVEL-1
+      </div>
+      <div style="color: var(--text-muted);">ID: #244131</div>
+    </div>
+
+    <!-- Тело терминала -->
+    <div class="terminal-body">
+      
+      <!-- Карточка статуса допуска -->
+      <div class="badge-banner">
+        <div class="badge-info">
+          <h1>ПРОЕКТ «ЗЕРКАЛО» // СЕКТОР 084</h1>
+          <p>Личный кабинет аналитика 8 класса • Тема: «Системы счисления»</p>
+        </div>
+        <div class="auth-tag">ДОПУСК ПОДТВЕРЖДЕН</div>
+      </div>
+
+      <!-- Девиз урока -->
+      <div class="quote-box">
+        «В мире машин побеждает тот, кто понимает их логику, но сохраняет человеческую смекалку».
+      </div>
+
+      <!-- Выбор персонального трека ДЗ -->
+      <div>
+        <h2 class="section-title">ВЫБЕРИТЕ ПЕРСОНАЛЬНЫЙ ТРЕК РАЗВИТИЯ</h2>
+        
+        <div class="track-tabs">
+          <button class="tab-btn active" onclick="switchTrack('track1')">
+            1. «СТАНДАРТ»
+            <span>Базовый онлайн-тест</span>
+          </button>
+          <button class="tab-btn" onclick="switchTrack('track2')">
+            2. «АНАЛИТИК»
+            <span>Авторская улика (16-СС)</span>
+          </button>
+          <button class="tab-btn" onclick="switchTrack('track3')">
+            3. «АРХИТЕКТОР»
+            <span>Своя система счисления</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ТРЕК 1: БАЗОВЫЙ (Интерактивный с автопроверкой) -->
+      <div id="track1" class="tab-content active">
+        <div class="task-item">
+          <label class="task-label">[ Задача 1.1 ] Переведите двоичное число в десятичную СС: 11111₂ = X₁₀</label>
+          <div class="input-row">
+            <input type="text" id="ans1" class="cyber-input" placeholder="Введите число в 10-й СС">
+            <button class="cyber-btn" onclick="checkTask1()">ПРОВЕРИТЬ</button>
+          </div>
+          <div id="res1" class="feedback"></div>
+        </div>
+
+        <div class="task-item" style="margin-top: 18px;">
+          <label class="task-label">[ Задача 1.2 ] Переведите число делением столбиком: 4₁₀ = X₂</label>
+          <div class="input-row">
+            <input type="text" id="ans2" class="cyber-input" placeholder="Введите двоичный код (напр. 101)">
+            <button class="cyber-btn" onclick="checkTask2()">ПРОВЕРИТЬ</button>
+          </div>
+          <div id="res2" class="feedback"></div>
+        </div>
+
+        <div class="task-item" style="margin-top: 18px;">
+          <label class="task-label">[ Задача 1.3 ] Переведите двоичное число: 110011₂ = X₁₀</label>
+          <div class="input-row">
+            <input type="text" id="ans3" class="cyber-input" placeholder="Введите число в 10-й СС">
+            <button class="cyber-btn" onclick="checkTask3()">ПРОВЕРИТЬ</button>
+          </div>
+          <div id="res3" class="feedback"></div>
+        </div>
+      </div>
+
+      <!-- ТРЕК 2: ПРИКЛАДНОЙ (Загрузка задачи для одноклассников) -->
+      <div id="track2" class="tab-content">
+        <div class="task-item">
+          <label class="task-label">[ СПЕЦЗАДАНИЕ ] Придумайте собственную задачу-улику на перевод из 16-ричной системы счисления для квеста одноклассников:</label>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+            Используйте буквы алфавита A–F и задайте вопрос с подвохом или кодом разблокировки.
+          </p>
+          <textarea id="task2_text" class="cyber-textarea" rows="4" placeholder="Пример: «Сервер зашифрован кодом 1F₁₆. Какое десятичное число откроет фаервол?»"></textarea>
+          <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+            <button class="cyber-btn" onclick="saveTask2()">ОТПРАВИТЬ В БАНК УЛИК</button>
+          </div>
+          <div id="res_track2" class="feedback"></div>
+        </div>
+      </div>
+
+      <!-- ТРЕК 3: ИССЛЕДОВАТЕЛЬСКИЙ (Архитектор) -->
+      <div id="track3" class="tab-content">
+        <div class="task-item">
+          <label class="task-label">[ ИССЛЕДОВАНИЕ ] Проект собственной позиционной системы счисления:</label>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+            Опишите основание вашей системы, её алфавит символов и почему она могла бы быть удобнее двоичной (подсказка: вспомните троичный советский компьютер «Сетунь»).
+          </p>
+          <textarea id="task3_text" class="cyber-textarea" rows="4" placeholder="Опишите основание, алфавит и правила записи..."></textarea>
+          <div style="margin-top: 12px; display: flex; justify-content: flex-end;">
+            <button class="cyber-btn" onclick="saveTask3()">ЗАФИКСИРОВАТЬ ПРОЕКТ</button>
+          </div>
+          <div id="res_track3" class="feedback"></div>
+        </div>
+      </div>
+
+      <!-- Бонусный блок: Шпаргалка аналитика -->
+      <div class="bonus-card">
+        <div class="bonus-text">
+          <h3>⚡ БОНУС АНАЛИТИКА: БАНК СТЕПЕНЕЙ ДВОЙКИ</h3>
+          <p>Таблица степеней 2⁰–2¹⁰ и алгоритм быстрых триад/тетрад для смартфона</p>
+        </div>
+        <button class="cyber-btn cyber-btn-secondary" onclick="downloadCheatSheet()">СКАЧАТЬ ПАМЯТКУ (.TXT)</button>
+      </div>
+
+    </div>
+
+    <!-- Подвал терминала -->
+    <div class="terminal-footer">
+      <div>СИСТЕМА: СУБД "ЗЕРКАЛО" v2.6</div>
+      <div>КОД ДОСТУПА ПОДТВЕРЖДЕН: 244131</div>
+    </div>
+  </div>
+
+  <script>
+    // Переключение табов домашнего задания
+    function switchTrack(trackId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+      event.currentTarget.classList.add('active');
+      document.getElementById(trackId).classList.add('active');
+    }
+
+    // Автопроверка Трека 1 (Слайд 14)
+    function checkTask1() {
+      const val = document.getElementById('ans1').value.trim();
+      const res = document.getElementById('res1');
+      if (val === '31') {
+        res.className = 'feedback success';
+        res.innerHTML = '✔ ВЕРНО! 11111₂ = 16 + 8 + 4 + 2 + 1 = 31₁₀. Доступ открыт.';
+      } else {
+        res.className = 'feedback error';
+        res.innerHTML = '✖ ОШИБКА. Подсказка: сложите степени двойки (16 + 8 + 4 + 2 + 1).';
+      }
+    }
+
+    function checkTask2() {
+      const val = document.getElementById('ans2').value.trim();
+      const res = document.getElementById('res2');
+      if (val === '100') {
+        res.className = 'feedback success';
+        res.innerHTML = '✔ ТОЧНО! 4 / 2 = 2 (ост. 0); 2 / 2 = 1 (ост. 0); 1 / 2 = 0 (ост. 1) → 100₂.';
+      } else {
+        res.className = 'feedback error';
+        res.innerHTML = '✖ ОШИБКА. Вспомните деление столбиком и запишите остатки снизу вверх.';
+      }
+    }
+
+    function checkTask3() {
+      const val = document.getElementById('ans3').value.trim();
+      const res = document.getElementById('res3');
+      if (val === '51') {
+        res.className = 'feedback success';
+        res.innerHTML = '✔ ВЕЛИКОЛЕПНО! 110011₂ = 32 + 16 + 2 + 1 = 51₁₀.';
+      } else {
+        res.className = 'feedback error';
+        res.innerHTML = '✖ ОШИБКА. Подсказка: веса разрядов 32 + 16 + 2 + 1.';
+      }
+    }
+
+    // Сохранение треков 2 и 3
+    function saveTask2() {
+      const txt = document.getElementById('task2_text').value.trim();
+      const res = document.getElementById('res_track2');
+      if (txt.length > 10) {
+        res.className = 'feedback success';
+        res.innerHTML = '✔ УЛИКА ПРИНЯТА! Ваша задача передана на верификацию в архив кейса.';
+      } else {
+        res.className = 'feedback error';
+        res.innerHTML = '✖ Введите полное условие задачи с вопросом.';
+      }
+    }
+
+    function saveTask3() {
+      const txt = document.getElementById('task3_text').value.trim();
+      const res = document.getElementById('res_track3');
+      if (txt.length > 10) {
+        res.className = 'feedback success';
+        res.innerHTML = '✔ ПРОЕКТ СОХРАНЕН! Научный доклад добавлен в портфолио аналитика.';
+      } else {
+        res.className = 'feedback error';
+        res.innerHTML = '✖ Опишите подробнее алфавит и свойства вашей системы.';
+      }
+    }
+
+    // Скачивание памятки
+    function downloadCheatSheet() {
+      const content = `ЛАБОРАТОРИЯ ЦИФРОВОЙ БЕЗОПАСНОСТИ // ПРОЕКТ "ЗЕРКАЛО"
+======================================================
+ПАМЯТКА АНАЛИТИКА: СИСТЕМЫ СЧИСЛЕНИЯ (8 КЛАСС)
+
+1. СТЕПЕНИ ДВОЙКИ:
+2⁰ = 1       2⁴ = 16      2⁸ = 256
+2¹ = 2       2⁵ = 32      2⁹ = 512
+2² = 4       2⁶ = 64      2¹⁰ = 1024
+2³ = 8       2⁷ = 128
+
+2. ТАБЛИЦА ТРИАД (2 ↔ 8):
+000₂ = 0₈    010₂ = 2₈    100₂ = 4₈    110₂ = 6₈
+001₂ = 1₈    011₂ = 3₈    101₂ = 5₈    111₂ = 7₈
+
+3. АЛФАВИТ 16-РИЧНОЙ СИСТЕМЫ:
+0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A(10), B(11), C(12), D(13), E(14), F(15)
+
+Мастер-код доступа: 244131`;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Памятка_Аналитика_Системы_Счисления.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
