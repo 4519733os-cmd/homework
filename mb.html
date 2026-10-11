@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Морской тактический планшет: Операция Эскадра // Электронные таблицы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-desk: #f4efe6;
+      --desk-border: #c8bba8;
+      --brass-gold: #b38b4d;
+      --brass-dark: #7a5a29;
+      --sea-base: #2a6f97;
+      --sea-deep: #013a63;
+      --ship-gray: #4a5568;
+      --ship-dark: #2d3748;
+      --fire-orange: #ff5400;
+      --fire-yellow: #ffb703;
+      --text-navy: #0f1c2e;
+      --paper-cream: #fffdf9;
+      --red-stamp: #b91c1c;
+      --font-title: 'Cinzel', serif;
+      --font-body: 'Merriweather', serif;
+      --font-mono: 'Roboto Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-desk);
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 80%),
+        linear-gradient(rgba(180, 165, 145, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(180, 165, 145, 0.15) 1px, transparent 1px);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+      color: var(--text-navy);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 16px 30px;
+      overflow-x: hidden;
+    }
+
+    /* Штурманская верхняя панель */
+    header {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      margin-bottom: 12px;
+      background: rgba(255, 253, 249, 0.85);
+      border: 2px solid var(--brass-gold);
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(122, 90, 41, 0.12), inset 0 0 10px rgba(179, 139, 77, 0.1);
+      position: relative;
+    }
+
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-title {
+      font-family: var(--font-title);
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--text-navy);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sub-title {
+      font-size: 0.82rem;
+      color: #64748b;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+    }
+
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: linear-gradient(180deg, #fffdfa 0%, #ebe2d3 100%);
+      border: 1.5px solid var(--brass-gold);
+      border-radius: 6px;
+      padding: 8px 14px;
+      font-family: var(--font-title);
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text-navy);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover {
+      background: #f5edd8;
+      border-color: var(--brass-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Главная рабочая область планшета */
+    .tactical-table {
+      width: 100%;
+      max-width: 1240px;
+      display: grid;
+      grid-template-columns: minmax(340px, 600px) 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .tactical-table {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Рама морского планшета 8x8 */
+    .sea-board-frame {
+      background: linear-gradient(145deg, #e7ddcf, #cfc1ad);
+      padding: 18px;
+      border-radius: 14px;
+      border: 3px solid var(--brass-gold);
+      box-shadow: 
+        0 14px 35px rgba(45, 30, 10, 0.25),
+        inset 0 0 15px rgba(122, 90, 41, 0.3);
+      position: relative;
+    }
+
+    /* Латунные угловые болты */
+    .screw {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, #ffe3a8 20%, #9e7534 80%);
+      border-radius: 50%;
+      border: 1px solid #5a4019;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .screw::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 2px;
+      width: 8px;
+      height: 1.5px;
+      background: #463111;
+      transform: rotate(45deg);
+    }
+    .screw-tl { top: 6px; left: 6px; }
+    .screw-tr { top: 6px; right: 6px; }
+    .screw-bl { bottom: 6px; left: 6px; }
+    .screw-br { bottom: 6px; right: 6px; }
+
+    /* Океанская поверхность 8x8 */
+    .sea-surface {
+      display: grid;
+      grid-template-columns: 32px repeat(8, 1fr);
+      grid-template-rows: 32px repeat(8, 1fr);
+      background: linear-gradient(160deg, #1d6996 0%, #084069 60%, #032541 100%);
+      border-radius: 8px;
+      border: 2px solid #10304a;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.5);
+    }
+
+    /* Анимированная рябь волн */
+    .sea-surface::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12) 0%, transparent 60%),
+        repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(255,255,255,0.03) 15px, rgba(255,255,255,0.03) 30px);
+      animation: waterRipples 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes waterRipples {
+      0% { opacity: 0.4; transform: scale(1); }
+      100% { opacity: 0.8; transform: scale(1.02); }
+    }
+
+    .coord-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #dfd5c4;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-shadow: 0 1px 2px #000;
+      background: rgba(4, 30, 52, 0.5);
+    }
+
+    .sea-cell {
+      aspect-ratio: 1;
+      border: 0.5px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: crosshair;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .sea-cell:hover:not(.shot) {
+      background: rgba(255, 255, 255, 0.15);
+      outline: 1.5px dashed #ffd166;
+      outline-offset: -2px;
+      z-index: 2;
+    }
+
+    /* Эффект промаха: круги пены и буй */
+    .sea-cell.miss {
+      cursor: default;
+      background: rgba(1, 38, 66, 0.4);
+    }
+    .buoy-icon {
+      width: 65%;
+      height: 65%;
+      animation: buoyBob 3s ease-in-out infinite;
+    }
+    @keyframes buoyBob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(4deg); }
+    }
+
+    /* Эффект попадания: огонь, палуба и дым */
+    .sea-cell.hit {
+      cursor: default;
+      background: rgba(30, 20, 15, 0.65);
+    }
+    .ship-deck-piece {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .smoke-puff {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      animation: smokeDrift 2.5s infinite ease-out;
+      opacity: 0.8;
+      z-index: 3;
+    }
+    @keyframes smokeDrift {
+      0% { transform: scale(0.6) translateY(2px); opacity: 0.8; }
+      100% { transform: scale(1.2) translateY(-10px); opacity: 0; }
+    }
+
+    /* Правая панель: Сводка эскадры и бортжурнал */
+    .admiral-dossier {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dossier-card {
+      background: var(--paper-cream);
+      border: 2px solid var(--brass-gold);
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      position: relative;
+    }
+
+    .dossier-title {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-navy);
+      border-bottom: 1.5px solid var(--brass-gold);
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Тактические метрики */
+    .tactical-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      text-align: center;
+    }
+    .stat-box {
+      background: #fbf8f2;
+      border: 1px solid var(--desk-border);
+      border-radius: 6px;
+      padding: 8px 6px;
+    }
+    .stat-num {
+      font-family: var(--font-mono);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--brass-dark);
+    }
+    .stat-desc {
+      font-size: 0.72rem;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Список кораблей эскадры */
+    .fleet-registry {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fleet-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #fcf9f2;
+      border: 1px solid #dfd6c7;
+      border-radius: 6px;
+      transition: all 0.25s;
+    }
+    .fleet-item.sunk {
+      background: #fee2e2;
+      border-color: #fca5a5;
+    }
+
+    .fleet-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .fleet-name {
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-navy);
+    }
+    .fleet-class {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    .deck-indicators {
+      display: flex;
+      gap: 5px;
+    }
+    .deck-pip {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: #10b981;
+      border: 1px solid #059669;
+    }
+    .deck-pip.hit {
+      background: #ef4444;
+      border-color: #b91c1c;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .sunk-stamp {
+      font-family: var(--font-title);
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--red-stamp);
+      border: 2px solid var(--red-stamp);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      transform: rotate(-6deg);
+    }
+
+    /* МОДАЛЬНЫЙ ФОРМУЛЯР ОГНЕВОЙ ЗАДАЧИ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 28, 46, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .tactical-logbook {
+      width: 100%;
+      max-width: 680px;
+      background: #fffdf9;
+      border: 3px solid var(--brass-gold);
+      border-radius: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.active .tactical-logbook {
+      transform: scale(1);
+    }
+
+    .logbook-header {
+      background: linear-gradient(90deg, #ede3d1, #dfd0bb);
+      border-bottom: 2px solid var(--brass-gold);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logbook-title {
+      font-family: var(--font-title);
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--text-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logbook-coords {
+      font-family: var(--font-mono);
+      background: #0f1c2e;
+      color: #ffd166;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .logbook-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .ammo-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: #64748b;
+      border-bottom: 1px dashed var(--desk-border);
+      padding-bottom: 8px;
+    }
+
+    .task-statement {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--text-navy);
+    }
+
+    .excel-table-preview {
+      margin: 10px 0;
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+    .excel-table-preview th, .excel-table-preview td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      text-align: center;
+    }
+    .excel-table-preview th {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .excel-table-preview td {
+      background: #ffffff;
+    }
+
+    .code-tag {
+      font-family: var(--font-mono);
+      background: #f1f5f9;
+      color: #0f4c81;
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      font-weight: 700;
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 580px) {
+      .answers-grid { grid-template-columns: 1fr; }
+    }
+
+    .tactical-choice-btn {
+      background: #faf6ee;
+      border: 1.5px solid #dcd1be;
+      border-radius: 8px;
+      padding: 12px 14px;
+      text-align: left;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--text-navy);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .tactical-choice-btn:hover:not(:disabled) {
+      background: #f1e7d2;
+      border-color: var(--brass-gold);
+      transform: translateY(-2px);
+    }
+    .choice-key {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      background: #e2d7c5;
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-navy);
+    }
+
+    .tactical-choice-btn.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #14532d !important;
+    }
+    .tactical-choice-btn.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #7f1d1d !important;
+    }
+
+    .logbook-feedback {
+      min-height: 22px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .feedback-pass { color: #15803d; }
+    .feedback-fail { color: #b91c1c; }
+
+    /* Окно триумфа / Навигационный рапорт */
+    .triumph-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(1, 37, 65, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    .triumph-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .triumph-sheet {
+      background: #fffefb;
+      border: 4px double var(--brass-gold);
+      border-radius: 14px;
+      max-width: 580px;
+      width: 100%;
+      padding: 36px 30px;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .triumph-emblem {
+      width: 80px;
+      height: 80px;
+    }
+
+    .triumph-title {
+      font-family: var(--font-title);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--text-navy);
+      letter-spacing: 2px;
+    }
+
+    .triumph-text {
+      line-height: 1.6;
+      color: #475569;
+      font-size: 0.95rem;
+    }
+
+    .triumph-rank {
+      font-family: var(--font-title);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--brass-dark);
+      background: #fdf6e7;
+      border: 1.5px solid var(--brass-gold);
+      padding: 8px 24px;
+      border-radius: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Заголовок планшета -->
+  <header>
+    <div class="header-titles">
+      <div class="main-title">
+        ⚓ ОПЕРАЦИЯ «ЭСКАДРА»
+      </div>
+      <div class="sub-title">> ШТУРМАНСКИЙ ПЛАНШЕТ // ИНФОРМАТИКА 9 КЛАСС: ЭЛЕКТРОННЫЕ ТАБЛИЦЫ</div>
+    </div>
+    <div class="header-tools">
+      <button class="nav-btn" id="soundBtn" title="Аудио эффекты">
+        <span id="soundIcon">🔊</span> ЗВУК: ВКЛ
+      </button>
+      <button class="nav-btn" id="fullBtn" title="Полный экран">
+        ⛶ НА ВЕСЬ ЭКРАН
+      </button>
+      <button class="nav-btn" id="restartBtn" title="Перезапуск">
+        ↺ ЗАНОВО
+      </button>
+    </div>
+  </header>
+
+  <!-- Тактическая область -->
+  <main class="tactical-table">
+    
+    <!-- Морское поле 8x8 в латунной рамке -->
+    <div class="sea-board-frame">
+      <div class="screw screw-tl"></div>
+      <div class="screw screw-tr"></div>
+      <div class="screw screw-bl"></div>
+      <div class="screw screw-br"></div>
+      
+      <div class="sea-surface" id="seaSurface">
+        <!-- Генерируется через JS (координаты A-H, 1-8 и 64 клетки) -->
+      </div>
+    </div>
+
+    <!-- Правая панель досье эскадры -->
+    <aside class="admiral-dossier">
+      
+      <div class="dossier-card">
+        <div class="dossier-title">
+          <span>СВОДКА БОЕВЫХ ДЕЙСТВИЙ</span>
+          <span style="font-family: var(--font-mono); font-size: 0.85rem;" id="timerDisplay">⏱️ 00:00</span>
+        </div>
+        <div class="tactical-stats">
+          <div class="stat-box">
+            <div class="stat-num" id="sunkShipsCount">0 / 7</div>
+            <div class="stat-desc">Потоплено</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="hitDecksCount">0 / 16</div>
+            <div class="stat-desc">Поражено палуб</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="accuracyPct">100%</div>
+            <div class="stat-desc">Точность огня</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dossier-card">
+        <div class="dossier-title">
+          <span>ДИСЛОКАЦИЯ ВРАЖЕСКОГО ФЛОТА</span>
+          <span style="font-size: 0.75rem; color:#64748b;">(16 ОТСЕКОВ)</span>
+        </div>
+        <div class="fleet-registry" id="fleetRegistry">
+          <!-- Генерируется списком кораблей -->
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Модальное окно журнала огневой задачи -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="tactical-logbook" id="logbookModal">
+      <div class="logbook-header">
+        <div class="logbook-title">
+          🎯 ПОДТВЕРЖДЕНИЕ ОГНЕВОГО ПОРАЖЕНИЯ
+        </div>
+        <div class="logbook-coords" id="targetCoordDisplay">КВАДРАТ: B4</div>
+      </div>
+      <div class="logbook-body">
+        <div class="ammo-status">
+          <span id="targetShipName">ЦЕЛЬ: Линкор «Севастополь»</span>
+          <span id="ammoDisplay">СНАРЯДЫ: 💣💣💣 (3/3)</span>
+        </div>
+        <div class="task-statement" id="taskQuestion">
+          Текст задачи загружается...
+        </div>
+        <div class="answers-grid" id="answersGrid">
+          <!-- Варианты ответов -->
+        </div>
+        <div class="logbook-feedback" id="taskFeedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Окно триумфа / Рапорт адмиралу -->
+  <div class="triumph-modal" id="triumphModal">
+    <div class="triumph-sheet">
+      <svg class="triumph-emblem" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="30" stroke="#b38b4d" stroke-width="3" fill="#fffaf0"/>
+        <path d="M32 12V48M20 24L32 12L44 24M18 42C24 48 40 48 46 42" stroke="#013a63" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h2 class="triumph-title">ВИКТОРИЯ! ФЛОТ РАЗГРОМЛЕН</h2>
+      <p class="triumph-text">
+        Все 7 вымпелов неприятельской эскадры потоплены. Ваши познания в адресации, формулах, диапазонах и статистических функциях электронных таблиц безупречны!
+      </p>
+      <div class="triumph-rank" id="finalRank">ЗВАНИЕ: АДМИРАЛ ТАКТИКИ</div>
+      <div style="font-family: var(--font-mono); font-size: 0.95rem; color: #475569;" id="finalStats">
+        Время операции: 02:45 | Залпов: 22 | Точность: 86%
+      </div>
+      <button class="nav-btn" style="padding: 12px 30px; font-size: 1rem; margin-top: 10px;" onclick="resetOperation()">
+        ⚓ НАЧАТЬ НОВЫЙ ПОХОД
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       БАЗА ЗАДАНИЙ: 16 ПАЛУБ (Электронные таблицы, 9 класс / ОГЭ)
+       ========================================================================== */
+    const TASKS = [
+      {
+        id: 1,
+        question: "В ячейку <b>C2</b> введена формула: <span class='code-tag'>=A1+B2</span>. Какую формулу мы получим, если скопируем её в ячейку <b>C3</b>?",
+        answers: ["=A2+B3", "=A1+B3", "=B2+C3", "=A2+B2"],
+        correct: 0,
+        hint: "При смещении формулы вниз на 1 строку, все относительные номера строк увеличиваются на 1 (A1→A2, B2→B3)."
+      },
+      {
+        id: 2,
+        question: "Сколько ячеек входит в диапазон <b>B2:D6</b> электронной таблицы?",
+        answers: ["12 ячеек", "15 ячеек", "10 ячеек", "18 ячеек"],
+        correct: 1,
+        hint: "Столбцы: B, C, D (3 столбца). Строки: со 2 по 6 включительно (5 строк). 3 × 5 = 15 ячеек."
+      },
+      {
+        id: 3,
+        question: "В ячейке <b>D1</b> записана формула: <span class='code-tag'>=$A$1*B1</span>. Её скопировали в ячейку <b>D2</b>. Какой вид примет формула?",
+        answers: ["=$A$1*B2", "=$A$2*B2", "=$B$1*C1", "=$A$1*B1"],
+        correct: 0,
+        hint: "Знак доллара перед строкой и столбцом ($A$1) делает ссылку абсолютно неизменной. B1 превращается в B2."
+      },
+      {
+        id: 4,
+        question: "Какая функция используется в таблицах для нахождения <b>среднего арифметического</b> значений диапазона A1:A10?",
+        answers: ["СРЗНАЧ(A1:A10)", "СРЕДНЕЕ(A1:A10)", "СУММСР(A1:A10)", "AVER(A1:A10)"],
+        correct: 0,
+        hint: "Стандартная функция вычисления среднего арифметического в русскоязычных таблицах — СРЗНАЧ."
+      },
+      {
+        id: 5,
+        question: "Чему равно значение в ячейке с формулой: <span class='code-tag'>=СУММ(A1:A3; B1)</span>, если в A1=4, A2=6, A3=10, B1=5?",
+        answers: ["25", "20", "15", "30"],
+        correct: 0,
+        hint: "СУММ(A1:A3) = 4 + 6 + 10 = 20. Добавляем точку с запятой значение ячейки B1 (5): 20 + 5 = 25."
+      },
+      {
+        id: 6,
+        question: "В ячейку введена формула: <span class='code-tag'>=ЕСЛИ(A1>50; \"Зачет\"; \"Незачет\")</span>. Что появится в ячейке, если значение A1 равно <b>50</b>?",
+        answers: ["Незачет", "Зачет", "ОШИБКА", "50"],
+        correct: 0,
+        hint: "Условие строгое: A1 > 50. Число 50 не больше 50 (условие ЛОЖЬ), поэтому выполняется вторая ветка — 'Незачет'."
+      },
+      {
+        id: 7,
+        question: "Какой символ используется в формулах для обозначения операции <b>возведения в степень</b>?",
+        answers: ["^ (карет)", "* (звездочка)", "** (две звездочки)", "% (процент)"],
+        correct: 0,
+        hint: "В электронных таблицах операция возведения в степень записывается знаком крышки: например, =2^3 дает 8."
+      },
+      {
+        id: 8,
+        question: "Что произойдет с формулой <span class='code-tag'>=C$3+1</span> при копировании из ячейки D1 в ячейку <b>F2</b> (на 2 столбца вправо, на 1 строку вниз)?",
+        answers: ["=E$3+1", "=F$4+1", "=E$4+1", "=C$3+1"],
+        correct: 0,
+        hint: "Столбец C смещается на 2 вправо и становится E. Номер строки 3 заблокирован знаком доллара ($3) и не меняется."
+      },
+      {
+        id: 9,
+        question: "Какая функция подсчитывает количество ячеек в диапазоне, удовлетворяющих заданному условию (например, больше 10)?",
+        answers: ["СЧЁТЕСЛИ", "СУММЕСЛИ", "КОЛИЧЕСТВО", "ПОИСКЕСЛИ"],
+        correct: 0,
+        hint: "Для подсчета количества ячеек по условию применяется функция СЧЁТЕСЛИ (диапазон; условие)."
+      },
+      {
+        id: 10,
+        question: "В ячейке отобразилась ошибка <span class='code-tag'>###</span>. Что это означает?",
+        answers: [
+          "Число не помещается по ширине ячейки",
+          "Деление на ноль",
+          "Неверное имя функции",
+          "Текст вместо формулы"
+        ],
+        correct: 0,
+        hint: "Символы ### информируют о том, что числовое значение или дата физически не помещаются в текущую ширину столбца."
+      },
+      {
+        id: 11,
+        question: "Какая формула подсчитает сумму ячеек диапазона B1:B10, которые <b>строго больше 0</b>?",
+        answers: [
+          "=СУММЕСЛИ(B1:B10; \">0\")",
+          "=СУММ(B1:B10; \">0\")",
+          "=СЧЁТЕСЛИ(B1:B10; \">0\")",
+          "=ИТОГО(B1:B10; >0)"
+        ],
+        correct: 0,
+        hint: "Суммирование с фильтром по условию реализуется функцией СУММЕСЛИ(диапазон; критерий)."
+      },
+      {
+        id: 12,
+        question: "В ячейках записаны значения: A1=10, A2=20, A3=30. Чему равен результат формулы <span class='code-tag'>=МАКС(A1:A3) - МИН(A1:A3)</span>?",
+        answers: ["20", "10", "30", "0"],
+        correct: 0,
+        hint: "МАКС(10;20;30) = 30. МИН(10;20;30) = 10. 30 - 10 = 20."
+      },
+      {
+        id: 13,
+        question: "С какого специального символа <b>обязательно</b> начинается ввод любой формулы в электронных таблицах?",
+        answers: ["= (равно)", "+ (плюс)", "# (решетка)", "$ (доллар)"],
+        correct: 0,
+        hint: "Знак равенства (=) сообщает табличному процессору, что последующий текст является формулой для расчета."
+      },
+      {
+        id: 14,
+        question: "Какая из ссылок является <b>смешанной</b> (один компонент абсолютный, другой относительный)?",
+        answers: ["$B2", "$B$2", "B2", "B2:C4"],
+        correct: 0,
+        hint: "В ссылке $B2 зафиксирован только столбец B, а строка 2 может меняться. Это смешанная ссылка."
+      },
+      {
+        id: 15,
+        question: "Какая функция вернет <b>наибольшее</b> значение среди чисел диапазона C1:C20?",
+        answers: ["МАКС(C1:C20)", "БОЛЬШЕ(C1:C20)", "ВЕРХ(C1:C20)", "MAXIMUM(C1:C20)"],
+        correct: 0,
+        hint: "Поиск максимального числа производится стандартной функцией МАКС."
+      },
+      {
+        id: 16,
+        question: "В ячейке B4 находится значение 12. Чему будет равен результат формулы: <span class='code-tag'>=И(B4>10; B4<20)</span>?",
+        answers: ["ИСТИНА", "ЛОЖЬ", "12", "ОШИБКА"],
+        correct: 0,
+        hint: "Логическая функция И требует истинности всех аргументов. 12>10 (да) и 12<20 (да). Результат — ИСТИНА."
+      }
+    ];
+
+    /* ==========================================================================
+       РАСПОЛОЖЕНИЕ 7 КОРАБЛЕЙ (16 палуб) НА ПОЛЕ 8x8
+       ========================================================================== */
+    const FLEET_CONFIG = [
+      {
+        id: 'ship-1',
+        name: 'Линкор «Севастополь»',
+        class: '4-палубный флагман',
+        size: 4,
+        cells: ['B2', 'B3', 'B4', 'B5'],
+        hits: 0
+      },
+      {
+        id: 'ship-2',
+        name: 'Крейсер «Варяг»',
+        class: '3-палубный крейсер',
+        size: 3,
+        cells: ['D2', 'E2', 'F2'],
+        hits: 0
+      },
+      {
+        id: 'ship-3',
+        name: 'Крейсер «Аврора»',
+        class: '3-палубный крейсер',
+        size: 3,
+        cells: ['D7', 'E7', 'F7'],
+        hits: 0
+      },
+      {
+        id: 'ship-4',
+        name: 'Эсминец «Грозный»',
+        class: '2-палубный эсминец',
+        size: 2,
+        cells: ['H3', 'H4'],
+        hits: 0
+      },
+      {
+        id: 'ship-5',
+        name: 'Эсминец «Стерегущий»',
+        class: '2-палубный эсминец',
+        size: 2,
+        cells: ['B7', 'B8'],
+        hits: 0
+      },
+      {
+        id: 'ship-6',
+        name: 'Катер «Стремительный»',
+        class: '1-палубный катер',
+        size: 1,
+        cells: ['D4'],
+        hits: 0
+      },
+      {
+        id: 'ship-7',
+        name: 'Катер «Вихрь»',
+        class: '1-палубный катер',
+        size: 1,
+        cells: ['H7'],
+        hits: 0
+      }
+    ];
+
+    /* ==========================================================================
+       СОСТОЯНИЕ ИГРЫ
+       ========================================================================== */
+    let cellToShipMap = {};
+    let assignedTasks = {};
+    let gameStats = {
+      shots: 0,
+      hits: 0,
+      misses: 0,
+      sunkShips: 0,
+      sound: true,
+      timerSec: 0,
+      timerInterval: null,
+      currentCellKey: null,
+      ammoLeft: 3
+    };
+
+    /* ==========================================================================
+       ЗВУКОВОЙ МОДУЛЬ: WEB AUDIO API (Без файлов)
+       ========================================================================== */
+    class NavalAudio {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+
+      // Всплеск воды при промахе
+      playSplash() {
+        if (!gameStats.sound) return;
+        this.init();
+        const bufferSize = this.ctx.sampleRate * 0.4;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(400, this.ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.35);
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.35);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start();
+      }
+
+      // Корабельная рында при обнаружении цели
+      playBell() {
+        if (!gameStats.sound) return;
+        this.init();
+        [880, 1760].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.2, this.ctx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.08 + 0.6);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.08);
+          osc.stop(this.ctx.currentTime + i * 0.08 + 0.65);
+        });
+      }
+
+      // Орудийный басовый залп
+      playCannon() {
+        if (!gameStats.sound) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.65);
+      }
+
+      // Рикошет брони при ошибке
+      playRicochet() {
+        if (!gameStats.sound) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, this.ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
+      }
+
+      // Торжественный низкий гудок при затоплении
+      playHorn() {
+        if (!gameStats.sound) return;
+        this.init();
+        const freqs = [110, 164.8];
+        freqs.forEach(f => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(f, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.25, this.ctx.currentTime + 0.7);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 1.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 1.25);
+        });
+      }
+    }
+
+    const navalAudio = new NavalAudio();
+
+    /* ==========================================================================
+       SVG ГРАФИКА: БУЙ, ПАЛУБА, ОГОНЬ, ДЫМ
+       ========================================================================== */
+    function getBuoySVG() {
+      return `
+        <svg class="buoy-icon" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+          <circle cx="20" cy="20" r="8" fill="#ef4444" stroke="#ffffff" stroke-width="2"/>
+          <line x1="20" y1="4" x2="20" y2="12" stroke="#ffffff" stroke-width="2"/>
+          <circle cx="20" cy="4" r="2" fill="#ffd166"/>
+        </svg>
+      `;
+    }
+
+    function getHitDeckSVG() {
+      return `
+        <div class="ship-deck-piece">
+          <svg viewBox="0 0 60 60" style="width:90%; height:90%;">
+            <!-- Металлическая бронеплита -->
+            <rect x="8" y="8" width="44" height="44" rx="6" fill="#374151" stroke="#1f2937" stroke-width="2"/>
+            <!-- Бронебашня орудия -->
+            <circle cx="30" cy="30" r="12" fill="#4b5563" stroke="#111827" stroke-width="2"/>
+            <line x1="30" y1="30" x2="48" y2="24" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+            <!-- Заклепки -->
+            <circle cx="14" cy="14" r="1.5" fill="#9ca3af"/>
+            <circle cx="46" cy="14" r="1.5" fill="#9ca3af"/>
+            <circle cx="14" cy="46" r="1.5" fill="#9ca3af"/>
+            <circle cx="46" cy="46" r="1.5" fill="#9ca3af"/>
+            <!-- Языки огня -->
+            <path d="M22 36C22 36 24 24 30 20C33 25 38 24 38 34C38 40 33 42 30 42C25 42 22 40 22 36Z" fill="#ff5400"/>
+            <path d="M25 37C25 37 27 28 30 25C32 29 35 28 35 35C35 39 32 40 30 40C27 40 25 39 25 37Z" fill="#ffb703"/>
+          </svg>
+          <svg class="smoke-puff" viewBox="0 0 60 60">
+            <circle cx="30" cy="20" r="14" fill="rgba(100,116,139,0.5)"/>
+            <circle cx="20" cy="26" r="10" fill="rgba(71,85,105,0.4)"/>
+            <circle cx="38" cy="24" r="12" fill="rgba(148,163,184,0.4)"/>
+          </svg>
+        </div>
+      `;
+    }
+
+    /* ==========================================================================
+       ИНИЦИАЛИЗАЦИЯ И РАЗМЕТКА
+       ========================================================================== */
+    const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    const seaSurface = document.getElementById('seaSurface');
+    const fleetRegistry = document.getElementById('fleetRegistry');
+
+    function buildFleetData() {
+      cellToShipMap = {};
+      assignedTasks = {};
+      let taskIdx = 0;
+
+      FLEET_CONFIG.forEach(ship => {
+        ship.hits = 0;
+        ship.cells.forEach(cellKey => {
+          cellToShipMap[cellKey] = ship;
+          assignedTasks[cellKey] = TASKS[taskIdx % TASKS.length];
+          taskIdx++;
+        });
+      });
+    }
+
+    function renderSeaBoard() {
+      seaSurface.innerHTML = '';
+
+      // Верхний левый угол сетки
+      const emptyCorner = document.createElement('div');
+      emptyCorner.className = 'coord-label';
+      seaSurface.appendChild(emptyCorner);
+
+      // Заголовки колонок A-H
+      columns.forEach(col => {
+        const lbl = document.createElement('div');
+        lbl.className = 'coord-label';
+        lbl.textContent = col;
+        seaSurface.appendChild(lbl);
+      });
+
+      // 8 строк
+      for (let r = 1; r <= 8; r++) {
+        // Метка строки (1-8)
+        const rowLbl = document.createElement('div');
+        rowLbl.className = 'coord-label';
+        rowLbl.textContent = r;
+        seaSurface.appendChild(rowLbl);
+
+        // Клетки строки
+        columns.forEach(col => {
+          const key = `${col}${r}`;
+          const cell = document.createElement('div');
+          cell.className = 'sea-cell';
+          cell.id = `cell-${key}`;
+          cell.dataset.key = key;
+
+          cell.addEventListener('click', () => handleCellClick(key, cell));
+          seaSurface.appendChild(cell);
+        });
+      }
+    }
+
+    function renderFleetRegistry() {
+      fleetRegistry.innerHTML = '';
+      FLEET_CONFIG.forEach(ship => {
+        const item = document.createElement('div');
+        item.className = `fleet-item ${ship.hits === ship.size ? 'sunk' : ''}`;
+        item.id = `fleet-ui-${ship.id}`;
+
+        let pips = '';
+        for (let i = 0; i < ship.size; i++) {
+          const isHit = i < ship.hits;
+          pips += `<div class="deck-pip ${isHit ? 'hit' : ''}"></div>`;
+        }
+
+        item.innerHTML = `
+          <div class="fleet-info">
+            <div class="fleet-name">${ship.name}</div>
+            <div class="fleet-class">${ship.class} (${ship.size} пал.)</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="deck-indicators">${pips}</div>
+            ${ship.hits === ship.size ? '<div class="sunk-stamp">ПОТОПЛЕН</div>' : ''}
+          </div>
+        `;
+        fleetRegistry.appendChild(item);
+      });
+    }
+
+    /* ==========================================================================
+       ЛОГИКА ВЫСТРЕЛА И ОБРАБОТКИ
+       ========================================================================== */
+    function handleCellClick(key, cellElem) {
+      if (cellElem.classList.contains('shot')) return;
+
+      startTimer();
+      gameStats.shots++;
+
+      const ship = cellToShipMap[key];
+
+      if (!ship) {
+        // ПРОМАХ
+        cellElem.classList.add('shot', 'miss');
+        cellElem.innerHTML = getBuoySVG();
+        navalAudio.playSplash();
+        gameStats.misses++;
+        updateStatsUI();
+      } else {
+        // ПОПАДАНИЕ В СЕКТОР СУДНА
+        navalAudio.playBell();
+        openTacticalModal(key, ship);
+      }
+    }
+
+    function openTacticalModal(key, ship) {
+      gameStats.currentCellKey = key;
+      gameStats.ammoLeft = 3;
+
+      const task = assignedTasks[key];
+      document.getElementById('targetCoordDisplay').textContent = `КВАДРАТ: ${key}`;
+      document.getElementById('targetShipName').textContent = `ОТСЕК СУДНА: ${ship.name}`;
+      document.getElementById('taskQuestion').innerHTML = task.question;
+      document.getElementById('taskFeedback').innerHTML = '';
+      updateAmmoDisplay();
+
+      const grid = document.getElementById('answersGrid');
+      grid.innerHTML = '';
+
+      task.answers.forEach((ans, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'tactical-choice-btn';
+        btn.innerHTML = `
+          <span class="choice-key">${String.fromCharCode(65 + idx)}</span>
+          <span>${ans}</span>
+        `;
+        btn.addEventListener('click', () => handleTaskAnswer(idx, btn, task, ship));
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function updateAmmoDisplay() {
+      let ammoIcons = '';
+      for (let i = 0; i < 3; i++) {
+        ammoIcons += (i < gameStats.ammoLeft) ? '💣' : '🩶';
+      }
+      document.getElementById('ammoDisplay').textContent = `СНАРЯДЫ: ${ammoIcons} (${gameStats.ammoLeft}/3)`;
+    }
+
+    function handleTaskAnswer(selectedIdx, btnElem, task, ship) {
+      const allBtns = document.querySelectorAll('.tactical-choice-btn');
+      const feedback = document.getElementById('taskFeedback');
+
+      if (selectedIdx === task.correct) {
+        // ПРАВИЛЬНО: ЗАЛП И УНИЧТОЖЕНИЕ ПАЛУБЫ
+        navalAudio.playCannon();
+        btnElem.classList.add('correct');
+        allBtns.forEach(b => b.disabled = true);
+        feedback.innerHTML = `<span class="feedback-pass">✓ ПРЯМОЕ ПОПАДАНИЕ! Броня отсека пробита!</span>`;
+
+        const cell = document.getElementById(`cell-${gameStats.currentCellKey}`);
+        cell.classList.add('shot', 'hit');
+        cell.innerHTML = getHitDeckSVG();
+
+        ship.hits++;
+        gameStats.hits++;
+
+        setTimeout(() => {
+          closeTacticalModal();
+          // Проверка потопления судна
+          if (ship.hits === ship.size) {
+            gameStats.sunkShips++;
+            navalAudio.playHorn();
+          }
+          renderFleetRegistry();
+          updateStatsUI();
+
+          // Проверка победы (все 7 судов)
+          if (gameStats.sunkShips === FLEET_CONFIG.length) {
+            setTimeout(showTriumphScreen, 600);
+          }
+        }, 1100);
+
+      } else {
+        // ОШИБКА: РИКОШЕТ
+        navalAudio.playRicochet();
+        gameStats.ammoLeft--;
+        btnElem.classList.add('wrong');
+        updateAmmoDisplay();
+
+        const logbook = document.getElementById('logbookModal');
+        logbook.style.transform = 'translateX(-8px)';
+        setTimeout(() => logbook.style.transform = 'translateX(8px)', 100);
+        setTimeout(() => logbook.style.transform = 'none', 200);
+
+        if (gameStats.ammoLeft <= 0) {
+          feedback.innerHTML = `<span class="feedback-fail">✕ БОЕКОМПЛЕКТ ИСЧЕРПАН! Разбор: ${task.hint}</span>`;
+          gameStats.ammoLeft = 3;
+          setTimeout(updateAmmoDisplay, 2200);
+        } else {
+          feedback.innerHTML = `<span class="feedback-fail">✕ РИКОШЕТ! Неверная формула. Скорректируйте огонь!</span>`;
+        }
+
+        setTimeout(() => btnElem.classList.remove('wrong'), 1000);
+      }
+    }
+
+    function closeTacticalModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function updateStatsUI() {
+      document.getElementById('sunkShipsCount').textContent = `${gameStats.sunkShips} / ${FLEET_CONFIG.length}`;
+      document.getElementById('hitDecksCount').textContent = `${gameStats.hits} / 16`;
+      const acc = gameStats.shots > 0 ? Math.round((gameStats.hits / gameStats.shots) * 100) : 100;
+      document.getElementById('accuracyPct').textContent = `${acc}%`;
+    }
+
+    /* ==========================================================================
+       ТАЙМЕР И ФИНАЛ
+       ========================================================================== */
+    function startTimer() {
+      if (gameStats.timerInterval) return;
+      gameStats.timerInterval = setInterval(() => {
+        gameStats.timerSec++;
+        const mins = String(Math.floor(gameStats.timerSec / 60)).padStart(2, '0');
+        const secs = String(gameStats.timerSec % 60).padStart(2, '0');
+        document.getElementById('timerDisplay').textContent = `⏱️ ${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(gameStats.timerInterval);
+      gameStats.timerInterval = null;
+    }
+
+    function showTriumphScreen() {
+      stopTimer();
+      const mins = String(Math.floor(gameStats.timerSec / 60)).padStart(2, '0');
+      const secs = String(gameStats.timerSec % 60).padStart(2, '0');
+      const acc = Math.round((gameStats.hits / gameStats.shots) * 100);
+
+      document.getElementById('finalStats').textContent = 
+        `Время операции: ${mins}:${secs} | Всего выстрелов: ${gameStats.shots} | Точность: ${acc}%`;
+      
+      let rank = 'АДМИРАЛ ТАКТИКИ';
+      if (acc < 65) rank = 'КАПИТАН 1 РАНГА';
+      else if (acc < 85) rank = 'КОНТР-АДМИРАЛ';
+      document.getElementById('finalRank').textContent = `ЗВАНИЕ: ${rank}`;
+
+      document.getElementById('triumphModal').classList.add('active');
+    }
+
+    function resetOperation() {
+      stopTimer();
+      gameStats = {
+        shots: 0,
+        hits: 0,
+        misses: 0,
+        sunkShips: 0,
+        sound: gameStats.sound,
+        timerSec: 0,
+        timerInterval: null,
+        currentCellKey: null,
+        ammoLeft: 3
+      };
+      document.getElementById('timerDisplay').textContent = `⏱️ 00:00`;
+      document.getElementById('triumphModal').classList.remove('active');
+      closeTacticalModal();
+      buildFleetData();
+      renderSeaBoard();
+      renderFleetRegistry();
+      updateStatsUI();
+    }
+
+    /* ==========================================================================
+       УПРАВЛЕНИЕ И КНОПКИ ВЕРХНЕЙ ПАНЕЛИ
+       ========================================================================== */
+    document.getElementById('soundBtn').addEventListener('click', () => {
+      gameStats.sound = !gameStats.sound;
+      document.getElementById('soundIcon').textContent = gameStats.sound ? '🔊' : '🔇';
+      document.getElementById('soundBtn').innerHTML = `<span id="soundIcon">${gameStats.sound ? '🔊' : '🔇'}</span> ЗВУК: ${gameStats.sound ? 'ВКЛ' : 'ВЫКЛ'}`;
+      if (gameStats.sound) navalAudio.playBell();
+    });
+
+    document.getElementById('fullBtn').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        document.getElementById('fullBtn').textContent = '⊡ СВЕРНУТЬ';
+      } else {
+        document.exitFullscreen().catch(() => {});
+        document.getElementById('fullBtn').textContent = '⛶ НА ВЕСЬ ЭКРАН';
+      }
+    });
+
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      if (confirm('Начать новую операцию и сбросить планшет?')) {
+        resetOperation();
+      }
+    });
+
+    // Запуск при загрузке
+    buildFleetData();
+    renderSeaBoard();
+    renderFleetRegistry();
+    updateStatsUI();
+  </script>
+</body>
+</html>
