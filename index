@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBER-DECODER // Дешифратор сетевых узлов</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --card-bg: rgba(22, 27, 46, 0.65);
+      --card-border: rgba(0, 245, 212, 0.2);
+      --card-hover-border: rgba(0, 245, 212, 0.7);
+      --cyan-neon: #00f5d4;
+      --purple-neon: #7b2cbf;
+      --purple-light: #c77dff;
+      --error-red: #ff3366;
+      --warning-yellow: #ffd166;
+      --text-main: #e6edf3;
+      --text-dim: #8b949e;
+      --font-code: 'Fira Code', monospace;
+      --font-main: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      color: var(--text-main);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-bottom: 40px;
+    }
+
+    /* Плавающие неоновые сферы */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatOrb 18s ease-in-out infinite alternate;
+    }
+    .orb-cyan {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, var(--cyan-neon), transparent 70%);
+      top: -100px;
+      left: -100px;
+    }
+    .orb-purple {
+      width: 540px;
+      height: 540px;
+      background: radial-gradient(circle, var(--purple-neon), transparent 70%);
+      bottom: -120px;
+      right: -100px;
+      animation-duration: 22s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(60px, 40px) scale(1.1); }
+      100% { transform: translate(-30px, 80px) scale(0.95); }
+    }
+
+    /* Верхняя панель управления */
+    header {
+      width: 100%;
+      max-width: 1140px;
+      padding: 24px 20px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-family: var(--font-code);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title span {
+      color: var(--cyan-neon);
+      text-shadow: 0 0 12px rgba(0, 245, 212, 0.6);
+    }
+
+    .brand-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-family: var(--font-code);
+    }
+
+    .controls-panel {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ctrl-btn {
+      background: rgba(22, 27, 46, 0.8);
+      border: 1px solid rgba(0, 245, 212, 0.3);
+      color: var(--cyan-neon);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(0, 245, 212, 0.15);
+      border-color: var(--cyan-neon);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Статус и прогресс-бар */
+    .dashboard-bar {
+      width: 100%;
+      max-width: 1140px;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .metrics-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+    }
+
+    .metrics-title {
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-val {
+      color: var(--cyan-neon);
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(0, 245, 212, 0.5);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple-neon), var(--cyan-neon));
+      box-shadow: 0 0 12px var(--cyan-neon);
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Сетка сетевых узлов */
+    .nodes-grid {
+      width: 100%;
+      max-width: 1140px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      z-index: 10;
+      position: relative;
+    }
+
+    @media (max-width: 992px) {
+      .nodes-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .nodes-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .brand-title { font-size: 1.3rem; }
+    }
+    @media (max-width: 440px) {
+      .nodes-grid { grid-template-columns: 1fr; }
+    }
+
+    .node-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .node-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(0, 245, 212, 0.12), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .node-card:hover:not(.hacked) {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--card-hover-border);
+      box-shadow: 0 12px 30px rgba(0, 245, 212, 0.2);
+    }
+    .node-card:hover:not(.hacked)::before {
+      opacity: 1;
+    }
+
+    .node-status-tag {
+      font-family: var(--font-code);
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+    }
+
+    .node-icon-wrap {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .node-icon-wrap svg {
+      width: 100%;
+      height: 100%;
+      stroke: var(--cyan-neon);
+      filter: drop-shadow(0 0 6px rgba(0, 245, 212, 0.4));
+      transition: all 0.3s ease;
+    }
+
+    .node-id {
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #fff;
+    }
+
+    .node-topic {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.3;
+      max-width: 180px;
+    }
+
+    /* Состояние: Взломан (HACKED) */
+    .node-card.hacked {
+      border-color: rgba(0, 245, 212, 0.75);
+      background: rgba(11, 35, 45, 0.7);
+      cursor: default;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
+    }
+    .node-card.hacked .node-status-tag {
+      background: rgba(0, 245, 212, 0.15);
+      color: var(--cyan-neon);
+      border-color: var(--cyan-neon);
+      font-weight: 700;
+    }
+    .node-card.hacked svg {
+      stroke: var(--cyan-neon);
+      filter: drop-shadow(0 0 10px var(--cyan-neon));
+    }
+
+    /* МОДАЛЬНЫЙ ТЕРМИНАЛ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 18, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .terminal-window {
+      width: 100%;
+      max-width: 680px;
+      background: #0f1422;
+      border: 1px solid rgba(0, 245, 212, 0.4);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 245, 212, 0.2);
+      transform: scale(0.9) translateY(20px);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.active .terminal-window {
+      transform: scale(1) translateY(0);
+    }
+
+    .terminal-header {
+      background: #171d30;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .mac-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mac-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .terminal-title {
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .terminal-close {
+      color: var(--text-dim);
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .terminal-close:hover {
+      color: #fff;
+    }
+
+    .terminal-body {
+      padding: 28px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .node-header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+
+    .terminal-prompt {
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      color: var(--cyan-neon);
+    }
+
+    .terminal-shields {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--warning-yellow);
+    }
+
+    .question-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .code-snippet {
+      display: inline-block;
+      font-family: var(--font-code);
+      background: rgba(0, 245, 212, 0.1);
+      color: var(--cyan-neon);
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin: 2px;
+      border: 1px solid rgba(0, 245, 212, 0.25);
+    }
+
+    /* Варианты ответов */
+    .answers-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 580px) {
+      .answers-container { grid-template-columns: 1fr; }
+    }
+
+    .ans-btn {
+      background: rgba(22, 27, 46, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text-main);
+      font-family: var(--font-code);
+      font-size: 0.95rem;
+      text-align: left;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ans-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 700;
+      color: var(--cyan-neon);
+      font-size: 0.8rem;
+    }
+
+    .ans-btn:hover:not(:disabled) {
+      background: rgba(0, 245, 212, 0.1);
+      border-color: var(--cyan-neon);
+      transform: translateX(4px);
+      box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+    }
+
+    .ans-btn.correct {
+      background: rgba(0, 245, 212, 0.2) !important;
+      border-color: var(--cyan-neon) !important;
+      color: #fff !important;
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+    }
+
+    .ans-btn.wrong {
+      background: rgba(255, 51, 102, 0.2) !important;
+      border-color: var(--error-red) !important;
+      color: #ffccd5 !important;
+      box-shadow: 0 0 20px rgba(255, 51, 102, 0.4);
+    }
+
+    .terminal-feedback {
+      min-height: 24px;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feedback-correct { color: var(--cyan-neon); }
+    .feedback-wrong { color: var(--error-red); }
+
+    /* Анимация ошибки */
+    .shake-anim {
+      animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* ФИНАЛЬНЫЙ ЭКРАН */
+    .success-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .success-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .success-card {
+      background: #0f1422;
+      border: 2px solid var(--cyan-neon);
+      border-radius: 24px;
+      padding: 40px 32px;
+      max-width: 540px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(0, 245, 212, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      transform: scale(0.85);
+      transition: transform 0.4s ease;
+    }
+    .success-modal.active .success-card {
+      transform: scale(1);
+    }
+
+    .success-badge {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(0, 245, 212, 0.15);
+      border: 2px solid var(--cyan-neon);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.5);
+    }
+    .success-badge svg {
+      width: 44px;
+      height: 44px;
+      stroke: var(--cyan-neon);
+    }
+
+    .success-title {
+      font-family: var(--font-code);
+      font-size: 1.8rem;
+      color: #fff;
+      text-shadow: 0 0 14px rgba(0, 245, 212, 0.7);
+    }
+
+    .success-desc {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .stats-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-family: var(--font-code);
+      color: var(--cyan-neon);
+      font-size: 1.1rem;
+    }
+
+    /* Бинарный салют (падающие 0 и 1) */
+    .binary-particle {
+      position: fixed;
+      font-family: var(--font-code);
+      font-size: 16px;
+      color: var(--cyan-neon);
+      pointer-events: none;
+      z-index: 120;
+      opacity: 0.8;
+      text-shadow: 0 0 8px var(--cyan-neon);
+      animation: binaryFall 3.2s linear forwards;
+    }
+
+    @keyframes binaryFall {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Фоновые орбы -->
+  <div class="glow-orb orb-cyan"></div>
+  <div class="glow-orb orb-purple"></div>
+
+  <!-- Верхний бар -->
+  <header>
+    <div class="brand">
+      <div class="brand-title">
+        <span>CYBER_DECODER</span> // v2.6
+      </div>
+      <div class="brand-subtitle">> ТЕМА: СИСТЕМЫ СЧИСЛЕНИЯ [8 КЛАСС]</div>
+    </div>
+    <div class="controls-panel">
+      <button class="ctrl-btn" id="audioToggleBtn" title="Переключить аудио">
+        <span id="audioIcon">🔊</span> ЗВУК: ВКЛ
+      </button>
+      <button class="ctrl-btn" id="fullscreenBtn" title="Развернуть">
+        ⛶ ПОЛНЫЙ ЭКРАН
+      </button>
+      <button class="ctrl-btn" id="resetBtn" title="Сбросить прогресс">
+        ↺ СБРОС
+      </button>
+    </div>
+  </header>
+
+  <!-- Панель статуса и шкалы прогресса -->
+  <div class="dashboard-bar">
+    <div class="metrics-row">
+      <div class="metrics-title">
+        <span>⚡ СТАТУС ВЗЛОМА СИСТЕМЫ:</span>
+        <span class="progress-val" id="progressPct">0%</span>
+      </div>
+      <div class="metrics-title">
+        <span>ДЕШИФРОВАНО:</span>
+        <span class="progress-val" id="nodesCount">0 / 12</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Сетка узлов (12 серверов) -->
+  <main class="nodes-grid" id="nodesGrid"></main>
+
+  <!-- Модальный терминал задания -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="terminal-window" id="terminalWindow">
+      <div class="terminal-header">
+        <div class="mac-dots">
+          <div class="mac-dot dot-red"></div>
+          <div class="mac-dot dot-yellow"></div>
+          <div class="mac-dot dot-green"></div>
+        </div>
+        <div class="terminal-title" id="terminalNodeTitle">ACCESS_POINT // NODE_01</div>
+        <button class="terminal-close" id="modalCloseBtn">✕</button>
+      </div>
+      <div class="terminal-body">
+        <div class="node-header-info">
+          <div class="terminal-prompt">> ВВЕДИТЕ КЛЮЧ ДЕШИФРАЦИИ:</div>
+          <div class="terminal-shields" id="shieldDisplay">
+            <span>🛡️ ЩИТ:</span> <span>3/3</span>
+          </div>
+        </div>
+        <div class="question-box" id="questionText">
+          Вопрос узла загружается...
+        </div>
+        <div class="answers-container" id="answersContainer"></div>
+        <div class="terminal-feedback" id="feedbackMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Окно победы -->
+  <div class="success-modal" id="successModal">
+    <div class="success-card">
+      <div class="success-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h2 class="success-title">СИСТЕМА РАЗБЛОКИРОВАНА</h2>
+      <p class="success-desc">
+        Все 12 сетевых узлов успешно дешифрованы. Протокол безопасности деактивирован. Материал по системам счисления усвоен на отлично!
+      </p>
+      <div class="stats-pill" id="finalStats">ТОЧНОСТЬ ВЗЛОМА: 100%</div>
+      <button class="ctrl-btn" style="padding: 12px 32px; font-size: 1rem;" onclick="resetGame()">
+        ↺ ПЕРЕЗАГРУЗИТЬ ПРОТОКОЛ
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       БАЗА ЗАДАНИЙ: 12 УЗЛОВ (Обобщение темы «Системы счисления», 8 класс)
+       ========================================================================== */
+    const TASKS = [
+      {
+        id: 1,
+        title: "NODE_01 // Двоичный алфавит",
+        topic: "Основание и алфавит",
+        question: "Какое максимальное число символов (цифр) входит в алфавит двоичной позиционной системы счисления?",
+        answers: ["1 символ", "2 символа (0 и 1)", "10 символов", "Бесконечно"],
+        correct: 1,
+        hint: "Алфавит системы счисления с основанием p всегда содержит ровно p цифр: от 0 до p-1."
+      },
+      {
+        id: 2,
+        title: "NODE_02 // Перевод 2 → 10",
+        topic: "Двоичный код в десятичный",
+        question: "Дешифруйте двоичный сигнал <span class='code-snippet'>1101₂</span> в десятичную систему счисления:",
+        answers: ["11", "13", "14", "15"],
+        correct: 1,
+        hint: "1·2³ + 1·2² + 0·2¹ + 1·2⁰ = 8 + 4 + 0 + 1 = 13."
+      },
+      {
+        id: 3,
+        title: "NODE_03 // Перевод 10 → 2",
+        topic: "Десятичный код в двоичный",
+        question: "Переведите десятичное число <span class='code-snippet'>19₁₀</span> в двоичный код:",
+        answers: ["10011₂", "10101₂", "11001₂", "10001₂"],
+        correct: 0,
+        hint: "19 = 16 + 2 + 1 = 2⁴ + 2¹ + 2⁰ => 10011₂."
+      },
+      {
+        id: 4,
+        title: "NODE_04 // Восьмеричный базис",
+        topic: "Восьмеричная система",
+        question: "Какое из приведенных чисел <b>НЕ МОЖЕТ</b> существовать в восьмеричной системе счисления?",
+        answers: ["712₈", "405₈", "861₈", "333₈"],
+        correct: 2,
+        hint: "В восьмеричной системе счисления используются только цифры от 0 до 7. Цифры 8 в ней нет!"
+      },
+      {
+        id: 5,
+        title: "NODE_05 // Буквенные разряды 16-й СС",
+        topic: "Шестнадцатеричные цифры",
+        question: "Чему равно значение шестнадцатеричной цифры <span class='code-snippet'>B₁₆</span> в привычной десятичной системе?",
+        answers: ["10", "11", "12", "13"],
+        correct: 1,
+        hint: "A=10, B=11, C=12, D=13, E=14, F=15."
+      },
+      {
+        id: 6,
+        title: "NODE_06 // Перевод 16 → 10",
+        topic: "Шестнадцатеричный в 10-й",
+        question: "Вычислите десятичное значение для защитного кода <span class='code-snippet'>2A₁₆</span>:",
+        answers: ["42", "38", "52", "26"],
+        correct: 0,
+        hint: "2·16¹ + A·16⁰ = 2·16 + 10·1 = 32 + 10 = 42."
+      },
+      {
+        id: 7,
+        title: "NODE_07 // Сравнение чисел",
+        topic: "Компаратор систем",
+        question: "Какое из следующих чисел является <b>наибольшим</b>?",
+        answers: ["11100₂ (28)", "35₈ (29)", "1C₁₆ (28)", "27₁₀ (27)"],
+        correct: 1,
+        hint: "11100₂ = 28₁₀, 35₈ = 3·8 + 5 = 29₁₀, 1C₁₆ = 1·16 + 12 = 28₁₀. Наибольшее — 35₈ (29₁₀)."
+      },
+      {
+        id: 8,
+        title: "NODE_08 // Сложение в двоичной СС",
+        topic: "Двоичная арифметика",
+        question: "Чему равна сумма двух двоичных пакетов <span class='code-snippet'>101₂ + 11₂</span>?",
+        answers: ["1000₂", "1100₂", "1010₂", "1110₂"],
+        correct: 0,
+        hint: "101₂ (5) + 11₂ (3) = 8₁₀ = 1000₂ (или поразрядно с переносом единиц)."
+      },
+      {
+        id: 9,
+        title: "NODE_09 // Принцип триад",
+        topic: "Связь 2-й и 8-й систем",
+        question: "Сколько двоичных разрядов (бит) требуется для записи ровно <b>одной восьмеричной цифры</b> (триада)?",
+        answers: ["2 бита", "3 бита", "4 бита", "8 бит"],
+        correct: 1,
+        hint: "Так как 8 = 2³, одна восьмеричная цифра однозначно кодируется 3 двоичными разрядами (триадой)."
+      },
+      {
+        id: 10,
+        title: "NODE_10 // Принцип тетрад",
+        topic: "Связь 2-й и 16-й систем",
+        question: "Переведите шестнадцатеричный байт <span class='code-snippet'>F5₁₆</span> в двоичный код через тетрады:",
+        answers: ["11110101₂", "11100101₂", "11110110₂", "10111101₂"],
+        correct: 0,
+        hint: "F₁₆ = 1111₂, 5₁₆ = 0101₂. Соединяем: 11110101₂."
+      },
+      {
+        id: 11,
+        title: "NODE_11 // Непозиционные системы",
+        topic: "Типы систем счисления",
+        question: "Какая из перечисленных систем счисления является <b>непозиционной</b>?",
+        answers: ["Двоичная", "Десятичная", "Римская", "Шестнадцатеричная"],
+        correct: 2,
+        hint: "В римской системе счисления вес цифры не зависит жестко от ее позиции (например, символ X всегда обозначает 10)."
+      },
+      {
+        id: 12,
+        title: "NODE_12 // Четность двоичного кода",
+        topic: "Анализ четности",
+        question: "Как по последней цифре двоичной записи определить, что число является <b>четным</b>?",
+        answers: [
+          "Оканчивается на 0",
+          "Оканчивается на 1",
+          "Содержит четное число единиц",
+          "Нельзя определить по последней цифре"
+        ],
+        correct: 0,
+        hint: "Младший разряд 2⁰ равен 1. Если на конце 0, число делится на 2 без остатка (четное)."
+      }
+    ];
+
+    /* ==========================================================================
+       СОСТОЯНИЕ ИГРЫ
+       ========================================================================== */
+    let gameState = {
+      hackedNodes: new Set(),
+      activeTaskIndex: null,
+      shields: 3,
+      totalMistakes: 0,
+      soundEnabled: true
+    };
+
+    /* ==========================================================================
+       ЗВУКОВОЙ ДВИЖОК: WEB AUDIO API
+       ========================================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playClick() {
+        if (!gameState.soundEnabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playSuccess() {
+        if (!gameState.soundEnabled) return;
+        this.init();
+        // Футуристический мажорный арпеджио-аккорд
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.06);
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.06 + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.06);
+          osc.stop(this.ctx.currentTime + idx * 0.06 + 0.4);
+        });
+      }
+
+      playError() {
+        if (!gameState.soundEnabled) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(80, this.ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.25);
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* ==========================================================================
+       SVG ИКОНКИ МИКРОЧИПОВ
+       ========================================================================== */
+    function getChipSVG(isHacked) {
+      return `
+        <svg viewBox="0 0 64 64" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Корпус микрочипа -->
+          <rect x="14" y="14" width="36" height="36" rx="6" fill="${isHacked ? 'rgba(0,245,212,0.1)' : 'rgba(255,255,255,0.03)'}"/>
+          <!-- Внутреннее ядро -->
+          <rect x="23" y="23" width="18" height="18" rx="3" fill="${isHacked ? '#00f5d4' : 'rgba(0,245,212,0.2)'}" stroke="none"/>
+          <!-- Контакты чипа -->
+          <line x1="20" y1="6" x2="20" y2="14"/>
+          <line x1="32" y1="6" x2="32" y2="14"/>
+          <line x1="44" y1="6" x2="44" y2="14"/>
+          <line x1="20" y1="50" x2="20" y2="58"/>
+          <line x1="32" y1="50" x2="32" y2="58"/>
+          <line x1="44" y1="50" x2="44" y2="58"/>
+          <line x1="6" y1="20" x2="14" y2="20"/>
+          <line x1="6" y1="32" x2="14" y2="32"/>
+          <line x1="6" y1="44" x2="14" y2="44"/>
+          <line x1="50" y1="20" x2="58" y2="20"/>
+          <line x1="50" y1="32" x2="58" y2="32"/>
+          <line x1="50" y1="44" x2="58" y2="44"/>
+        </svg>
+      `;
+    }
+
+    /* ==========================================================================
+       ИНИЦИАЛИЗАЦИЯ И ОТРИСОВКА СЕТКИ
+       ========================================================================== */
+    const nodesGrid = document.getElementById('nodesGrid');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const terminalWindow = document.getElementById('terminalWindow');
+    const progressFill = document.getElementById('progressBar');
+    const progressPct = document.getElementById('progressPct');
+    const nodesCount = document.getElementById('nodesCount');
+
+    function renderGrid() {
+      nodesGrid.innerHTML = '';
+      TASKS.forEach((task, idx) => {
+        const isHacked = gameState.hackedNodes.has(task.id);
+        const card = document.createElement('div');
+        card.className = `node-card ${isHacked ? 'hacked' : ''}`;
+        card.innerHTML = `
+          <div class="node-status-tag">${isHacked ? '✓ HACKED' : 'LOCKED'}</div>
+          <div class="node-icon-wrap">${getChipSVG(isHacked)}</div>
+          <div class="node-id">NODE_${task.id < 10 ? '0' + task.id : task.id}</div>
+          <div class="node-topic">${task.topic}</div>
+        `;
+        card.addEventListener('click', () => {
+          sound.playClick();
+          openNodeModal(idx);
+        });
+        nodesGrid.appendChild(card);
+      });
+      updateStats();
+    }
+
+    function updateStats() {
+      const hackedTotal = gameState.hackedNodes.size;
+      const pct = Math.round((hackedTotal / TASKS.length) * 100);
+      progressFill.style.width = `${pct}%`;
+      progressPct.textContent = `${pct}%`;
+      nodesCount.textContent = `${hackedTotal} / ${TASKS.length}`;
+
+      if (hackedTotal === TASKS.length) {
+        setTimeout(showFinalSuccess, 700);
+      }
+    }
+
+    /* ==========================================================================
+       ЛОГИКА ТЕРМИНАЛА / ВОПРОСОВ
+       ========================================================================== */
+    function openNodeModal(taskIndex) {
+      gameState.activeTaskIndex = taskIndex;
+      gameState.shields = 3;
+      updateShieldUI();
+
+      const task = TASKS[taskIndex];
+      const isAlreadyHacked = gameState.hackedNodes.has(task.id);
+
+      document.getElementById('terminalNodeTitle').textContent = `ACCESS_POINT // NODE_${task.id < 10 ? '0' + task.id : task.id}`;
+      document.getElementById('questionText').innerHTML = task.question;
+      document.getElementById('feedbackMsg').innerHTML = isAlreadyHacked 
+        ? '<span class="feedback-correct">✓ УЗЕЛ УЖЕ ДЕШИФРОВАН. ДОСТУП ПРЕДОСТАВЛЕН.</span>' 
+        : '';
+
+      const container = document.getElementById('answersContainer');
+      container.innerHTML = '';
+
+      task.answers.forEach((ans, ansIdx) => {
+        const btn = document.createElement('button');
+        btn.className = 'ans-btn';
+        if (isAlreadyHacked && ansIdx === task.correct) {
+          btn.classList.add('correct');
+        }
+        btn.innerHTML = `
+          <span class="ans-key">${String.fromCharCode(65 + ansIdx)}</span>
+          <span>${ans}</span>
+        `;
+        btn.disabled = isAlreadyHacked;
+        btn.addEventListener('click', () => handleAnswer(ansIdx, btn));
+        container.appendChild(btn);
+      });
+
+      modalOverlay.classList.add('active');
+    }
+
+    function updateShieldUI() {
+      const shieldBox = document.getElementById('shieldDisplay');
+      let hearts = '';
+      for (let i = 0; i < 3; i++) {
+        hearts += (i < gameState.shields) ? '🛡️' : '🩶';
+      }
+      shieldBox.innerHTML = `<span>ЩИТ:</span> <span>${hearts}</span>`;
+    }
+
+    function handleAnswer(choiceIdx, buttonElem) {
+      const task = TASKS[gameState.activeTaskIndex];
+      const allButtons = document.querySelectorAll('.ans-btn');
+      const feedback = document.getElementById('feedbackMsg');
+
+      if (choiceIdx === task.correct) {
+        /* ВЕРНЫЙ ОТВЕТ */
+        sound.playSuccess();
+        buttonElem.classList.add('correct');
+        allButtons.forEach(b => b.disabled = true);
+        feedback.innerHTML = `<span class="feedback-correct">✓ КЛЮЧ ПРИНЯТ: Доступ к памяти NODE_${task.id} открыт!</span>`;
+        
+        gameState.hackedNodes.add(task.id);
+        spawnBinaryRain(22);
+
+        setTimeout(() => {
+          closeModal();
+          renderGrid();
+        }, 1100);
+
+      } else {
+        /* ОШИБКА */
+        sound.playError();
+        gameState.totalMistakes++;
+        gameState.shields--;
+        buttonElem.classList.add('wrong');
+        terminalWindow.classList.add('shake-anim');
+        setTimeout(() => terminalWindow.classList.remove('shake-anim'), 500);
+
+        updateShieldUI();
+
+        if (gameState.shields <= 0) {
+          feedback.innerHTML = `<span class="feedback-wrong">✕ ЩИТ ИСЧЕРПАН! Подсказка: ${task.hint}</span>`;
+          // Сброс щита для продолжения практики
+          gameState.shields = 3;
+          setTimeout(updateShieldUI, 2000);
+        } else {
+          feedback.innerHTML = `<span class="feedback-wrong">✕ ОШИБКА АВТОРИЗАЦИИ! Попробуйте другой вариант.</span>`;
+        }
+
+        setTimeout(() => {
+          buttonElem.classList.remove('wrong');
+        }, 1200);
+      }
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+    }
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+
+    /* ==========================================================================
+       БИНАРНЫЙ САЛЮТ (ЦЕМЕНТИРОВАНИЕ ПОБЕДЫ)
+       ========================================================================== */
+    function spawnBinaryRain(count = 20) {
+      for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.className = 'binary-particle';
+        span.textContent = Math.random() > 0.5 ? '1' : '0';
+        span.style.left = `${Math.random() * 96 + 2}vw`;
+        span.style.top = `-20px`;
+        span.style.fontSize = `${Math.floor(Math.random() * 14) + 14}px`;
+        span.style.animationDuration = `${(Math.random() * 1.5 + 2).toFixed(2)}s`;
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 3200);
+      }
+    }
+
+    /* ==========================================================================
+       ФИНАЛЬНОЕ ОКНО ПОБЕДЫ
+       ========================================================================== */
+    function showFinalSuccess() {
+      const accuracy = Math.max(50, Math.round((12 / (12 + gameState.totalMistakes)) * 100));
+      document.getElementById('finalStats').textContent = `ТОЧНОСТЬ ДЕШИФРАЦИИ: ${accuracy}% (Ошибок: ${gameState.totalMistakes})`;
+      document.getElementById('successModal').classList.add('active');
+      spawnBinaryRain(40);
+    }
+
+    function resetGame() {
+      sound.playClick();
+      gameState.hackedNodes.clear();
+      gameState.activeTaskIndex = null;
+      gameState.shields = 3;
+      gameState.totalMistakes = 0;
+      document.getElementById('successModal').classList.remove('active');
+      closeModal();
+      renderGrid();
+    }
+
+    /* ==========================================================================
+       УПРАВЛЕНИЕ: ЗВУК, FULLSCREEN, СБРОС
+       ========================================================================== */
+    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    audioToggleBtn.addEventListener('click', () => {
+      gameState.soundEnabled = !gameState.soundEnabled;
+      document.getElementById('audioIcon').textContent = gameState.soundEnabled ? '🔊' : '🔇';
+      audioToggleBtn.innerHTML = `<span id="audioIcon">${gameState.soundEnabled ? '🔊' : '🔇'}</span> ЗВУК: ${gameState.soundEnabled ? 'ВКЛ' : 'ВЫКЛ'}`;
+      if (gameState.soundEnabled) sound.playClick();
+    });
+
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    fullscreenBtn.addEventListener('click', () => {
+      sound.playClick();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        fullscreenBtn.textContent = '⊡ СВЕРНУТЬ';
+      } else {
+        document.exitFullscreen().catch(() => {});
+        fullscreenBtn.textContent = '⛶ ПОЛНЫЙ ЭКРАН';
+      }
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (confirm('Сбросить текущий прогресс дешифровки?')) {
+        resetGame();
+      }
+    });
+
+    // Старт
+    renderGrid();
+  </script>
+</body>
+</html>
