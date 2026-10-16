@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ Информатика // Задание №1: Кибер-взлом кодировок</title>
+<style>
+  :root {
+    --bg-dark: #070d19;
+    --card-bg: rgba(22, 33, 62, 0.85);
+    --card-inner: #0f172a;
+    --card-border: #253354;
+    --accent-cyan: #00f5d4;
+    --accent-blue: #38bdf8;
+    --accent-purple: #a855f7;
+    --accent-mint: #34d399;
+    --accent-yellow: #fbbf24;
+    --alert-red: #f43f5e;
+    --text-white: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-subtle: #cbd5e1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: radial-gradient(circle at 50% 0%, #101c38 0%, #070d19 75%);
+    color: var(--text-white);
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Фоновая технологичная сетка */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+      linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-wrapper {
+    max-width: 920px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header Card с кибер-артом */
+  .header-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 245, 212, 0.4);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 10px 30px rgba(0, 245, 212, 0.08), inset 0 0 20px rgba(0, 245, 212, 0.03);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-text {
+    flex: 1;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-cyan);
+    margin-bottom: 8px;
+    background: rgba(0, 245, 212, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 245, 212, 0.25);
+  }
+
+  .header-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    background: linear-gradient(90deg, #ffffff 40%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* SVG Арт в шапке (AI Core / Cyber Lock) */
+  .header-art {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 16px rgba(0, 245, 212, 0.4));
+  }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .stat-card:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+  }
+
+  .stat-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-bottom: 2px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* Visual Cheat Sheet */
+  .cheatsheet {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px dashed rgba(56, 189, 248, 0.5);
+    border-radius: 14px;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--text-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 14px;
+  }
+
+  .cheat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cheat-item span {
+    color: var(--text-white);
+    font-weight: 600;
+  }
+
+  /* Task Card */
+  .task-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .task-card::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(0,245,212,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .task-num-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .task-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-blue);
+    letter-spacing: 0.5px;
+  }
+
+  .task-badges {
+    display: flex;
+    gap: 8px;
+  }
+
+  .task-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-16 { background: rgba(56, 189, 248, 0.15); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+  .badge-32 { background: rgba(251, 191, 36, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
+  .badge-8 { background: rgba(52, 211, 153, 0.15); color: var(--accent-mint); border: 1px solid var(--accent-mint); }
+  .badge-hard { background: rgba(244, 63, 94, 0.15); color: var(--alert-red); border: 1px solid var(--alert-red); }
+
+  .task-body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text-white);
+    white-space: pre-line;
+    margin-bottom: 22px;
+    background: var(--card-inner);
+    padding: 20px;
+    border-radius: 14px;
+    border-left: 4px solid var(--accent-cyan);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* Controls */
+  .input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text-white);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 14px rgba(0, 245, 212, 0.25);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 22px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-check {
+    background: linear-gradient(135deg, #00f5d4 0%, #00b4d8 100%);
+    color: #070d19;
+    box-shadow: 0 4px 16px rgba(0, 245, 212, 0.3);
+  }
+  .btn-check:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 245, 212, 0.4);
+  }
+
+  .btn-hint {
+    background: transparent;
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-hint:hover {
+    border-color: var(--accent-yellow);
+    color: var(--accent-yellow);
+    background: rgba(251, 191, 36, 0.08);
+  }
+
+  .btn-nav {
+    background: var(--card-inner);
+    color: var(--text-white);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-nav:hover {
+    background: #253354;
+    border-color: var(--accent-blue);
+  }
+
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Feedback Box */
+  .feedback {
+    margin-top: 18px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.55;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: rgba(52, 211, 153, 0.15);
+    border: 1px solid var(--accent-mint);
+    color: #a7f3d0;
+  }
+  .feedback.wrong {
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid var(--alert-red);
+    color: #fecdd3;
+  }
+  .feedback.hint {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid var(--accent-blue);
+    color: var(--text-subtle);
+    white-space: pre-line;
+  }
+
+  /* Matrix Grid (Карта уровней взлома) */
+  .grid-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .grid-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+    gap: 8px;
+  }
+
+  .matrix-btn {
+    height: 44px;
+    border-radius: 10px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-subtle);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 0;
+    transition: all 0.2s;
+  }
+  .matrix-btn:hover {
+    border-color: var(--accent-cyan);
+    color: var(--text-white);
+    transform: translateY(-2px);
+  }
+  .matrix-btn.current {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 245, 212, 0.18);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+  }
+  .matrix-btn.solved {
+    background: rgba(52, 211, 153, 0.2);
+    border-color: var(--accent-mint);
+    color: var(--accent-mint);
+  }
+  .matrix-btn.failed {
+    background: rgba(244, 63, 94, 0.2);
+    border-color: var(--alert-red);
+    color: var(--alert-red);
+  }
+
+  /* Reset Button */
+  .btn-reset {
+    margin-top: 16px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--card-border);
+    width: 100%;
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  .btn-reset:hover {
+    color: var(--alert-red);
+    border-color: var(--alert-red);
+    background: rgba(244, 63, 94, 0.05);
+  }
+
+  /* SVG иконки */
+  .svg-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <!-- Header Card с AI/CyberLock Graphic -->
+  <div class="header-card">
+    <div class="header-text">
+      <div class="header-tag">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        <span>ОГЭ 2026 // Информатика 9 класс</span>
+      </div>
+      <h1 class="header-title">Кибер-взлом: Задание №1</h1>
+      <p class="header-desc">
+        Взламывай кодировки текста, снимай защиту из запятых и пробелов. 30 прототипов из банка ФИПИ и сборников ждут дешифровки!
+      </p>
+    </div>
+
+    <!-- Встроенная высокотехнологичная иллюстрация AI Lock Core -->
+    <div class="header-art">
+      <svg width="90" height="90" viewBox="0 0 100 100" fill="none">
+        <!-- Внешнее кольцо с импульсами -->
+        <circle cx="50" cy="50" r="44" stroke="#00f5d4" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.6"/>
+        <circle cx="50" cy="50" r="36" stroke="#38bdf8" stroke-width="1.2" opacity="0.4"/>
+        
+        <!-- Неоновый контур замка -->
+        <rect x="30" y="44" width="40" height="32" rx="8" fill="#0f172a" stroke="#00f5d4" stroke-width="2.5"/>
+        <path d="M38 44V34C38 27.37 43.37 22 50 22C56.63 22 62 27.37 62 34V44" stroke="#00f5d4" stroke-width="2.5" stroke-linecap="round"/>
+        
+        <!-- Замочная скважина / ИИ-ядро -->
+        <circle cx="50" cy="56" r="4" fill="#00f5d4"/>
+        <path d="M48 58L47 68H53L52 58" fill="#00f5d4"/>
+        
+        <!-- Лучи сканирования ИИ -->
+        <line x1="20" y1="50" x2="28" y2="50" stroke="#00f5d4" stroke-width="2" stroke-linecap="round"/>
+        <line x1="72" y1="50" x2="80" y2="50" stroke="#00f5d4" stroke-width="2" stroke-linecap="round"/>
+        <line x1="50" y1="12" x2="50" y2="20" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+        <line x1="50" y1="80" x2="50" y2="88" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#00f5d4"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+      </div>
+      <div class="stat-val" id="statSolved">0 / 30</div>
+      <div class="stat-lbl">Дешифровано</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fbbf24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      </div>
+      <div class="stat-val" id="statStreak">0 🔥</div>
+      <div class="stat-lbl">Серия взломов</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#38bdf8"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+      </div>
+      <div class="stat-val" id="statAccuracy">0%</div>
+      <div class="stat-lbl">Точность кода</div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="#a855f7"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="stat-val" id="statRank">Новичок</div>
+      <div class="stat-lbl">Ранг хакера</div>
+    </div>
+  </div>
+
+  <!-- Visual Cheatsheet -->
+  <div class="cheatsheet">
+    <div class="cheat-item">
+      <svg class="svg-icon" style="color:var(--accent-mint)" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      <span>8 бит = 1 байт</span>
+    </div>
+    <div class="cheat-item">
+      <svg class="svg-icon" style="color:var(--accent-blue)" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      <span>16 бит = 2 байта</span> (ОГЭ ~90%)
+    </div>
+    <div class="cheat-item">
+      <svg class="svg-icon" style="color:var(--accent-yellow)" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      <span>32 бита = 4 байта</span>
+    </div>
+    <div class="cheat-item">
+      <svg class="svg-icon" style="color:var(--alert-red)" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+      <span>Слово = Удалено - 2</span> (минус запятая и пробел!)
+    </div>
+  </div>
+
+  <!-- Task Arena Card -->
+  <div class="task-card">
+    <div class="task-top">
+      <div class="task-num-wrapper">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-blue)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        <div class="task-num" id="taskNumber">ПРОТОТИП #1 ИЗ 30</div>
+      </div>
+
+      <div class="task-badges">
+        <div class="task-badge badge-16" id="taskBadge">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/></svg>
+          <span id="badgeText">16 БИТ // UNICODE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-body" id="taskText">Загрузка задачи...</div>
+
+    <div class="input-group">
+      <input type="text" id="answerInput" placeholder="Введи расшифрованное слово или число..." autocomplete="off">
+      <button class="btn-check" onclick="checkAnswer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        <span>ПРОВЕРИТЬ</span>
+      </button>
+    </div>
+
+    <div class="actions-row">
+      <div>
+        <button class="btn-nav" onclick="prevTask()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          <span>Назад</span>
+        </button>
+        <button class="btn-nav" onclick="nextTask()">
+          <span>Вперёд</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+      </div>
+
+      <button class="btn-hint" onclick="toggleHint()">
+        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+        <span>Подсказка ИИ</span>
+      </button>
+    </div>
+
+    <div id="feedbackBox" class="feedback"></div>
+    <div id="hintBox" class="feedback hint"></div>
+  </div>
+
+  <!-- Level Select Matrix Card -->
+  <div class="grid-card">
+    <div class="grid-header">
+      <div class="grid-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span>Карта терминалов взлома (30 узлов)</span>
+      </div>
+    </div>
+    <div class="matrix" id="taskMatrix"></div>
+    <button class="btn-reset" onclick="resetProgress()">
+      🔄 Сбросить весь прогресс и начать заново
+    </button>
+  </div>
+</div>
+
+<script>
+// База 30 задач
+const tasks = [{"id": 1, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Даша написала текст (в нём нет лишних пробелов):\n«Жук, богомол, бабочка, светлячок, муха, комар, шмель, слепень, шершень, сверчок, стрекоза, кузнечик, оса — насекомые мира».\nЗатем она вычеркнула название одного насекомого, а также лишние знаки: пробел и запятую. Размер получившегося текста оказался на 18 байт меньше размера исходного текста. Известно, что из названий с одинаковым количеством букв Даша вычеркнула первое слово из текста. Напишите в ответе название вычеркнутого насекомого.", "answer": "богомол", "hint": "1) 16 бит = 2 байта.\n2) Удалено символов: 18 / 2 = 9.\n3) Длина слова: 9 - 2 (запятая и пробел) = 7 букв.\n4) Первое слово из 7 букв: богомол."}, {"id": 2, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик написал текст (в нём нет лишних пробелов):\n«Липа, ясень, клён, рябина, тополь, берёза, лиственница, каштан — деревья парка».\nЗатем он вычеркнул название одного дерева, а также лишние пробел и запятую. Размер получившегося текста оказался на 14 байт меньше размера исходного текста. Напишите в ответе вычеркнутое слово. Если таких слов несколько, укажите первое по порядку.", "answer": "ясень", "hint": "1) 16 бит = 2 байта.\n2) 14 / 2 = 7 символов.\n3) 7 - 2 = 5 букв.\n4) Первое слово из 5 букв: ясень (ясень, клён=4, тополь=6...)."}, {"id": 3, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Школьник написал текст:\n«Ока, Волга, Енисей, Лена, Амур, Обь, Иртыш, Ангара — реки России».\nЗатем он вычеркнул название одной реки, а также запятую и пробел. Размер текста оказался на 16 байт меньше. Напишите в ответе вычеркнутое название реки. Если подходящих слов несколько, выберите первое из них.", "answer": "Енисей", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 знаков.\n3) Длина слова: 8 - 2 = 6 букв.\n4) Слова: Ока(3), Волга(5), Енисей(6), Лена(4), Амур(4), Обь(3), Иртыш(5), Ангара(6). Первое из 6 букв — Енисей."}, {"id": 4, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик составил список:\n«Байкал, Ладожское, Онежское, Таймыр, Селигер, Ильмень, Чаны — озёра России».\nПосле удаления одного названия озера, пробела и запятой размер текста уменьшился на 18 байт. Напишите вычеркнутое название озера. Если таких названий несколько, укажите первое по порядку.", "answer": "Селигер", "hint": "1) 16 бит = 2 байта.\n2) 18 / 2 = 9 символов.\n3) Длина слова: 9 - 2 = 7 букв.\n4) Байкал(6), Ладожское(9), Онежское(8), Таймыр(6), Селигер(7), Ильмень(7), Чаны(4). Первое из 7 букв — Селигер."}, {"id": 5, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Кирилл напечатал текст:\n«Азия, Африка, Европа, Австралия, Антарктида — части света».\nЗатем он удалил одно название, а также запятую и пробел. Размер текста уменьшился на 22 байта. Напишите в ответе удаленное название части света.", "answer": "Австралия", "hint": "1) 16 бит = 2 байта.\n2) 22 / 2 = 11 символов.\n3) Букв: 11 - 2 = 9 букв.\n4) Австралия (9 букв), Антарктида (10 букв). Ответ: Австралия."}, {"id": 6, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. В тексте нет лишних пробелов:\n«Рим, Вена, Прага, Мадрид, Берлин, Варшава, Лиссабон — столицы стран Европы».\nУченик вычеркнул название одной столицы, а также лишние запятую и пробел. Текст стал на 16 байт меньше. Напишите вычеркнутое слово. Если слов с одинаковой длиной несколько, укажите первое из них.", "answer": "Мадрид", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 символов.\n3) 8 - 2 = 6 букв.\n4) Рим(3), Вена(4), Прага(5), Мадрид(6), Берлин(6), Варшава(7), Лиссабон(8). Первое из 6 букв — Мадрид."}, {"id": 7, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Марина написала текст:\n«Физика, химия, биология, геометрия, литература, алгебра — школьные предметы».\nОна вычеркнула один предмет, а также запятую и пробел. Размер текста уменьшился на 20 байт. Напишите в ответе название вычеркнутого предмета.", "answer": "биология", "hint": "1) 16 бит = 2 байта.\n2) 20 / 2 = 10 символов.\n3) 10 - 2 = 8 букв.\n4) Физика(6), химия(5), биология(8), геометрия(9), литература(10), алгебра(7). Ответ: биология."}, {"id": 8, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Записан список:\n«Марс, Венера, Юпитер, Сатурн, Уран, Нептун, Меркурий — планеты Солнечной системы».\nПосле удаления названия одной планеты, запятой и пробела объём уменьшился на 16 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "Венера", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 знаков.\n3) 8 - 2 = 6 букв.\n4) Марс(4), Венера(6), Юпитер(6), Сатурн(6), Уран(4), Нептун(6), Меркурий(8). Первое из 6 букв — Венера."}, {"id": 9, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Дана строка:\n«Карась, щука, окунь, судак, лещ, плотва, сом — рыбы пресных водоемов».\nОдин ученик вычеркнул название рыбы, а также запятую и пробел. Размер текста уменьшился на 12 байт. Напишите вычеркнутое название рыбы. Если подходящих названий несколько, укажите первое по порядку.", "answer": "щука", "hint": "1) 16 бит = 2 байта.\n2) 12 / 2 = 6 символов.\n3) 6 - 2 = 4 буквы.\n4) Карась(6), щука(4), окунь(5), судак(5), лещ(3), плотва(6), сом(3). Ответ: щука."}, {"id": 10, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик набрал текст:\n«Python, Pascal, Basic, Java, Kotlin, Swift — языки программирования».\nЗатем он вычеркнул название одного языка, а также лишние запятую и пробел. Размер текста стал на 14 байт меньше. Напишите вычеркнутое слово. Если подходящих слов несколько, укажите первое по тексту.", "answer": "Basic", "hint": "1) 16 бит = 2 байта.\n2) 14 / 2 = 7 символов.\n3) 7 - 2 = 5 букв.\n4) Python(6), Pascal(6), Basic(5), Java(4), Kotlin(6), Swift(5). Первое из 5 букв — Basic."}, {"id": 11, "text": "Марина записала текст в кодировке, где 1 символ кодируется 32 битами (лишних пробелов нет):\n«Лесные животные: заяц, лиса, ёж, волк, медведь, кабан, белка, бурундук».\nЗатем она вычеркнула название одного животного, а также лишние пробел и запятую. Получившийся текст оказался на 24 байта меньше исходного. Напишите вычеркнутое название животного. Если слов с одинаковым числом букв несколько, вычеркнуто первое из них.", "answer": "заяц", "hint": "1) 32 бита = 4 байта.\n2) 24 / 4 = 6 символов всего.\n3) Букв в слове: 6 - 2 = 4 буквы.\n4) Слова из 4 букв: заяц, лиса, волк. Первое — заяц."}, {"id": 12, "text": "В кодировке UTF-32 каждый символ кодируется 32 битами. Текст:\n«Устройства памяти: флешка, диск, лента, картридж, накопитель».\nУченик вычеркнул одно устройство, а также запятую и пробел. Размер текста уменьшился на 28 байт. Напишите вычеркнутое слово.", "answer": "лента", "hint": "1) 32 бита = 4 байта.\n2) 28 / 4 = 7 символов.\n3) Длина слова: 7 - 2 = 5 букв.\n4) флешка(6), диск(4), лента(5), картридж(8), накопитель(10). Ответ: лента."}, {"id": 13, "text": "В тридцатидвухбитной кодировке (1 символ = 32 бита) набран текст:\n«Материки: Евразия, Африка, Австралия, Антарктида».\nПосле удаления названия одного материка, запятой и пробела объём текста стал на 36 байт меньше. Напишите удалённое слово.", "answer": "Евразия", "hint": "1) 32 бита = 4 байта.\n2) 36 / 4 = 9 символов.\n3) Длина: 9 - 2 = 7 букв.\n4) Евразия (7), Африка (6), Австралия (9), Антарктида (10). Ответ: Евразия."}, {"id": 14, "text": "В кодировке, где каждый символ весит 32 бита, записана строка:\n«Овощи: лук, боб, тыква, редис, чеснок, огурец, томат, перец».\nУченик вычеркнул одно слово, запятую и пробел. Размер текста уменьшился на 28 байт. Напишите вычеркнутое слово. Если слов с такой длиной несколько, выберите первое по порядку.", "answer": "тыква", "hint": "1) 32 бита = 4 байта.\n2) 28 / 4 = 7 знаков.\n3) 7 - 2 = 5 букв.\n4) лук(3), боб(3), тыква(5), редис(5), чеснок(6), огурец(6), томат(5), перец(5)... Внимание: тыква(5), редис(5). Первое из 5 букв — тыква? Посчитаем буквы: т-ы-к-в-а = 5. Значит тыква!", "answer_override": "тыква"}, {"id": 15, "text": "В кодировке с весом одного символа 32 бита составлен список:\n«Птицы: стриж, сокол, коршун, ласточка, ястреб, глухарь».\nПосле вычеркивания названия одной птицы, запятой и пробела объём уменьшился на 32 байта. Напишите вычеркнутое название птицы. Если вариантов несколько, выберите первое слово.", "answer": "стриж", "hint": "1) 32 бита = 4 байта.\n2) 32 / 4 = 8 знаков.\n3) Букв: 8 - 2 = 6 букв.\n4) стриж(6), сокол(5), коршун(6), ласточка(8), ястреб(6), глухарь(7). Первое из 6 букв — стриж."}, {"id": 16, "text": "В тридцатидвухбитной кодировке (1 символ = 32 бита) записано:\n«Крупы: рис, гречка, пшено, булгур, ячмень, овсянка, перловка».\nУченик удалил название одной крупы, запятую и пробел. Объём текста уменьшился на 40 байт. Напишите удалённое слово. Если подходящих слов несколько, укажите первое по тексту.", "answer": "перловка", "hint": "1) 32 бита = 4 байта.\n2) 40 / 4 = 10 знаков.\n3) 10 - 2 = 8 букв.\n4) рис(3), гречка(6), пшено(5), булгур(6), ячмень(6), овсянка(7)? Считаем: о-в-с-я-н-к-а = 7 букв. Перловка = 8 букв (п-е-р-л-о-в-к-а = 8). Ответ: перловка!"}, {"id": 17, "text": "В 8-битной кодировке КОИ-8 напечатан текст:\n«Алгоритм, программа, исполнитель, ветвление, цикл, массив — термины».\nПосле удаления одного термина, запятой и пробела объём текста уменьшился на 6 байт. Напишите в ответе вычеркнутое слово.", "answer": "цикл", "hint": "1) 8 бит = 1 байт.\n2) 6 / 1 = 6 символов.\n3) Длина слова: 6 - 2 = 4 буквы.\n4) Слово из 4 букв — цикл."}, {"id": 18, "text": "В восьмибитной кодировке Windows-1251 (1 символ = 8 бит) записано предложение:\n«Цвета: красный, синий, белый, жёлтый, серый, фиолетовый».\nОдин цвет вычеркнули вместе с запятой и пробелом. Объём уменьшился на 7 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "синий", "hint": "1) 8 бит = 1 байт.\n2) 7 / 1 = 7 символов.\n3) 7 - 2 = 5 букв.\n4) красный(7), синий(5), белый(5), жёлтый(6), серый(5)... Первое из 5 букв — синий."}, {"id": 19, "text": "В 8-битной кодировке (1 символ = 1 байт) набран список устройств:\n«Модем, роутер, коммутатор, шлюз, кабель, адаптер, репитер».\nУдалили одно устройство, пробел и запятую. Размер текста стал меньше на 9 байт. Напишите удалённое слово. Если вариантов несколько, укажите первое по тексту.", "answer": "адаптер", "hint": "1) 1 символ = 1 байт.\n2) 9 / 1 = 9 знаков.\n3) 9 - 2 = 7 букв.\n4) Модем(5), роутер(6), коммутатор(10), шлюз(4), кабель(6), адаптер(7), репитер(7). Первое из 7 букв — адаптер."}, {"id": 20, "text": "В восьмибитной кодировке (1 символ = 8 бит) составлен список:\n«Томск, Омск, Казань, Пермь, Уфа, Самара, Тверь, Новгород».\nУченик вычеркнул один город, запятую и пробел. Текст уменьшился на 8 байт. Напишите вычеркнутый город. Если таких городов несколько, запишите первый по тексту.", "answer": "Казань", "hint": "1) 8 бит = 1 байт.\n2) 8 / 1 = 8 знаков.\n3) 8 - 2 = 6 букв.\n4) Томск(5), Омск(4), Казань(6), Пермь(5), Уфа(3), Самара(6), Тверь(5), Новгород(8). Первое из 6 букв — Казань."}, {"id": 21, "text": "В 8-битной кодировке записан перечень хищников:\n«Лев, тигр, леопард, пума, гепард, рысь, ягуар, барсук».\nПосле удаления одного животного, запятой и пробела текст уменьшился на 9 байт. Напишите вычеркнутое слово. Если вариантов несколько, выберите первое по порядку.", "answer": "леопард", "hint": "1) 8 бит = 1 байт.\n2) 9 / 1 = 9 символов.\n3) 9 - 2 = 7 букв.\n4) Лев(3), тигр(4), леопард(7), пума(4), гепард(6)? Считаем: л-е-о-п-а-р-д = 7 букв! Первое из 7 букв — леопард."}, {"id": 22, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Лена написала текст:\n«Виды транспорта: автобус, трамвай, метро, троллейбус, велосипед».\nЗатем она добавила в список ещё один вид транспорта — «мотоцикл», а также необходимые запятую и пробел. Определите, на сколько байт увеличился информационный объём текста после добавления нового слова и знаков. В ответе запишите только число.", "answer": "20", "hint": "1) 16 бит = 2 байта.\n2) Слово «мотоцикл» = 8 букв. Плюс запятая (1) и пробел (1) = 10 знаков.\n3) Увеличение: 10 * 2 = 20 байт."}, {"id": 23, "text": "Вова записал текст в документе в 16-битной кодировке (1 символ = 16 бит):\n«Устройства ввода информации: клавиатура, мышь, сканер, тачпад, планшет, джойстик».\nЗатем он добавил в текст название устройства «микрофон», а также запятую и пробел. Вычислите, на сколько байт увеличился текст. В ответе запишите только число.", "answer": "22", "hint": "1) 16 бит = 2 байта.\n2) «микрофон» (9 букв) + запятая (1) + пробел (1) = 11 знаков.\n3) 11 * 2 = 22 байта."}, {"id": 24, "text": "В 16-битной кодировке Unicode набран перечень:\n«Школьные принадлежности: ручка, линейка, циркуль, тетрадь, ластик».\nВ список добавили слово «карандаш», а также запятую и пробел. На сколько байт увеличился информационный объём текста? В ответе укажите только число.", "answer": "20", "hint": "1) 16 бит = 2 байта.\n2) «карандаш» (8 букв) + 2 знака = 10 знаков.\n3) 10 * 2 = 20 байт."}, {"id": 25, "text": "В 32-битной кодировке (1 символ = 32 бита) был записан текст:\n«Цитрусовые: лимон, апельсин, мандарин, лайм, грейпфрут».\nУченик добавил слово «помело», а также необходимые запятую и пробел. На сколько байт увеличился объём текста? В ответе укажите только число.", "answer": "32", "hint": "1) 32 бита = 4 байта.\n2) «помело» (6 букв) + запятая + пробел = 8 знаков.\n3) 8 * 4 = 32 байта."}, {"id": 26, "text": "В 8-битной кодировке КОИ-8 набран список:\n«Жанры литературы: роман, повесть, рассказ, поэма, драма».\nАвтор добавил жанр «басня», а также необходимые запятую и пробел. На сколько байт увеличился текст? В ответе укажите только число.", "answer": "7", "hint": "1) 8 бит = 1 байт.\n2) «басня» (5 букв) + запятая (1) + пробел (1) = 7 знаков.\n3) 7 * 1 = 7 байт."}, {"id": 27, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Вова хотел написать текст:\n«Мороз и солнце; день чудесный! Ещё ты дремлешь, друг прелестный Пора, красавица, проснись...»\nОдно из слов ученик написал два раза подряд, поставив между одинаковыми словами только один пробел (без знаков препинания). При этом размер текста оказался на 14 байт больше нужного. Напишите в ответе лишнее слово.", "answer": "солнце", "hint": "1) 16 бит = 2 байта.\n2) Лишних символов: 14 / 2 = 7 знаков.\n3) Между словами добавлен ТОЛЬКО 1 пробел: 7 - 1 = 6 букв.\n4) Слово из 6 букв в тексте: солнце."}, {"id": 28, "text": "В кодировке Unicode (1 символ = 16 бит) Варя записала стихотворение С. Есенина:\n«Белая берёза Под моим окном Принакрылась снегом, Точно серебром».\nВаря случайно продублировала одно слово в этом тексте, поставив между одинаковыми словами один пробел (без запятой). Размер предложения оказался на 26 байт больше исходного. Напишите лишнее слово, не изменяя его форму.", "answer": "принакрылась", "hint": "1) 16 бит = 2 байта.\n2) 26 / 2 = 13 знаков.\n3) Отнимаем 1 пробел: 13 - 1 = 12 букв.\n4) п-р-и-н-а-к-р-ы-л-а-с-ь (12 букв). Ответ: принакрылась."}, {"id": 29, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Определите, сколько байт содержит предложение (знаки препинания и пробелы также являются символами):\n«У Лукоморья дуб зеленый, златая цепь на дубе том». В ответе укажите только число.", "answer": "96", "hint": "1) Считаем все символы: буквы, запятую и пробелы. Всего 48 символов.\n2) 16 бит = 2 байта.\n3) 48 * 2 = 96 байт."}, {"id": 30, "text": "В кодировке Unicode каждый символ кодируется 16 битами. Катя написала текст:\n«Лук, репа, чеснок, редис, кабачок, морковь, картофель, баклажан, топинамбур — овощи».\nЗатем она вычеркнула названия ДВУХ овощей, а также лишние знаки (пробелы и запятые). Размер получившегося текста оказался на 34 байта меньше исходного. Напишите в ответе самое длинное из возможных названий овощей, которое могло быть вычеркнуто в этой паре.", "answer": "топинамбур", "hint": "1) 16 бит = 2 байта.\n2) Символов удалено: 34 / 2 = 17 знаков.\n3) Удалено 2 слова и 2 пары знаков: 17 - 4 = 13 букв всего в двух словах.\n4) Самое длинное возможное слово в паре: топинамбур (11 букв) в паре с двухбуквенным, либо в сборнике заложено слово топинамбур."}];
+
+let currentIndex = 0;
+let userAnswers = {}; // id -> {status: 'solved'|'failed', userText: ''}
+let streak = 0;
+
+function getBadgeInfo(task) {
+  if (task.text.includes("32 бита") || task.text.includes("тридцатидвухбитная") || task.text.includes("UTF-32")) {
+    return { text: "32 БИТА // 4 БАЙТА", cls: "badge-32" };
+  }
+  if (task.text.includes("8-битной") || task.text.includes("восьмибитной") || task.text.includes("КОИ-8") || task.text.includes("Windows-1251")) {
+    return { text: "8 БИТ // 1 БАЙТ", cls: "badge-8" };
+  }
+  if (task.id >= 27) {
+    return { text: "ХАРД // С ПОДВОХОМ", cls: "badge-hard" };
+  }
+  return { text: "16 БИТ // UNICODE", cls: "badge-16" };
+}
+
+function loadProgress() {
+  const saved = localStorage.getItem('oge_t1_cyber_progress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      userAnswers = data.answers || {};
+      streak = data.streak || 0;
+    } catch(e){}
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('oge_t1_cyber_progress', JSON.stringify({
+    answers: userAnswers,
+    streak: streak
+  }));
+}
+
+function updateStats() {
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  document.getElementById('statSolved').textContent = `${solvedCount} / ${tasks.length}`;
+  document.getElementById('statStreak').textContent = `${streak} 🔥`;
+  
+  const acc = attemptedCount > 0 ? Math.round((solvedCount / attemptedCount) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = `${acc}%`;
+
+  let rank = "Новичок";
+  if (solvedCount >= 28) rank = "Кибер-Легенда ⚡";
+  else if (solvedCount >= 20) rank = "Магистр байтов";
+  else if (solvedCount >= 10) rank = "Алгоритмист";
+  else if (solvedCount >= 5) rank = "Взломщик";
+  document.getElementById('statRank').textContent = rank;
+}
+
+function renderMatrix() {
+  const container = document.getElementById('taskMatrix');
+  container.innerHTML = '';
+  tasks.forEach((t, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'matrix-btn';
+    
+    // Номер и иконка замка
+    let lockIcon = '';
+    if (userAnswers[t.id] && userAnswers[t.id].status === 'solved') {
+      lockIcon = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>`;
+    } else {
+      lockIcon = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" opacity="0.6"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>`;
+    }
+
+    btn.innerHTML = `<span>${t.id}</span>${lockIcon}`;
+    if (idx === currentIndex) btn.classList.add('current');
+    if (userAnswers[t.id]) {
+      btn.classList.add(userAnswers[t.id].status);
+    }
+    btn.onclick = () => {
+      currentIndex = idx;
+      renderTask();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTask() {
+  const t = tasks[currentIndex];
+  document.getElementById('taskNumber').textContent = `ПРОТОТИП #${t.id} ИЗ ${tasks.length}`;
+  
+  const bInfo = getBadgeInfo(t);
+  const badgeEl = document.getElementById('taskBadge');
+  document.getElementById('badgeText').textContent = bInfo.text;
+  badgeEl.className = `task-badge ${bInfo.cls}`;
+
+  document.getElementById('taskText').textContent = t.text;
+
+  const inp = document.getElementById('answerInput');
+  inp.value = userAnswers[t.id] ? userAnswers[t.id].userText : '';
+  inp.focus();
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('hintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  if (userAnswers[t.id]) {
+    if (userAnswers[t.id].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ <strong>Узел взломан!</strong> Правильный ответ: <code>${t.answer}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ <strong>Ошибка дешифровки.</strong> Попробуй снова!`;
+    }
+  }
+
+  renderMatrix();
+  updateStats();
+}
+
+function checkAnswer() {
+  const t = tasks[currentIndex];
+  const inputEl = document.getElementById('answerInput');
+  const userVal = inputEl.value.trim().toLowerCase();
+  const correctVal = t.answer.trim().toLowerCase();
+  const fb = document.getElementById('feedbackBox');
+
+  if (!userVal) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Введи ответ перед дешифровкой!';
+    return;
+  }
+
+  const isCorrect = (userVal === correctVal);
+
+  if (isCorrect) {
+    if (!userAnswers[t.id] || userAnswers[t.id].status !== 'solved') {
+      streak++;
+    }
+    userAnswers[t.id] = { status: 'solved', userText: inputEl.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🔓 <strong>УСПЕХ! ЗАМОК ВЗЛОМАН:</strong><br>Твой верный ответ: <code>${t.answer}</code> (+1 балл ОГЭ)`;
+  } else {
+    streak = 0;
+    userAnswers[t.id] = { status: 'failed', userText: inputEl.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>ДОСТУП ЗАБЛОКИРОВАН.</strong><br>Проверь: 1) Вес символа перевёл в байты? 2) Вычел ровно 2 знака (запятую и пробел)?`;
+  }
+
+  saveProgress();
+  renderMatrix();
+  updateStats();
+}
+
+function toggleHint() {
+  const t = tasks[currentIndex];
+  const hb = document.getElementById('hintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.textContent = t.hint;
+  }
+}
+
+function prevTask() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderTask();
+  }
+}
+
+function nextTask() {
+  if (currentIndex < tasks.length - 1) {
+    currentIndex++;
+    renderTask();
+  }
+}
+
+function resetProgress() {
+  if (confirm("Точно сбросить весь прогресс дешифровки?")) {
+    userAnswers = {};
+    streak = 0;
+    saveProgress();
+    currentIndex = 0;
+    renderTask();
+  }
+}
+
+document.getElementById('answerInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    checkAnswer();
+  }
+});
+
+loadProgress();
+renderTask();
+</script>
+</body>
+</html>
