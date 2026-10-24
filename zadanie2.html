@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ Информатика // Задание №10: Тренажер Крылова и ФИПИ</title>
+<style>
+  :root {
+    --bg-dark: #0a0e17;
+    --card-bg: rgba(20, 27, 45, 0.85);
+    --card-inner: #0f1629;
+    --card-border: #2a3b5c;
+    --accent-emerald: #10b981;
+    --accent-cyan: #06b6d4;
+    --accent-violet: #8b5cf6;
+    --accent-amber: #f59e0b;
+    --alert-rose: #f43f5e;
+    --text-white: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-subtle: #cbd5e1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: radial-gradient(circle at 50% 10%, #1e1b4b 0%, #0a0e17 80%);
+    color: var(--text-white);
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Неоновые линии терминала */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+      radial-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+      linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-wrapper {
+    max-width: 960px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header в стиле Cyber Terminal */
+  .header-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 12px 32px rgba(139, 92, 246, 0.12);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.12);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    margin-bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #ffffff 40%, var(--accent-cyan) 80%, var(--accent-violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Интерактивный виджет степеней двойки */
+  .powers-drawer {
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .power-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .power-item strong {
+    color: var(--accent-emerald);
+  }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-bottom: 2px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* Task Card */
+  .task-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .task-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-violet);
+  }
+
+  .task-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-emerald);
+    border: 1px solid var(--accent-emerald);
+  }
+
+  .task-body {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-white);
+    white-space: pre-line;
+    margin-bottom: 22px;
+    background: var(--card-inner);
+    padding: 22px;
+    border-radius: 14px;
+    border-left: 4px solid var(--accent-violet);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text-white);
+    font-size: 17px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent-violet);
+    box-shadow: 0 0 14px rgba(139, 92, 246, 0.3);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 22px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-check {
+    background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+    color: #070d19;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+  }
+  .btn-check:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  .btn-hint {
+    background: transparent;
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-hint:hover {
+    border-color: var(--accent-amber);
+    color: var(--accent-amber);
+    background: rgba(245, 158, 11, 0.08);
+  }
+
+  .btn-nav {
+    background: var(--card-inner);
+    color: var(--text-white);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-nav:hover {
+    background: #253354;
+    border-color: var(--accent-cyan);
+  }
+
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    display: none;
+    line-height: 1.55;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid var(--accent-emerald);
+    color: #6ee7b7;
+  }
+  .feedback.wrong {
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid var(--alert-rose);
+    color: #fda4af;
+  }
+  .feedback.hint {
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid var(--accent-violet);
+    color: var(--text-subtle);
+    white-space: pre-line;
+  }
+
+  .grid-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .grid-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+    gap: 8px;
+  }
+
+  .matrix-btn {
+    height: 44px;
+    border-radius: 10px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-subtle);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+  .matrix-btn:hover { border-color: var(--accent-emerald); color: #fff; transform: translateY(-2px); }
+  .matrix-btn.current { border-color: var(--accent-cyan); background: rgba(6, 182, 212, 0.2); color: var(--accent-cyan); }
+  .matrix-btn.solved { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+  .matrix-btn.failed { background: rgba(244, 63, 94, 0.2); border-color: var(--alert-rose); color: var(--alert-rose); }
+
+  .btn-reset {
+    margin-top: 16px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--card-border);
+    width: 100%;
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  .btn-reset:hover { color: var(--alert-rose); border-color: var(--alert-rose); }
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <div class="header-card">
+    <div>
+      <div class="header-tag">ФИПИ // СБОРНИК КРЫЛОВА // 9 КЛАСС</div>
+      <h1 class="header-title">Терминал: Системы счисления</h1>
+      <p class="header-desc">
+        Изумрудный тренажер по заданию №10. Переводы чисел, поиск экстремумов, анализ бит и уравнения с основаниями.
+      </p>
+    </div>
+    <div style="font-size: 40px;">⚡</div>
+  </div>
+
+  <!-- Шпаргалка степеней двойки -->
+  <div class="powers-drawer">
+    <div class="power-item">2⁰ = <strong>1</strong></div>
+    <div class="power-item">2¹ = <strong>2</strong></div>
+    <div class="power-item">2² = <strong>4</strong></div>
+    <div class="power-item">2³ = <strong>8</strong></div>
+    <div class="power-item">2⁴ = <strong>16</strong></div>
+    <div class="power-item">2⁵ = <strong>32</strong></div>
+    <div class="power-item">2⁶ = <strong>64</strong></div>
+    <div class="power-item">2⁷ = <strong>128</strong></div>
+    <div class="power-item">2⁸ = <strong>256</strong></div>
+    <div class="power-item">16-ричные: <strong>A=10, B=11, C=12, D=13, E=14, F=15</strong></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="statSolved">0 / 30</div>
+      <div class="stat-lbl">Решено верно</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statStreak">0 🔥</div>
+      <div class="stat-lbl">Серия побед</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statAccuracy">0%</div>
+      <div class="stat-lbl">Точность</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statRank">Новичок</div>
+      <div class="stat-lbl">Ранг бойца</div>
+    </div>
+  </div>
+
+  <!-- Task Box -->
+  <div class="task-card">
+    <div class="task-top">
+      <div class="task-num" id="taskNumber">ПРОТОТИП #1 ИЗ 30</div>
+      <div class="task-badge" id="taskBadge">ЗАДАНИЕ 10</div>
+    </div>
+
+    <div class="task-body" id="taskText">Загрузка задачи...</div>
+
+    <div class="input-group">
+      <input type="text" id="answerInput" placeholder="Введи число (десятичное значение)..." autocomplete="off">
+      <button class="btn-check" onclick="checkAnswer()">ПРОВЕРИТЬ</button>
+    </div>
+
+    <div class="actions-row">
+      <div>
+        <button class="btn-nav" onclick="prevTask()">← Назад</button>
+        <button class="btn-nav" onclick="nextTask()">Вперёд →</button>
+      </div>
+      <button class="btn-hint" onclick="toggleHint()">💡 Решение и подсказка</button>
+    </div>
+
+    <div id="feedbackBox" class="feedback"></div>
+    <div id="hintBox" class="feedback hint"></div>
+  </div>
+
+  <!-- Matrix -->
+  <div class="grid-card">
+    <div class="grid-title">Сетка задач (30 прототипов ФИПИ и Крылова)</div>
+    <div class="matrix" id="taskMatrix"></div>
+    <button class="btn-reset" onclick="resetProgress()">🔄 Сбросить прогресс</button>
+  </div>
+</div>
+
+<script>
+const tasks = [{"id": 1, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных ниже трех чисел, записанных в различных системах счисления, найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления. В ответе укажите только число, основание системы счисления указывать не нужно.\n\n323 (8), D7 (16), 11100000 (2)", "answer": "224", "hint": "1) 323 (8) = 3*64 + 2*8 + 3*1 = 192 + 16 + 3 = 211\n2) D7 (16) = 13*16 + 7 = 208 + 7 = 215\n3) 11100000 (2) = 128 + 64 + 32 = 224\nМаксимум: 224."}, {"id": 2, "type": "Задание 10", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных ниже трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n54 (8), 2D (16), 101100 (2)", "answer": "44", "hint": "1) 54 (8) = 5*8 + 4 = 44\n2) 2D (16) = 2*16 + 13 = 45\n3) 101100 (2) = 32 + 8 + 4 = 44\nМинимум: 44."}, {"id": 3, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных ниже трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n13F (16), 457 (8), 101000100 (2)", "answer": "324", "hint": "1) 13F (16) = 256 + 48 + 15 = 319\n2) 457 (8) = 4*64 + 5*8 + 7 = 256 + 40 + 7 = 303\n3) 101000100 (2) = 256 + 64 + 4 = 324\nМаксимум: 324."}, {"id": 4, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n73 (8), 3A (16), 111011 (2)", "answer": "59", "hint": "1) 73 (8) = 7*8 + 3 = 59\n2) 3A (16) = 3*16 + 10 = 58\n3) 111011 (2) = 32 + 16 + 8 + 2 + 1 = 59\nМаксимум: 59."}, {"id": 5, "type": "Задание 10", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n4B (16), 114 (8), 1001011 (2)", "answer": "75", "hint": "1) 4B (16) = 4*16 + 11 = 75\n2) 114 (8) = 64 + 8 + 4 = 76\n3) 1001011 (2) = 64 + 8 + 2 + 1 = 75\nМинимум: 75."}, {"id": 6, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n101 (8), 42 (16), 1000010 (2)", "answer": "66", "hint": "1) 101 (8) = 64 + 1 = 65\n2) 42 (16) = 4*16 + 2 = 66\n3) 1000010 (2) = 64 + 2 = 66\nМаксимум: 66."}, {"id": 7, "type": "Задание 10", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n170 (8), 77 (16), 1111001 (2)", "answer": "119", "hint": "1) 170 (8) = 64 + 56 = 120\n2) 77 (16) = 7*16 + 7 = 119\n3) 1111001 (2) = 64 + 32 + 16 + 8 + 1 = 121\nМинимум: 119."}, {"id": 8, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n26 (16), 47 (8), 100111 (2)", "answer": "39", "hint": "1) 26 (16) = 32 + 6 = 38\n2) 47 (8) = 32 + 7 = 39\n3) 100111 (2) = 32 + 4 + 2 + 1 = 39\nМаксимум: 39."}, {"id": 9, "type": "Задание 10", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n65 (8), 34 (16), 110101 (2)", "answer": "52", "hint": "1) 65 (8) = 6*8 + 5 = 53\n2) 34 (16) = 3*16 + 4 = 52\n3) 110101 (2) = 32 + 16 + 4 + 1 = 53\nМинимум: 52."}, {"id": 10, "type": "Задание 10", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n5A (16), 133 (8), 1011010 (2)", "answer": "91", "hint": "1) 5A (16) = 5*16 + 10 = 90\n2) 133 (8) = 64 + 24 + 3 = 91\n3) 1011010 (2) = 64 + 16 + 8 + 2 = 90\nМаксимум: 91."}, {"id": 11, "type": "Задание 10", "title": "Значащие нули", "text": "Переведите число 152 из десятичной системы счисления в двоичную. В качестве ответа укажите количество ЗНАЧАЩИХ НУЛЕЙ в полученной записи числа.", "answer": "5", "hint": "152 = 128 + 16 + 8 = 10011000 (2).\nЗначащих нулей: ровно 5."}, {"id": 12, "type": "Задание 10", "title": "Подсчет единиц", "text": "Переведите число 120 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученное число? В ответе укажите только количество единиц.", "answer": "4", "hint": "120 = 64 + 32 + 16 + 8 = 1111000 (2).\nКоличество единиц: 4."}, {"id": 13, "type": "Задание 10", "title": "Значащие нули", "text": "Переведите число 136 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученное число?", "answer": "6", "hint": "136 = 128 + 8 = 10001000 (2).\nЕдиниц: 2, нулей: 6."}, {"id": 14, "type": "Задание 10", "title": "Подсчет единиц", "text": "Переведите число 89 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная двоичная запись?", "answer": "4", "hint": "89 = 64 + 16 + 8 + 1 = 1011001 (2).\nКоличество единиц: 4."}, {"id": 15, "type": "Задание 10", "title": "Значащие нули", "text": "Переведите число 205 из десятичной системы счисления в двоичную систему счисления. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученное число?", "answer": "3", "hint": "205 = 128 + 64 + 8 + 4 + 1 = 11001101 (2).\nВсего 8 разрядов, единиц 5, нулей: 3."}, {"id": 16, "type": "Задание 10", "title": "Триады в двоичную", "text": "Сколько ЕДИНИЦ содержит двоичная запись восьмеричного числа 673 (8)? В ответе укажите только число.", "answer": "7", "hint": "Переводим по триадам:\n6 = 110\n7 = 111\n3 = 011\nИтог: 110111011 (2). Единиц: 2 + 3 + 2 = 7."}, {"id": 17, "type": "Задание 10", "title": "Тетрады в двоичную", "text": "Сколько ЗНАЧАЩИХ НУЛЕЙ содержит двоичная запись шестнадцатеричного числа 2A5 (16)?", "answer": "5", "hint": "2 = 0010 -> 10 (отбрасываем ведущие нули)\nA = 1010\n5 = 0101\nЗапись: 1010100101 (2). Нулей: ровно 5."}, {"id": 18, "type": "Задание 10", "title": "Подсчет единиц", "text": "Переведите число 77 из десятичной системы счисления в двоичную систему счисления. Сколько ЕДИНИЦ содержит полученная запись?", "answer": "4", "hint": "77 = 64 + 8 + 4 + 1 = 1001101 (2).\nЕдиниц: 4."}, {"id": 19, "type": "Задание 10", "title": "Арифметика в разных СС", "text": "Вычислите значение арифметического выражения:\n\n11011111 (2) + 1011 (8) - 111 (16)\n\nВ ответе запишите десятичное число, основание системы счисления указывать не нужно.", "answer": "471", "hint": "1) 11011111 (2) = 223\n2) 1011 (8) = 512 + 8 + 1 = 521\n3) 111 (16) = 256 + 16 + 1 = 273\n223 + 521 - 273 = 471."}, {"id": 20, "type": "Задание 10", "title": "Арифметика в разных СС", "text": "Вычислите значение арифметического выражения в десятичной системе счисления:\n\n101101 (2) + 10 (8) + 101 (16)\n\nВ ответе укажите только число.", "answer": "310", "hint": "1) 101101 (2) = 45\n2) 10 (8) = 8\n3) 101 (16) = 256 + 1 = 257\n45 + 8 + 257 = 310."}, {"id": 21, "type": "Задание 10", "title": "Арифметика в разных СС", "text": "Вычислите значение выражения:\n\n2A (16) + 57 (8) - 110010 (2)\n\nВ ответе запишите десятичное число.", "answer": "39", "hint": "1) 2A (16) = 32 + 10 = 42\n2) 57 (8) = 40 + 7 = 47\n3) 110010 (2) = 32 + 16 + 2 = 50\n42 + 47 - 50 = 39."}, {"id": 22, "type": "Задание 10", "title": "Арифметика в разных СС", "text": "Вычислите значение арифметического выражения:\n\n1110 (2) * 15 (8) - 3C (16)\n\nВ ответе запишите только число в десятичной системе счисления.", "answer": "122", "hint": "1) 1110 (2) = 14\n2) 15 (8) = 13\n3) 3C (16) = 48 + 12 = 60\n14 * 13 - 60 = 182 - 60 = 122."}, {"id": 23, "type": "Задание 10", "title": "Арифметика в разных СС", "text": "Вычислите значение выражения:\n\n74 (8) + 10111 (2) - 2F (16)\n\nВ ответе укажите десятичное число.", "answer": "36", "hint": "1) 74 (8) = 56 + 4 = 60\n2) 10111 (2) = 23\n3) 2F (16) = 32 + 15 = 47\n60 + 23 - 47 = 36."}, {"id": 24, "type": "Задание 10", "title": "Степенные круглые числа", "text": "Вычислите значение выражения в десятичной системе:\n\n100 (16) - 100 (8) - 100 (2)\n\nВ ответе запишите только число.", "answer": "188", "hint": "1) 100 (16) = 16^2 = 256\n2) 100 (8) = 8^2 = 64\n3) 100 (2) = 2^2 = 4\n256 - 64 - 4 = 188."}, {"id": 25, "type": "Задание 10", "title": "Диапазон целых чисел", "text": "Найдите количество целых чисел x, для которых выполняется неравенство:\n\n1011011 (2) < x <= 205 (8)\n\nВ ответе запишите количество чисел.", "answer": "42", "hint": "1) 1011011 (2) = 91\n2) 205 (8) = 128 + 5 = 133\n91 < x <= 133 => 133 - 91 = 42."}, {"id": 26, "type": "Задание 10", "title": "Диапазон целых чисел", "text": "Сколько целых чисел x удовлетворяют условию:\n\n35 (8) <= x < 24 (16)\n\nВ ответе укажите только количество чисел.", "answer": "7", "hint": "1) 35 (8) = 29\n2) 24 (16) = 36\n29 <= x < 36 => 36 - 29 = 7."}, {"id": 27, "type": "Задание 10", "title": "Поиск меньшего порога", "text": "Среди приведенных чисел найдите число, которое МЕНЬШЕ числа 317 (10). В ответе запишите найденное число в десятичной системе счисления:\n\n13F (16), 457 (8), 101000100 (2)", "answer": "303", "hint": "1) 13F (16) = 319\n2) 457 (8) = 303 (меньше 317!)\n3) 101000100 (2) = 324\nОтвет: 303."}, {"id": 28, "type": "Задание 10", "title": "Определение основания", "text": "Число 1322 записано в системе счисления с основанием n (n — натуральное число, большее единицы). Определите НАИМЕНЬШЕЕ возможное значение n.", "answer": "4", "hint": "Старшая цифра в записи числа равна 3. Основание системы всегда строго больше любой используемой цифры: n > 3 => n = 4."}, {"id": 29, "type": "Задание 10", "title": "Пятеричная система", "text": "Переведите число 420 из пятеричной системы счисления в десятичную систему счисления. В ответе запишите только число.", "answer": "110", "hint": "420 (5) = 4*25 + 2*5 + 0 = 100 + 10 = 110."}, {"id": 30, "type": "Задание 10", "title": "Уравнение с основанием", "text": "Решите уравнение:\n\n404 (x) + 1 (x) = 1301 (5)\n\nВ ответе запишите натуральное значение основания x.", "answer": "7", "hint": "1) 1301 (5) = 125 + 75 + 1 = 201\n2) 4*x^2 + 4 + 1 = 201 => 4*x^2 = 196 => x^2 = 49 => x = 7."}];
+
+let currentIndex = 0;
+let userAnswers = {};
+let streak = 0;
+
+function loadProgress() {
+  const saved = localStorage.getItem('oge_t10_krylov_progress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      userAnswers = data.answers || {};
+      streak = data.streak || 0;
+    } catch(e){}
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('oge_t10_krylov_progress', JSON.stringify({
+    answers: userAnswers,
+    streak: streak
+  }));
+}
+
+function updateStats() {
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  document.getElementById('statSolved').textContent = `${solvedCount} / ${tasks.length}`;
+  document.getElementById('statStreak').textContent = `${streak} 🔥`;
+  const acc = attemptedCount > 0 ? Math.round((solvedCount / attemptedCount) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = `${acc}%`;
+
+  let rank = "Новичок";
+  if (solvedCount >= 28) rank = "Магистр Счислений ⚡";
+  else if (solvedCount >= 20) rank = "Архитектор Логики";
+  else if (solvedCount >= 10) rank = "Алгоритмист";
+  else if (solvedCount >= 5) rank = "Юниор";
+  document.getElementById('statRank').textContent = rank;
+}
+
+function renderMatrix() {
+  const container = document.getElementById('taskMatrix');
+  container.innerHTML = '';
+  tasks.forEach((t, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'matrix-btn';
+    btn.textContent = t.id;
+    if (idx === currentIndex) btn.classList.add('current');
+    if (userAnswers[t.id]) {
+      btn.classList.add(userAnswers[t.id].status);
+    }
+    btn.onclick = () => {
+      currentIndex = idx;
+      renderTask();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTask() {
+  const t = tasks[currentIndex];
+  document.getElementById('taskNumber').textContent = `ПРОТОТИП #${t.id} ИЗ ${tasks.length} // ${t.title}`;
+  document.getElementById('taskText').textContent = t.text;
+
+  const inp = document.getElementById('answerInput');
+  inp.value = userAnswers[t.id] ? userAnswers[t.id].userText : '';
+  inp.focus();
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('hintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  if (userAnswers[t.id]) {
+    if (userAnswers[t.id].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${t.answer}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Проверь вычисления и попробуй снова!`;
+    }
+  }
+
+  renderMatrix();
+  updateStats();
+}
+
+function checkAnswer() {
+  const t = tasks[currentIndex];
+  const inputEl = document.getElementById('answerInput');
+  const userVal = inputEl.value.trim().toLowerCase();
+  const correctVal = t.answer.trim().toLowerCase();
+  const fb = document.getElementById('feedbackBox');
+
+  if (!userVal) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Введи ответ перед проверкой!';
+    return;
+  }
+
+  if (userVal === correctVal) {
+    if (!userAnswers[t.id] || userAnswers[t.id].status !== 'solved') {
+      streak++;
+    }
+    userAnswers[t.id] = { status: 'solved', userText: inputEl.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Отлично, ответ верный!</strong> (+1 балл ОГЭ)`;
+  } else {
+    streak = 0;
+    userAnswers[t.id] = { status: 'failed', userText: inputEl.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Обрати внимание на нулевые степени или шестнадцатеричные буквы!`;
+  }
+
+  saveProgress();
+  renderMatrix();
+  updateStats();
+}
+
+function toggleHint() {
+  const t = tasks[currentIndex];
+  const hb = document.getElementById('hintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.textContent = t.hint;
+  }
+}
+
+function prevTask() {
+  if (currentIndex > 0) { currentIndex--; renderTask(); }
+}
+function nextTask() {
+  if (currentIndex < tasks.length - 1) { currentIndex++; renderTask(); }
+}
+
+function resetProgress() {
+  if (confirm("Точно сбросить прогресс?")) {
+    userAnswers = {};
+    streak = 0;
+    saveProgress();
+    currentIndex = 0;
+    renderTask();
+  }
+}
+
+document.getElementById('answerInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { checkAnswer(); }
+});
+
+loadProgress();
+renderTask();
+</script>
+</body>
+</html>
