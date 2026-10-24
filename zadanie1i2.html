@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ Спринт // Задания №1 и №10: Двойной удар</title>
+<style>
+  :root {
+    --bg-dark: #080a12;
+    --card-bg: rgba(26, 23, 48, 0.88);
+    --card-inner: #110e24;
+    --card-border: #3b336a;
+    --accent-gold: #f59e0b;
+    --accent-cyan: #06b6d4;
+    --accent-pink: #ec4899;
+    --accent-emerald: #10b981;
+    --alert-red: #ef4444;
+    --text-white: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-subtle: #cbd5e1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: radial-gradient(circle at 50% 0%, #2a1b4e 0%, #080a12 85%);
+    color: var(--text-white);
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+      linear-gradient(rgba(236, 72, 153, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-wrapper {
+    max-width: 960px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header Card */
+  .header-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(236, 72, 153, 0.4);
+    border-radius: 20px;
+    padding: 24px 28px;
+    box-shadow: 0 12px 36px rgba(236, 72, 153, 0.15);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-gold);
+    background: rgba(245, 158, 11, 0.12);
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    margin-bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    background: linear-gradient(90deg, #ffffff 30%, var(--accent-pink) 70%, var(--accent-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Stats Bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-bottom: 2px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* Two Pills Cheatsheet */
+  .pills-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .pill {
+    background: var(--card-inner);
+    border-radius: 14px;
+    padding: 12px 18px;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+  .pill-1 { border-color: rgba(6, 182, 212, 0.5); }
+  .pill-10 { border-color: rgba(236, 72, 153, 0.5); }
+  .pill strong { color: var(--text-white); }
+
+  /* Task Arena */
+  .task-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    position: relative;
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .task-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-gold);
+  }
+
+  .task-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-t1 {
+    background: rgba(6, 182, 212, 0.18);
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+  }
+  .badge-t10 {
+    background: rgba(236, 72, 153, 0.18);
+    color: var(--accent-pink);
+    border: 1px solid var(--accent-pink);
+  }
+
+  .task-body {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-white);
+    white-space: pre-line;
+    margin-bottom: 22px;
+    background: var(--card-inner);
+    padding: 22px;
+    border-radius: 14px;
+    border-left: 4px solid var(--accent-gold);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text-white);
+    font-size: 17px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 22px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-check {
+    background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+  }
+  .btn-check:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  .btn-hint {
+    background: transparent;
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-hint:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.08);
+  }
+
+  .btn-nav {
+    background: var(--card-inner);
+    color: var(--text-white);
+    border: 1px solid var(--card-border);
+    padding: 12px 18px;
+  }
+  .btn-nav:hover {
+    background: #251e44;
+    border-color: var(--accent-pink);
+  }
+
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feedback {
+    margin-top: 18px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    display: none;
+    line-height: 1.55;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid var(--accent-emerald);
+    color: #6ee7b7;
+  }
+  .feedback.wrong {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid var(--alert-red);
+    color: #fca5a5;
+  }
+  .feedback.hint {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid var(--accent-gold);
+    color: var(--text-subtle);
+    white-space: pre-line;
+  }
+
+  .grid-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .grid-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+    gap: 8px;
+  }
+
+  .matrix-btn {
+    height: 44px;
+    border-radius: 10px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-subtle);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+  .matrix-btn:hover { border-color: var(--accent-gold); color: #fff; transform: translateY(-2px); }
+  .matrix-btn.current { border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); }
+  .matrix-btn.solved { background: rgba(16, 185, 129, 0.2); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+  .matrix-btn.failed { background: rgba(239, 68, 68, 0.2); border-color: var(--alert-red); color: var(--alert-red); }
+
+  .btn-reset {
+    margin-top: 16px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--card-border);
+    width: 100%;
+    padding: 12px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  .btn-reset:hover { color: var(--alert-red); border-color: var(--alert-red); }
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <div class="header-card">
+    <div>
+      <div class="header-tag">КОМБИНИРОВАННЫЙ СПРИНТ // ОГЭ 2026</div>
+      <h1 class="header-title">Спринт: Задания №1 и №10</h1>
+      <p class="header-desc">
+        Комплексная тренировка двух базовых тем экзамена: чередование задач на кодирование текста и перевод систем счисления.
+      </p>
+    </div>
+    <div style="font-size: 44px;">🚀</div>
+  </div>
+
+  <!-- Двойная шпаргалка -->
+  <div class="pills-bar">
+    <div class="pill pill-1">
+      <strong>🔹 ЗАДАНИЕ 1 (ТЕКСТ):</strong><br>
+      • 16 бит = 2 байта, 32 бита = 4 байта.<br>
+      • Вычеркнули слово: <strong>-2 знака</strong> (запятая + пробел).
+    </div>
+    <div class="pill pill-10">
+      <strong>🔹 ЗАДАНИЕ 10 (СИСТЕМЫ):</strong><br>
+      • Степени справа налево с 0: <strong>q⁰ = 1</strong>.<br>
+      • Буквы 16-ричной: <strong>A=10, B=11, C=12, D=13, E=14, F=15</strong>.
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="statSolved">0 / 30</div>
+      <div class="stat-lbl">Решено верно</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statStreak">0 🔥</div>
+      <div class="stat-lbl">Серия побед</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statAccuracy">0%</div>
+      <div class="stat-lbl">Точность</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statRank">Новичок</div>
+      <div class="stat-lbl">Ранг бойца</div>
+    </div>
+  </div>
+
+  <!-- Task Arena -->
+  <div class="task-card">
+    <div class="task-top">
+      <div class="task-num" id="taskNumber">ЗАДАЧА #1 ИЗ 30</div>
+      <div class="task-badge badge-t1" id="taskBadge">ЗАДАНИЕ 1</div>
+    </div>
+
+    <div class="task-body" id="taskText">Загрузка задачи...</div>
+
+    <div class="input-group">
+      <input type="text" id="answerInput" placeholder="Введи ответ (слово или число)..." autocomplete="off">
+      <button class="btn-check" onclick="checkAnswer()">ПРОВЕРИТЬ</button>
+    </div>
+
+    <div class="actions-row">
+      <div>
+        <button class="btn-nav" onclick="prevTask()">← Назад</button>
+        <button class="btn-nav" onclick="nextTask()">Вперёд →</button>
+      </div>
+      <button class="btn-hint" onclick="toggleHint()">💡 Подсказка</button>
+    </div>
+
+    <div id="feedbackBox" class="feedback"></div>
+    <div id="hintBox" class="feedback hint"></div>
+  </div>
+
+  <!-- Matrix -->
+  <div class="grid-card">
+    <div class="grid-title">Карта спринта (30 смешанных задач: нечетные — №1, четные — №10)</div>
+    <div class="matrix" id="taskMatrix"></div>
+    <button class="btn-reset" onclick="resetProgress()">🔄 Сбросить весь прогресс</button>
+  </div>
+</div>
+
+<script>
+const tasks = [{"id": 1, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Даша написала текст (в нём нет лишних пробелов):\n«Жук, богомол, бабочка, светлячок, муха, комар, шмель, слепень, шершень, сверчок, стрекоза, кузнечик, оса — насекомые мира».\nЗатем она вычеркнула название одного насекомого, а также лишние знаки: пробел и запятую. Размер получившегося текста оказался на 18 байт меньше размера исходного текста. Известно, что из названий с одинаковым количеством букв Даша вычеркнула первое слово из текста. Напишите в ответе название вычеркнутого насекомого.", "answer": "богомол", "hint": "1) 16 бит = 2 байта.\n2) Удалено символов: 18 / 2 = 9.\n3) Длина слова: 9 - 2 (запятая и пробел) = 7 букв.\n4) Первое слово из 7 букв: богомол.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 2, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных ниже трех чисел, записанных в различных системах счисления, найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления. В ответе укажите только число, основание системы счисления указывать не нужно.\n\n323 (8), D7 (16), 11100000 (2)", "answer": "224", "hint": "1) 323 (8) = 3*64 + 2*8 + 3*1 = 192 + 16 + 3 = 211\n2) D7 (16) = 13*16 + 7 = 208 + 7 = 215\n3) 11100000 (2) = 128 + 64 + 32 = 224\nМаксимум: 224."}, {"id": 3, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик написал текст (в нём нет лишних пробелов):\n«Липа, ясень, клён, рябина, тополь, берёза, лиственница, каштан — деревья парка».\nЗатем он вычеркнул название одного дерева, а также лишние пробел и запятую. Размер получившегося текста оказался на 14 байт меньше размера исходного текста. Напишите в ответе вычеркнутое слово. Если таких слов несколько, укажите первое по порядку.", "answer": "ясень", "hint": "1) 16 бит = 2 байта.\n2) 14 / 2 = 7 символов.\n3) 7 - 2 = 5 букв.\n4) Первое слово из 5 букв: ясень (ясень, клён=4, тополь=6...).", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 4, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных ниже трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n54 (8), 2D (16), 101100 (2)", "answer": "44", "hint": "1) 54 (8) = 5*8 + 4 = 44\n2) 2D (16) = 2*16 + 13 = 45\n3) 101100 (2) = 32 + 8 + 4 = 44\nМинимум: 44."}, {"id": 5, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Школьник написал текст:\n«Ока, Волга, Енисей, Лена, Амур, Обь, Иртыш, Ангара — реки России».\nЗатем он вычеркнул название одной реки, а также запятую и пробел. Размер текста оказался на 16 байт меньше. Напишите в ответе вычеркнутое название реки. Если подходящих слов несколько, выберите первое из них.", "answer": "Енисей", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 знаков.\n3) Длина слова: 8 - 2 = 6 букв.\n4) Слова: Ока(3), Волга(5), Енисей(6), Лена(4), Амур(4), Обь(3), Иртыш(5), Ангара(6). Первое из 6 букв — Енисей.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 6, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных ниже трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n13F (16), 457 (8), 101000100 (2)", "answer": "324", "hint": "1) 13F (16) = 256 + 48 + 15 = 319\n2) 457 (8) = 4*64 + 5*8 + 7 = 256 + 40 + 7 = 303\n3) 101000100 (2) = 256 + 64 + 4 = 324\nМаксимум: 324."}, {"id": 7, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик составил список:\n«Байкал, Ладожское, Онежское, Таймыр, Селигер, Ильмень, Чаны — озёра России».\nПосле удаления одного названия озера, пробела и запятой размер текста уменьшился на 18 байт. Напишите вычеркнутое название озера. Если таких названий несколько, укажите первое по порядку.", "answer": "Селигер", "hint": "1) 16 бит = 2 байта.\n2) 18 / 2 = 9 символов.\n3) Длина слова: 9 - 2 = 7 букв.\n4) Байкал(6), Ладожское(9), Онежское(8), Таймыр(6), Селигер(7), Ильмень(7), Чаны(4). Первое из 7 букв — Селигер.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 8, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n73 (8), 3A (16), 111011 (2)", "answer": "59", "hint": "1) 73 (8) = 7*8 + 3 = 59\n2) 3A (16) = 3*16 + 10 = 58\n3) 111011 (2) = 32 + 16 + 8 + 2 + 1 = 59\nМаксимум: 59."}, {"id": 9, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Кирилл напечатал текст:\n«Азия, Африка, Европа, Австралия, Антарктида — части света».\nЗатем он удалил одно название, а также запятую и пробел. Размер текста уменьшился на 22 байта. Напишите в ответе удаленное название части света.", "answer": "Австралия", "hint": "1) 16 бит = 2 байта.\n2) 22 / 2 = 11 символов.\n3) Букв: 11 - 2 = 9 букв.\n4) Австралия (9 букв), Антарктида (10 букв). Ответ: Австралия.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 10, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n4B (16), 114 (8), 1001011 (2)", "answer": "75", "hint": "1) 4B (16) = 4*16 + 11 = 75\n2) 114 (8) = 64 + 8 + 4 = 76\n3) 1001011 (2) = 64 + 8 + 2 + 1 = 75\nМинимум: 75."}, {"id": 11, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. В тексте нет лишних пробелов:\n«Рим, Вена, Прага, Мадрид, Берлин, Варшава, Лиссабон — столицы стран Европы».\nУченик вычеркнул название одной столицы, а также лишние запятую и пробел. Текст стал на 16 байт меньше. Напишите вычеркнутое слово. Если слов с одинаковой длиной несколько, укажите первое из них.", "answer": "Мадрид", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 символов.\n3) 8 - 2 = 6 букв.\n4) Рим(3), Вена(4), Прага(5), Мадрид(6), Берлин(6), Варшава(7), Лиссабон(8). Первое из 6 букв — Мадрид.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 12, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n101 (8), 42 (16), 1000010 (2)", "answer": "66", "hint": "1) 101 (8) = 64 + 1 = 65\n2) 42 (16) = 4*16 + 2 = 66\n3) 1000010 (2) = 64 + 2 = 66\nМаксимум: 66."}, {"id": 13, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Марина написала текст:\n«Физика, химия, биология, геометрия, литература, алгебра — школьные предметы».\nОна вычеркнула один предмет, а также запятую и пробел. Размер текста уменьшился на 20 байт. Напишите в ответе название вычеркнутого предмета.", "answer": "биология", "hint": "1) 16 бит = 2 байта.\n2) 20 / 2 = 10 символов.\n3) 10 - 2 = 8 букв.\n4) Физика(6), химия(5), биология(8), геометрия(9), литература(10), алгебра(7). Ответ: биология.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 14, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:\n\n170 (8), 77 (16), 1111001 (2)", "answer": "119", "hint": "1) 170 (8) = 64 + 56 = 120\n2) 77 (16) = 7*16 + 7 = 119\n3) 1111001 (2) = 64 + 32 + 16 + 8 + 1 = 121\nМинимум: 119."}, {"id": 15, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Записан список:\n«Марс, Венера, Юпитер, Сатурн, Уран, Нептун, Меркурий — планеты Солнечной системы».\nПосле удаления названия одной планеты, запятой и пробела объём уменьшился на 16 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "Венера", "hint": "1) 16 бит = 2 байта.\n2) 16 / 2 = 8 знаков.\n3) 8 - 2 = 6 букв.\n4) Марс(4), Венера(6), Юпитер(6), Сатурн(6), Уран(4), Нептун(6), Меркурий(8). Первое из 6 букв — Венера.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 16, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n26 (16), 47 (8), 100111 (2)", "answer": "39", "hint": "1) 26 (16) = 32 + 6 = 38\n2) 47 (8) = 32 + 7 = 39\n3) 100111 (2) = 32 + 4 + 2 + 1 = 39\nМаксимум: 39."}, {"id": 17, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Дана строка:\n«Карась, щука, окунь, судак, лещ, плотва, сом — рыбы пресных водоемов».\nОдин ученик вычеркнул название рыбы, а также запятую и пробел. Размер текста уменьшился на 12 байт. Напишите вычеркнутое название рыбы. Если подходящих названий несколько, укажите первое по порядку.", "answer": "щука", "hint": "1) 16 бит = 2 байта.\n2) 12 / 2 = 6 символов.\n3) 6 - 2 = 4 буквы.\n4) Карась(6), щука(4), окунь(5), судак(5), лещ(3), плотва(6), сом(3). Ответ: щука.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 18, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Минимум", "text": "Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n65 (8), 34 (16), 110101 (2)", "answer": "52", "hint": "1) 65 (8) = 6*8 + 5 = 53\n2) 34 (16) = 3*16 + 4 = 52\n3) 110101 (2) = 32 + 16 + 4 + 1 = 53\nМинимум: 52."}, {"id": 19, "text": "В одной из кодировок Unicode каждый символ кодируется 16 битами. Ученик набрал текст:\n«Python, Pascal, Basic, Java, Kotlin, Swift — языки программирования».\nЗатем он вычеркнул название одного языка, а также лишние запятую и пробел. Размер текста стал на 14 байт меньше. Напишите вычеркнутое слово. Если подходящих слов несколько, укажите первое по тексту.", "answer": "Basic", "hint": "1) 16 бит = 2 байта.\n2) 14 / 2 = 7 символов.\n3) 7 - 2 = 5 букв.\n4) Python(6), Pascal(6), Basic(5), Java(4), Kotlin(6), Swift(5). Первое из 5 букв — Basic.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 20, "type": "Задание 10 (Системы)", "title": "Сравнение чисел // Максимум", "text": "Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:\n\n5A (16), 133 (8), 1011010 (2)", "answer": "91", "hint": "1) 5A (16) = 5*16 + 10 = 90\n2) 133 (8) = 64 + 24 + 3 = 91\n3) 1011010 (2) = 64 + 16 + 8 + 2 = 90\nМаксимум: 91."}, {"id": 21, "text": "Марина записала текст в кодировке, где 1 символ кодируется 32 битами (лишних пробелов нет):\n«Лесные животные: заяц, лиса, ёж, волк, медведь, кабан, белка, бурундук».\nЗатем она вычеркнула название одного животного, а также лишние пробел и запятую. Получившийся текст оказался на 24 байта меньше исходного. Напишите вычеркнутое название животного. Если слов с одинаковым числом букв несколько, вычеркнуто первое из них.", "answer": "заяц", "hint": "1) 32 бита = 4 байта.\n2) 24 / 4 = 6 символов всего.\n3) Букв в слове: 6 - 2 = 4 буквы.\n4) Слова из 4 букв: заяц, лиса, волк. Первое — заяц.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 22, "type": "Задание 10 (Системы)", "title": "Значащие нули", "text": "Переведите число 152 из десятичной системы счисления в двоичную. В качестве ответа укажите количество ЗНАЧАЩИХ НУЛЕЙ в полученной записи числа.", "answer": "5", "hint": "152 = 128 + 16 + 8 = 10011000 (2).\nЗначащих нулей: ровно 5."}, {"id": 23, "text": "В кодировке UTF-32 каждый символ кодируется 32 битами. Текст:\n«Устройства памяти: флешка, диск, лента, картридж, накопитель».\nУченик вычеркнул одно устройство, а также запятую и пробел. Размер текста уменьшился на 28 байт. Напишите вычеркнутое слово.", "answer": "лента", "hint": "1) 32 бита = 4 байта.\n2) 28 / 4 = 7 символов.\n3) Длина слова: 7 - 2 = 5 букв.\n4) флешка(6), диск(4), лента(5), картридж(8), накопитель(10). Ответ: лента.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 24, "type": "Задание 10 (Системы)", "title": "Подсчет единиц", "text": "Переведите число 120 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученное число? В ответе укажите только количество единиц.", "answer": "4", "hint": "120 = 64 + 32 + 16 + 8 = 1111000 (2).\nКоличество единиц: 4."}, {"id": 25, "text": "В тридцатидвухбитной кодировке (1 символ = 32 бита) набран текст:\n«Материки: Евразия, Африка, Австралия, Антарктида».\nПосле удаления названия одного материка, запятой и пробела объём текста стал на 36 байт меньше. Напишите удалённое слово.", "answer": "Евразия", "hint": "1) 32 бита = 4 байта.\n2) 36 / 4 = 9 символов.\n3) Длина: 9 - 2 = 7 букв.\n4) Евразия (7), Африка (6), Австралия (9), Антарктида (10). Ответ: Евразия.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 26, "type": "Задание 10 (Системы)", "title": "Значащие нули", "text": "Переведите число 136 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученное число?", "answer": "6", "hint": "136 = 128 + 8 = 10001000 (2).\nЕдиниц: 2, нулей: 6."}, {"id": 27, "text": "В кодировке, где каждый символ весит 32 бита, записана строка:\n«Овощи: лук, боб, тыква, редис, чеснок, огурец, томат, перец».\nУченик вычеркнул одно слово, запятую и пробел. Размер текста уменьшился на 28 байт. Напишите вычеркнутое слово. Если слов с такой длиной несколько, выберите первое по порядку.", "answer": "тыква", "hint": "1) 32 бита = 4 байта.\n2) 28 / 4 = 7 знаков.\n3) 7 - 2 = 5 букв.\n4) лук(3), боб(3), тыква(5), редис(5), чеснок(6), огурец(6), томат(5), перец(5)... Внимание: тыква(5), редис(5). Первое из 5 букв — тыква? Посчитаем буквы: т-ы-к-в-а = 5. Значит тыква!", "answer_override": "тыква", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 28, "type": "Задание 10 (Системы)", "title": "Подсчет единиц", "text": "Переведите число 89 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная двоичная запись?", "answer": "4", "hint": "89 = 64 + 16 + 8 + 1 = 1011001 (2).\nКоличество единиц: 4."}, {"id": 29, "text": "В кодировке с весом одного символа 32 бита составлен список:\n«Птицы: стриж, сокол, коршун, ласточка, ястреб, глухарь».\nПосле вычеркивания названия одной птицы, запятой и пробела объём уменьшился на 32 байта. Напишите вычеркнутое название птицы. Если вариантов несколько, выберите первое слово.", "answer": "коршун", "hint": "1) 32 бита = 4 байта.\n2) 32 / 4 = 8 знаков.\n3) Длина слова: 8 - 2 = 6 букв.\n4) стриж(5), сокол(5), коршун(6), ласточка(8), ястреб(6), глухарь(7). Первое из 6 букв — коршун.", "type": "Задание 1 (Текст)", "title": "Измерение объема текста"}, {"id": 30, "type": "Задание 10 (Системы)", "title": "Значащие нули", "text": "Переведите число 205 из десятичной системы счисления в двоичную систему счисления. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученное число?", "answer": "3", "hint": "205 = 128 + 64 + 8 + 4 + 1 = 11001101 (2).\nВсего 8 разрядов, единиц 5, нулей: 3."}];
+
+let currentIndex = 0;
+let userAnswers = {};
+let streak = 0;
+
+function loadProgress() {
+  const saved = localStorage.getItem('oge_sprint_1_10_progress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      userAnswers = data.answers || {};
+      streak = data.streak || 0;
+    } catch(e){}
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('oge_sprint_1_10_progress', JSON.stringify({
+    answers: userAnswers,
+    streak: streak
+  }));
+}
+
+function updateStats() {
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  document.getElementById('statSolved').textContent = `${solvedCount} / ${tasks.length}`;
+  document.getElementById('statStreak').textContent = `${streak} 🔥`;
+  const acc = attemptedCount > 0 ? Math.round((solvedCount / attemptedCount) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = `${acc}%`;
+
+  let rank = "Новичок";
+  if (solvedCount >= 28) rank = "Магистр ОГЭ 🚀";
+  else if (solvedCount >= 20) rank = "Универсальный Хакер";
+  else if (solvedCount >= 10) rank = "Алгоритмист";
+  else if (solvedCount >= 5) rank = "Спринтер";
+  document.getElementById('statRank').textContent = rank;
+}
+
+function renderMatrix() {
+  const container = document.getElementById('taskMatrix');
+  container.innerHTML = '';
+  tasks.forEach((t, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'matrix-btn';
+    btn.textContent = t.id;
+    if (idx === currentIndex) btn.classList.add('current');
+    if (userAnswers[t.id]) {
+      btn.classList.add(userAnswers[t.id].status);
+    }
+    btn.onclick = () => {
+      currentIndex = idx;
+      renderTask();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTask() {
+  const t = tasks[currentIndex];
+  document.getElementById('taskNumber').textContent = `СПРИНТ #${t.id} ИЗ ${tasks.length} // ${t.title}`;
+  
+  const badgeEl = document.getElementById('taskBadge');
+  if (t.type.includes("Задание 1")) {
+    badgeEl.textContent = "ЗАДАНИЕ 1 // ТЕКСТ";
+    badgeEl.className = "task-badge badge-t1";
+  } else {
+    badgeEl.textContent = "ЗАДАНИЕ 10 // СИСТЕМЫ";
+    badgeEl.className = "task-badge badge-t10";
+  }
+
+  document.getElementById('taskText').textContent = t.text;
+
+  const inp = document.getElementById('answerInput');
+  inp.value = userAnswers[t.id] ? userAnswers[t.id].userText : '';
+  inp.focus();
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('hintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  if (userAnswers[t.id]) {
+    if (userAnswers[t.id].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${t.answer}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Попробуй ещё раз!`;
+    }
+  }
+
+  renderMatrix();
+  updateStats();
+}
+
+function checkAnswer() {
+  const t = tasks[currentIndex];
+  const inputEl = document.getElementById('answerInput');
+  const userVal = inputEl.value.trim().toLowerCase();
+  const correctVal = t.answer.trim().toLowerCase();
+  const fb = document.getElementById('feedbackBox');
+
+  if (!userVal) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Введи ответ перед проверкой!';
+    return;
+  }
+
+  if (userVal === correctVal) {
+    if (!userAnswers[t.id] || userAnswers[t.id].status !== 'solved') {
+      streak++;
+    }
+    userAnswers[t.id] = { status: 'solved', userText: inputEl.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Верно!</strong> Твой ответ: <code>${t.answer}</code> (+1 первичный балл ОГЭ)`;
+  } else {
+    streak = 0;
+    userAnswers[t.id] = { status: 'failed', userText: inputEl.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Проверь единицы измерения или разряды степеней!`;
+  }
+
+  saveProgress();
+  renderMatrix();
+  updateStats();
+}
+
+function toggleHint() {
+  const t = tasks[currentIndex];
+  const hb = document.getElementById('hintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.textContent = t.hint;
+  }
+}
+
+function prevTask() {
+  if (currentIndex > 0) { currentIndex--; renderTask(); }
+}
+function nextTask() {
+  if (currentIndex < tasks.length - 1) { currentIndex++; renderTask(); }
+}
+
+function resetProgress() {
+  if (confirm("Точно сбросить весь прогресс спринта?")) {
+    userAnswers = {};
+    streak = 0;
+    saveProgress();
+    currentIndex = 0;
+    renderTask();
+  }
+}
+
+document.getElementById('answerInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { checkAnswer(); }
+});
+
+loadProgress();
+renderTask();
+</script>
+</body>
+</html>
