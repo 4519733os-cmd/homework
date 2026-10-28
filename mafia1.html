@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Детективное бюро Логик-Сити: Охота на Мафию // 8 класс</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,800;0,900;1,600&family=Special+Elite&family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --noir-bg: #0d0c0b;
+      --desk-wood: #181310;
+      --paper-cream: #f4ecd8;
+      --paper-dark: #e8dcc0;
+      --ink-black: #1a1714;
+      --stamp-red: #b91c1c;
+      --stamp-blue: #1d4ed8;
+      --stamp-green: #15803d;
+      --lamp-gold: #fbbf24;
+    }
+
+    body {
+      background-color: var(--noir-bg);
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(251, 191, 36, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 10% 90%, rgba(0, 0, 0, 0.9) 0%, transparent 50%),
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 2px);
+      color: #e5e5e5;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-noir-title { font-family: 'Playfair Display', serif; }
+    .font-typewriter { font-family: 'Courier Prime', monospace; }
+    .font-stamp { font-family: 'Special Elite', cursive; }
+
+    /* Нуарный свет лампы */
+    .lamp-glow {
+      box-shadow: 0 0 70px rgba(245, 158, 11, 0.18), inset 0 0 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Эффект старой бумаги досье */
+    .dossier-paper {
+      background-color: var(--paper-cream);
+      background-image: 
+        radial-gradient(#d6c7a7 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0,0,0,0.02), rgba(0,0,0,0.06));
+      background-size: 16px 16px, 100% 100%;
+      color: var(--ink-black);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7), 0 2px 5px rgba(0,0,0,0.4);
+    }
+
+    /* Штамп с чернильным эффектом */
+    .ink-stamp {
+      border: 3px solid currentColor;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+      animation: stampImpact 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes stampImpact {
+      0% { transform: scale(2.2) rotate(12deg); opacity: 0; }
+      100% { transform: scale(1) rotate(-4deg); opacity: 0.95; }
+    }
+
+    .shimmer-lamp {
+      animation: lampFlicker 6s infinite;
+    }
+    @keyframes lampFlicker {
+      0%, 100% { opacity: 1; }
+      48% { opacity: 1; }
+      49% { opacity: 0.82; }
+      50% { opacity: 0.98; }
+      51% { opacity: 0.75; }
+      52% { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="p-3 md:p-6 flex flex-col items-center justify-center">
+
+  <!-- Главное окно Бюро -->
+  <div class="w-full max-w-5xl flex flex-col gap-4 relative z-10">
+
+    <!-- Верхняя панель: Зеленая лампа, кабинет, репутация -->
+    <header class="bg-[#151210] border-2 border-[#33261e] rounded-2xl p-4 md:p-5 shadow-2xl flex flex-wrap items-center justify-between gap-4 relative overflow-hidden lamp-glow">
+      <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-96 h-28 bg-amber-500/10 blur-3xl pointer-events-none shimmer-lamp"></div>
+      
+      <!-- Логотип бюро и Шериф -->
+      <div class="flex items-center gap-4 z-10">
+        <!-- SVG Персонаж Детектива -->
+        <div class="w-16 h-16 rounded-2xl bg-[#231b15] border-2 border-amber-600/40 p-1 flex items-center justify-center shadow-lg relative flex-shrink-0">
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow">
+            <!-- Шляпа -->
+            <ellipse cx="50" cy="38" rx="42" ry="7" fill="#292019" />
+            <path d="M30 38 Q32 15 50 14 Q68 15 70 38 Z" fill="#3a2e24" />
+            <path d="M32 34 Q50 36 68 34" stroke="#d97706" stroke-width="3" fill="none" />
+            <!-- Лицо в тени -->
+            <circle cx="50" cy="50" r="18" fill="#d4a373" />
+            <!-- Тень от полей шляпы -->
+            <path d="M32 38 Q50 48 68 38 L68 46 Q50 56 32 46 Z" fill="#1f1610" opacity="0.85" />
+            <!-- Сверкающие глаза детектива -->
+            <ellipse cx="44" cy="48" rx="2.5" ry="1.5" fill="#fef08a" />
+            <ellipse cx="56" cy="48" rx="2.5" ry="1.5" fill="#fef08a" />
+            <!-- Плащ и воротник -->
+            <path d="M22 88 L34 58 L50 68 L66 58 L78 88 Z" fill="#2d221a" />
+            <path d="M34 58 L50 78 L66 58" stroke="#1f1610" stroke-width="2" fill="none" />
+            <path d="M48 68 L52 68 L50 88 Z" fill="#b45309" />
+            <!-- Лупа -->
+            <circle cx="70" cy="68" r="10" stroke="#f59e0b" stroke-width="2.5" fill="rgba(255,255,255,0.15)" />
+            <line x1="77" y1="75" x2="86" y2="84" stroke="#78350f" stroke-width="4" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-widest font-mono text-amber-500 font-bold">ОТДЕЛ ОСОБЫХ РАССЛЕДОВАНИЙ</span>
+            <span id="badgeRank" class="bg-amber-950/80 border border-amber-600/50 text-amber-300 px-2 py-0.5 rounded text-[11px] font-bold">Младший детектив</span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-black font-noir-title text-amber-100 tracking-wide flex items-center gap-2">
+            ЛОГИК-СИТИ: <span class="text-amber-500 italic">ОХОТА НА МАФИЮ</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Приборы и индикаторы -->
+      <div class="flex items-center gap-4 z-10">
+        <!-- Репутация сыщика -->
+        <div class="bg-[#201813] border border-[#403024] px-3.5 py-2 rounded-xl flex flex-col items-center">
+          <span class="text-[10px] text-amber-400/80 uppercase font-mono font-bold flex items-center gap-1">
+            <i class="fa-solid fa-star text-amber-400"></i> Репутация
+          </span>
+          <div class="flex gap-1 mt-1" id="reputationStars">
+            <i class="fa-solid fa-shield text-amber-400 text-sm"></i>
+            <i class="fa-solid fa-shield text-amber-400 text-sm"></i>
+            <i class="fa-solid fa-shield text-amber-400 text-sm"></i>
+            <i class="fa-solid fa-shield text-amber-400 text-sm"></i>
+            <i class="fa-solid fa-shield text-amber-400 text-sm"></i>
+          </div>
+        </div>
+
+        <!-- Кнопка «Блокнот Детектива» (Шпаргалка) -->
+        <button onclick="openNotebook()" class="h-11 px-3.5 rounded-xl bg-amber-950/70 hover:bg-amber-900 border border-amber-500/60 text-amber-200 flex items-center gap-2 font-mono text-xs font-bold transition-all shadow-lg active:scale-95" title="Открыть шпаргалку кодекса">
+          <i class="fa-solid fa-book-skull text-amber-400 text-base"></i>
+          <span class="hidden sm:inline">БЛОКНОТ СЫЩИКА</span>
+        </button>
+
+        <!-- Звук -->
+        <button id="btnSound" onclick="toggleMute()" class="w-11 h-11 rounded-xl bg-[#201813] hover:bg-[#2e231c] border border-[#443326] text-amber-400 flex items-center justify-center transition-all" title="Звуки">
+          <i class="fa-solid fa-volume-high text-base"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Полоса прогресса 5 Глав -->
+    <div class="bg-[#14110e] border border-[#2e231a] rounded-xl p-3 flex items-center justify-between gap-2 overflow-x-auto">
+      <div class="flex items-center gap-2 md:gap-3 w-full">
+        <button onclick="jumpToChapter(1)" id="chTab1" class="chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-amber-600 text-black border-amber-400 shadow-md">
+          <span>1. Паспорт</span>
+        </button>
+        <button onclick="jumpToChapter(2)" id="chTab2" class="chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-stone-900/80 text-stone-400 border-stone-800">
+          <span>2. Маски Мафии</span>
+        </button>
+        <button onclick="jumpToChapter(3)" id="chTab3" class="chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-stone-900/80 text-stone-400 border-stone-800">
+          <span>3. Детектор Лжи</span>
+        </button>
+        <button onclick="jumpToChapter(4)" id="chTab4" class="chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-stone-900/80 text-stone-400 border-stone-800">
+          <span>4. Шифр Связок</span>
+        </button>
+        <button onclick="jumpToChapter(5)" id="chTab5" class="chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-stone-900/80 text-stone-400 border-stone-800">
+          <span>5. Суд над Доном</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ОСНОВНОЙ СТОЛ РАССЛЕДОВАНИЯ -->
+    <main id="investigationArea" class="relative">
+      <!-- Контент глав генерируется динамически -->
+    </main>
+
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: БЛОКНОТ ДЕТЕКТИВА (Кодекс Логики) -->
+  <div id="notebookModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden items-center justify-center p-3 md:p-6">
+    <div class="dossier-paper max-w-2xl w-full max-h-[90vh] rounded-2xl p-6 md:p-8 flex flex-col shadow-2xl border-4 border-[#3a2e22] relative overflow-hidden">
+      <!-- Скрепка досье -->
+      <div class="absolute top-2 left-8 w-12 h-6 border-b-2 border-stone-600 rounded-b-full"></div>
+      
+      <div class="flex items-center justify-between pb-3 border-b-2 border-stone-800/20 mb-4">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-stamp text-amber-800 text-2xl"></i>
+          <div>
+            <h3 class="font-noir-title text-2xl font-black tracking-wide text-stone-900">БЛОКНОТ СЫЩИКА: КОДЕКС ЛОГИКИ</h3>
+            <p class="font-typewriter text-xs text-stone-600">Секретные инструкции для работы на улицах Логик-Сити</p>
+          </div>
+        </div>
+        <button onclick="closeNotebook()" class="text-stone-700 hover:text-black text-2xl font-bold p-1">✕</button>
+      </div>
+
+      <div class="overflow-y-auto pr-2 space-y-4 font-typewriter text-sm leading-relaxed text-stone-900">
+        <!-- Правило 1 -->
+        <div class="bg-amber-100/60 p-3.5 rounded-xl border border-amber-300/60">
+          <h4 class="font-bold text-amber-950 text-base mb-1">📜 1. ЗОЛОТОЙ ЗАКОН ВЫСКАЗЫВАНИЯ</h4>
+          <p>
+            <strong>Высказывание</strong> — это повествовательное предложение, про которое <u>всегда объективно точно</u> можно сказать одно из двух: <strong>ИСТИНА (1)</strong> оно или <strong>ЛОЖЬ (0)</strong>. Третьего не дано!
+          </p>
+        </div>
+
+        <!-- 4 маски мафии -->
+        <div class="bg-stone-200/60 p-3.5 rounded-xl border border-stone-400/60">
+          <h4 class="font-bold text-red-950 text-base mb-2">🎭 2. ЧЕТЫРЕ КЛАНА САМОЗВАНЦЕВ (НЕ высказывания):</h4>
+          <ul class="space-y-1.5 text-xs md:text-sm">
+            <li><strong>1. Клан Вопроса (?):</strong> <em>«Который час?», «Где флешка?»</em> — вопрос не может быть истиной или ложью.</li>
+            <li><strong>2. Клан Приказа (!):</strong> <em>«Закрой дверь!», «Учитесь!»</em> — команды и побуждения не констатируют факт.</li>
+            <li><strong>3. Клан Мнения и Вкуса:</strong> <em>«Этот торт вкусный», «Python лучше Java»</em> — о вкусах не спорят, объективного ответа нет.</li>
+            <li><strong>4. Клан Неизвестного Х:</strong> <em>«x + 5 = 12», «Она учится в 8 классе»</em> — пока нет контекста, значение определить нельзя.</li>
+          </ul>
+        </div>
+
+        <!-- Детектор лжи -->
+        <div class="bg-amber-100/60 p-3.5 rounded-xl border border-amber-300/60">
+          <h4 class="font-bold text-amber-950 text-base mb-1">⚖️ 3. ЛОВУШКА ДЕТЕКТОРА ЛЖИ</h4>
+          <p>
+            <strong>Ложное высказывание ВСЁ РАВНО остается высказыванием!</strong><br>
+            Фраза <em>«В одном байте 10 бит»</em> — это полноценное высказывание, просто его истинность равна <strong>ЛОЖЬ (0)</strong>. Не путайте ложь с мафией!
+          </p>
+        </div>
+
+        <!-- Логические связки -->
+        <div class="bg-stone-200/60 p-3.5 rounded-xl border border-stone-400/60">
+          <h4 class="font-bold text-stone-950 text-base mb-1">🧩 4. СВЯЗКИ СЛОЖНЫХ ВЫСКАЗЫВАНИЙ</h4>
+          <ul class="space-y-1 text-xs md:text-sm">
+            <li>• <strong>НЕ (Отрицание):</strong> переворачивает значение (НЕ Истина = Ложь).</li>
+            <li>• <strong>И (Конъюнкция):</strong> требовательный шеф. Истинно, только если <strong>ОБА</strong> факта верны!</li>
+            <li>• <strong>ИЛИ (Дизъюнкция):</strong> добрый шеф. Истинно, если верен <strong>ХОТЯ БЫ ОДИН</strong> факт!</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-3 mt-3 border-t border-stone-800/20 text-center">
+        <button onclick="closeNotebook()" class="bg-[#292019] hover:bg-[#3a2e24] text-amber-200 font-mono font-bold px-6 py-2 rounded-xl text-xs uppercase tracking-wider transition-all">
+          Закрыть блокнот и продолжить дело
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ======================================================================
+       ЗВУКОВОЙ ДВИЖОК НУАРНОГО ДЕТЕКТИВА (Web Audio API)
+       ====================================================================== */
+    class NoirSound {
+      constructor() {
+        this.ctx = null;
+        this.isMuted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // Стук клавиши печатной машинки
+      typewriterKey() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(800 + Math.random() * 400, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+
+      // Глухой удар тяжелого деревянного штампа
+      stampThud() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(110, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.16);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.16);
+      }
+
+      // Нуарный аккорд тайны (разоблачение)
+      noirChord() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        [220, 261.63, 311.13, 415.30].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + i * 0.04);
+          gain.gain.setValueAtTime(0.12, now + i * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.04);
+          osc.stop(now + 0.8);
+        });
+      }
+
+      // Ошибка расследования
+      alarmBuzzer() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.linearRampToValueAtTime(120, now + 0.25);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+
+      // Победный детективный джингл
+      victoryFanfare() {
+        if (this.isMuted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+          gain.gain.setValueAtTime(0.25, now + idx * 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.1);
+          osc.stop(now + idx * 0.1 + 0.35);
+        });
+      }
+    }
+
+    const sound = new NoirSound();
+
+    function toggleMute() {
+      sound.isMuted = !sound.isMuted;
+      const btn = document.getElementById("btnSound");
+      btn.innerHTML = sound.isMuted
+        ? '<i class="fa-solid fa-volume-xmark text-red-400"></i>'
+        : '<i class="fa-solid fa-volume-high text-amber-400"></i>';
+      sound.typewriterKey();
+    }
+
+    /* ======================================================================
+       ИГРОВОЙ СОСТОЯНИЕ И БАЗА ЗНАНИЙ
+       ====================================================================== */
+    let currentChapter = 1;
+    let reputation = 5;
+    let currentStage = 0; // Шаг внутри главы
+
+    // Данные для 5 Глав
+    const gameData = {
+      // ГЛАВА 1: ПАСПОРТ ГРАЖДАНИНА (Базовое понятие высказывания)
+      chapter1: {
+        title: "ГЛАВА 1: ПАСПОРТ ГРАЖДАНИНА",
+        subtitle: "Контрольно-пропускной пункт Логик-Сити",
+        briefing: "Добро пожаловать в бюро, детектив! Наш город наводнили самозванцы. Чтобы навести порядок, запомни первое правило: <strong>Высказывание — это повествовательное предложение, о котором можно точно сказать: ИСТИНА оно или ЛОЖЬ</strong>. Любой вопрос, крик или бессмыслица — вне закона. Твоя задача на КПП: проверить документы и отделить законные Высказывания от Шума!",
+        cases: [
+          {
+            phrase: "В одном байте содержится ровно 8 бит информации.",
+            isStatement: true,
+            explain: "Это повествовательное предложение, утверждающее проверяемый факт. Это законное ВЫСКАЗЫВАНИЕ (Истина)!"
+          },
+          {
+            phrase: "Эй, сколько стоит проезд до центральной площади?",
+            isStatement: false,
+            explain: "Это ВОПРОС. Вопросительные предложения не могут быть истинными или ложными, это НЕ высказывание!"
+          },
+          {
+            phrase: "Волга впадает в озеро Байкал.",
+            isStatement: true,
+            explain: "Внимание! Это ложное утверждение, но оно ВСЁ РАВНО ЯВЛЯЕТСЯ ВЫСКАЗЫВАНИЕМ! Мы точно знаем, что это ложь."
+          },
+          {
+            phrase: "Срочно отойдите от ограждения контрольно-пропускного пункта!",
+            isStatement: false,
+            explain: "Это ПРИКАЗ (побудительное предложение). Приказ нельзя назвать истинным или ложным!"
+          }
+        ]
+      },
+
+      // ГЛАВА 2: 4 МАСКИ МАФИИ (Кланы Самозванцев)
+      chapter2: {
+        title: "ГЛАВА 2: МАСКИ САМОЗВАНЦЕВ",
+        subtitle: "Разоблачение четырёх криминальных кланов",
+        briefing: "Шеф сообщает: в Логик-Сити орудуют <strong>4 клана Мафии</strong>, притворяющихся высказываниями. Изучи их маски:<br>1) <strong>Клан Вопроса (?)</strong> — крадут факты, оставляя знак вопроса.<br>2) <strong>Клан Приказа (!)</strong> — требуют действий и отдают команды.<br>3) <strong>Клан Вкуса и Мнения</strong> — маскируют субъективные суждения под истину.<br>4) <strong>Клан Неизвестного Х</strong> — прячут переменные без указания их значения.<br>Определи, какой клан оставил улику!",
+        cases: [
+          {
+            phrase: "Закрой текстовый редактор и выключи монитор!",
+            mask: "command",
+            maskName: "Клан Приказа",
+            explain: "Улика разоблачена! Это приказ и побуждение к действию. Относится к Клану Приказа."
+          },
+          {
+            phrase: "Язык Python — самый красивый и лёгкий язык в мире.",
+            mask: "opinion",
+            maskName: "Клан Мнения",
+            explain: "В яблочко! Красота и стиль — это субъективное мнение. Относится к Клану Оценки/Вкуса."
+          },
+          {
+            phrase: "Какая скорость передачи данных у твоего модема?",
+            mask: "question",
+            maskName: "Клан Вопроса",
+            explain: "Точно! Это вопросительное предложение. Клан Вопроса обезврежен!"
+          },
+          {
+            phrase: "x + 14 > 50",
+            mask: "variable",
+            maskName: "Клан Неизвестного Х",
+            explain: "Поймали! Неизвестная переменная x без контекста делает выражение неопределённым."
+          }
+        ]
+      },
+
+      // ГЛАВА 3: ДЕТЕКТОР ЛЖИ (Истина или Ложь)
+      chapter3: {
+        title: "ГЛАВА 3: ДЕТЕКТОР ЛЖИ",
+        subtitle: "Допрос свидетелей и проверка фактов",
+        briefing: "Запомни, детектив: <strong>Ложные высказывания — это не мафия!</strong> Они полноправные граждане мира логики, просто их значение равно ЛОЖЬ (0). Подключи детектор лжи и определи истинность показаний каждого свидетеля.",
+        cases: [
+          {
+            witness: "Архивариус Смит",
+            phrase: "Клавиатура и микрофон являются устройствами ввода информации.",
+            truth: true,
+            explain: "ИСТИНА (1). Оба устройства действительно предназначены для передачи данных в память компьютера."
+          },
+          {
+            witness: "Контрабандист Бит",
+            phrase: "Число 25 делится на 4 без остатка.",
+            truth: false,
+            explain: "ЛОЖЬ (0). 25 при делении на 4 дает 6 и 1 в остатке. Это ложное высказывание."
+          },
+          {
+            witness: "Профессор Грэм",
+            phrase: "В сутках ровно 24 часа, а в одном часе 60 минут.",
+            truth: true,
+            explain: "ИСТИНА (1). Все временные величины указаны абсолютно верно."
+          },
+          {
+            witness: "Шпион Мафии",
+            phrase: "Оперативная память сохраняет всю информацию при выключении компьютера из розетки.",
+            truth: false,
+            explain: "ЛОЖЬ (0). ОЗУ является энергозависимой памятью и полностью стирается при отключении питания."
+          }
+        ]
+      },
+
+      // ГЛАВА 4: ТАЙНЫЙ ШИФР (Связки НЕ, И, ИЛИ)
+      chapter4: {
+        title: "ГЛАВА 4: ТАЙНЫЙ ШИФР СВЯЗОК",
+        subtitle: "Дешифровка перехваченных радиограмм",
+        briefing: "Мафия использует сложные высказывания, объединяя факты шифрами:<br>• <strong>НЕ (инверсия):</strong> меняет значение на противоположное.<br>• <strong>И (конъюнкция):</strong> истинно только когда <u>ОБА</u> факта истинны.<br>• <strong>ИЛИ (дизъюнкция):</strong> истинно, если верен <u>ХОТЯ БЫ ОДИН</u> факт.<br>Вычисли истинность перехваченных шифровок!",
+        cases: [
+          {
+            cipher: "(Число 12 чётное) И (Число 12 делится на 3)",
+            truth: true,
+            explain: "Первая часть ИСТИНА (12 чётное), вторая часть ИСТИНА (12 делится на 3). ИСТИНА И ИСТИНА = ИСТИНА (1)!"
+          },
+          {
+            cipher: "(5 > 10) ИЛИ (Принтер — устройство вывода)",
+            truth: true,
+            explain: "Первая часть ЛОЖЬ (5 не больше 10), но вторая — ИСТИНА! Для связки «ИЛИ» достаточно одного истинного условия. Результат — ИСТИНА (1)!"
+          },
+          {
+            cipher: "(2 * 2 = 5) И (Земля круглая)",
+            truth: false,
+            explain: "Связка «И» строга: 2*2=5 — это ЛОЖЬ. Если хотя бы одно условие ложно, вся связка «И» становится ЛОЖЬЮ (0)!"
+          },
+          {
+            cipher: "НЕ (В одном килобайте ровно 500 байт)",
+            truth: true,
+            explain: "В скобках ложь (в килобайте 1024 байта). Частица НЕ переворачивает ложь в ИСТИНУ (1)!"
+          }
+        ]
+      },
+
+      // ГЛАВА 5: СУД НАД ДОНОМ (Финальное комплексное дело)
+      chapter5: {
+        title: "ГЛАВА 5: СУД НАД ДОНОМ МАФИИ",
+        subtitle: "Финальное заседание трибунала Логик-Сити",
+        briefing: "Дон Мафии пойман с поличным в подземном казино! Он пытается запутать суд своими показаниями. Проанализируй каждую реплику Дона и вынеси один из 3 вердиктов:<br>1) <strong>ВЫСКАЗЫВАНИЕ: ИСТИНА</strong><br>2) <strong>ВЫСКАЗЫВАНИЕ: ЛОЖЬ</strong><br>3) <strong>САМОЗВАНЕЦ / МАФИЯ</strong> (вопрос, приказ, вкус, переменная)",
+        cases: [
+          {
+            speaker: "Дон Корлеоне",
+            phrase: "Уважаемый суд, разве можно обвинять такого честного гражданина?",
+            verdict: "mafia",
+            explain: "МАФИЯ! Это риторический вопрос из Клана Вопроса. Не является высказыванием!"
+          },
+          {
+            speaker: "Дон Корлеоне",
+            phrase: "В полночь в сейфе банка было ровно x тысяч долларов.",
+            verdict: "mafia",
+            explain: "МАФИЯ! Клан Неизвестного Х. Мы не знаем значение переменной x!"
+          },
+          {
+            speaker: "Дон Корлеоне",
+            phrase: "Любой квадрат является прямоугольником с равными сторонами.",
+            verdict: "true",
+            explain: "ВЫСКАЗЫВАНИЕ: ИСТИНА (1). Это верное геометрическое определение."
+          },
+          {
+            speaker: "Дон Корлеоне",
+            phrase: "Мой костюм — самый роскошный в этом зале суда!",
+            verdict: "mafia",
+            explain: "МАФИЯ! Клан Мнения и Оценки. Понятие роскоши субъективно!"
+          },
+          {
+            speaker: "Дон Корлеоне",
+            phrase: "Число 100 меньше числа 99.",
+            verdict: "false",
+            explain: "ВЫСКАЗЫВАНИЕ: ЛОЖЬ (0). Это полноценное высказывание, но оно математически неверно!"
+          }
+        ]
+      }
+    };
+
+    /* ======================================================================
+       ОТРИСОВКА ВЕКТОРНЫХ МАСОК МАФИИ (SVG)
+       ====================================================================== */
+    function getMaskSvg(type) {
+      if (type === 'question') {
+        // Золотая венецианская маска со знаком ?
+        return `
+          <svg viewBox="0 0 100 100" class="w-20 h-20 drop-shadow-md">
+            <path d="M15 45 C15 20, 85 20, 85 45 C85 65, 60 78, 50 85 C40 78, 15 65, 15 45 Z" fill="#b45309" stroke="#f59e0b" stroke-width="3" />
+            <!-- Прорези для глаз -->
+            <path d="M28 42 Q38 35 44 45 Q36 50 28 42 Z" fill="#181310" />
+            <path d="M72 42 Q62 35 56 45 Q64 50 72 42 Z" fill="#181310" />
+            <!-- Знак вопроса -->
+            <text x="50" y="48" font-family="'Courier Prime', monospace" font-size="28" font-weight="bold" fill="#fef08a" text-anchor="middle">?</text>
+          </svg>
+        `;
+      }
+      if (type === 'command') {
+        // Стальная железная маска с восклицательным знаком
+        return `
+          <svg viewBox="0 0 100 100" class="w-20 h-20 drop-shadow-md">
+            <polygon points="50,15 85,32 75,78 50,90 25,78 15,32" fill="#334155" stroke="#94a3b8" stroke-width="3"/>
+            <!-- Забрало -->
+            <rect x="25" y="42" width="50" height="8" rx="2" fill="#0f172a" stroke="#cbd5e1" stroke-width="1.5" />
+            <text x="50" y="38" font-family="'Courier Prime', monospace" font-size="24" font-weight="bold" fill="#ef4444" text-anchor="middle">!</text>
+          </svg>
+        `;
+      }
+      if (type === 'opinion') {
+        // Театральная театрализованная маска эмоций / вкуса
+        return `
+          <svg viewBox="0 0 100 100" class="w-20 h-20 drop-shadow-md">
+            <path d="M20 30 Q50 15 80 30 Q85 70 50 88 Q15 70 20 30 Z" fill="#831843" stroke="#f43f5e" stroke-width="3"/>
+            <!-- Искривленные театральные брови и глаза -->
+            <ellipse cx="36" cy="45" rx="7" ry="5" fill="#1f1610" />
+            <ellipse cx="64" cy="45" rx="7" ry="5" fill="#1f1610" />
+            <path d="M35 68 Q50 56 65 68" stroke="#fecdd3" stroke-width="4" fill="none" stroke-linecap="round" />
+            <text x="50" y="32" font-size="12" fill="#fda4af" font-weight="bold" text-anchor="middle">ВКУС</text>
+          </svg>
+        `;
+      }
+      if (type === 'variable') {
+        // Цифровая глитч-маска с буквой X
+        return `
+          <svg viewBox="0 0 100 100" class="w-20 h-20 drop-shadow-md">
+            <rect x="20" y="20" width="60" height="65" rx="10" fill="#090d16" stroke="#06b6d4" stroke-width="3" />
+            <!-- Глитч-полосы -->
+            <line x1="15" y1="35" x2="85" y2="35" stroke="#a855f7" stroke-width="2" stroke-dasharray="4 3" />
+            <line x1="15" y1="65" x2="85" y2="65" stroke="#06b6d4" stroke-width="2" stroke-dasharray="6 2" />
+            <text x="50" y="58" font-family="'Courier Prime', monospace" font-size="34" font-weight="bold" fill="#38bdf8" text-anchor="middle">X</text>
+          </svg>
+        `;
+      }
+      return '';
+    }
+
+    /* ======================================================================
+       РЕНДЕРИНГ ГЛАВ
+       ====================================================================== */
+    function renderChapter() {
+      const container = document.getElementById("investigationArea");
+      const chKey = `chapter${currentChapter}`;
+      const data = gameData[chKey];
+
+      // Подсветка вкладок
+      document.querySelectorAll(".chapter-tab").forEach((tab, idx) => {
+        if (idx + 1 === currentChapter) {
+          tab.className = "chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-amber-600 text-black border-amber-400 shadow-md";
+        } else {
+          tab.className = "chapter-tab flex-1 py-2 px-2.5 rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5 border transition-all bg-stone-900/80 text-stone-400 border-stone-800 hover:text-stone-200";
+        }
+      });
+
+      // Генерируем карточку текущей главы
+      container.innerHTML = `
+        <div class="dossier-paper rounded-2xl p-5 md:p-8 border-4 border-[#3a2e22] relative overflow-hidden shadow-2xl">
+          <!-- Гриф секретности -->
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-stone-800/20 pb-3 mb-5">
+            <div>
+              <span class="bg-red-800 text-white font-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded tracking-widest">
+                СТРОГО КОНФИДЕНЦИАЛЬНО // ДЕЛО № 8-LOGIC
+              </span>
+              <h2 class="font-noir-title text-2xl md:text-3xl font-black text-stone-900 mt-1">${data.title}</h2>
+              <p class="font-typewriter text-xs md:text-sm text-stone-700 font-semibold">${data.subtitle}</p>
+            </div>
+            <div class="font-stamp text-xs md:text-sm border-2 border-amber-800 text-amber-900 px-3 py-1 rounded transform -rotate-3">
+              УЛИКА ${currentStage + 1} ИЗ ${data.cases.length}
+            </div>
+          </div>
+
+          <!-- Инструктаж шефа (Брифинг) -->
+          <div class="bg-amber-100/70 border-l-4 border-amber-700 p-3.5 rounded-r-xl mb-6 font-typewriter text-xs md:text-sm text-stone-900 leading-relaxed shadow-inner">
+            <div class="font-bold uppercase tracking-wider text-amber-900 mb-1 flex items-center gap-1.5">
+              <i class="fa-solid fa-feather-pointed"></i> Записка от Комиссара:
+            </div>
+            ${data.briefing}
+          </div>
+
+          <!-- Интерактивная зона дела -->
+          <div id="interactiveCaseBox" class="min-h-[220px] flex flex-col justify-between">
+            ${getChapterContent(currentChapter, currentStage)}
+          </div>
+        </div>
+      `;
+    }
+
+    /* Генерация контента под конкретную главу */
+    function getChapterContent(chapter, stage) {
+      const data = gameData[`chapter${chapter}`];
+      const c = data.cases[stage];
+
+      // --- ГЛАВА 1: ПАСПОРТ ГРАЖДАНИНА ---
+      if (chapter === 1) {
+        return `
+          <div class="bg-stone-100/90 border-2 border-stone-300 p-6 rounded-2xl text-center shadow-md relative my-auto">
+            <span class="text-[11px] font-mono uppercase tracking-widest text-stone-500 font-bold block mb-2">
+              ПОДОЗРЕВАЕМЫЙ НА ПРОПУСКНОМ ПУНКТЕ ПРЕДЪЯВИЛ ФРАЗУ:
+            </span>
+            <p class="font-typewriter text-xl md:text-2xl font-bold text-stone-950 py-3">
+              «${c.phrase}»
+            </p>
+            <div id="caseVerdictFeedback" class="hidden mt-3 p-3 rounded-xl text-xs md:text-sm font-typewriter"></div>
+          </div>
+
+          <div id="actionButtons" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <button onclick="handleChapter1(true)" class="bg-[#1f2937] hover:bg-emerald-900 border-2 border-emerald-600 text-emerald-300 font-typewriter font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm md:text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-id-card text-emerald-400"></i> ЭТО ВЫСКАЗЫВАНИЕ (ГРАЖДАНИН)
+            </button>
+            <button onclick="handleChapter1(false)" class="bg-[#1f2937] hover:bg-red-950 border-2 border-red-600 text-red-300 font-typewriter font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm md:text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-ban text-red-400"></i> НЕ ВЫСКАЗЫВАНИЕ (ШУМ / ПРИКАЗ)
+            </button>
+          </div>
+        `;
+      }
+
+      // --- ГЛАВА 2: 4 МАСКИ МАФИИ ---
+      if (chapter === 2) {
+        return `
+          <div class="bg-stone-100/90 border-2 border-stone-300 p-5 rounded-2xl text-center shadow-md my-auto">
+            <span class="text-[11px] font-mono uppercase tracking-widest text-stone-500 font-bold block mb-1">
+              ПЕРЕХВАЧЕННАЯ ЗАПИСКА САМОЗВАНЦА:
+            </span>
+            <p class="font-typewriter text-lg md:text-xl font-bold text-stone-950 py-2">
+              «${c.phrase}»
+            </p>
+            <div id="caseVerdictFeedback" class="hidden mt-2 p-3 rounded-xl text-xs md:text-sm font-typewriter"></div>
+          </div>
+
+          <div id="actionButtons" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5">
+            <button onclick="handleChapter2('question')" class="bg-[#241c17] hover:bg-[#382b24] border-2 border-amber-600/70 p-3 rounded-xl flex flex-col items-center gap-1.5 transition-all active:scale-95 text-stone-200">
+              ${getMaskSvg('question')}
+              <span class="font-typewriter text-xs font-bold text-amber-400">Клан Вопроса (?)</span>
+            </button>
+            <button onclick="handleChapter2('command')" class="bg-[#241c17] hover:bg-[#382b24] border-2 border-slate-500 p-3 rounded-xl flex flex-col items-center gap-1.5 transition-all active:scale-95 text-stone-200">
+              ${getMaskSvg('command')}
+              <span class="font-typewriter text-xs font-bold text-slate-300">Клан Приказа (!)</span>
+            </button>
+            <button onclick="handleChapter2('opinion')" class="bg-[#241c17] hover:bg-[#382b24] border-2 border-rose-600/70 p-3 rounded-xl flex flex-col items-center gap-1.5 transition-all active:scale-95 text-stone-200">
+              ${getMaskSvg('opinion')}
+              <span class="font-typewriter text-xs font-bold text-rose-400">Клан Вкуса/Мнения</span>
+            </button>
+            <button onclick="handleChapter2('variable')" class="bg-[#241c17] hover:bg-[#382b24] border-2 border-cyan-500/70 p-3 rounded-xl flex flex-col items-center gap-1.5 transition-all active:scale-95 text-stone-200">
+              ${getMaskSvg('variable')}
+              <span class="font-typewriter text-xs font-bold text-cyan-300">Клан Переменной Х</span>
+            </button>
+          </div>
+        `;
+      }
+
+      // --- ГЛАВА 3: ДЕТЕКТОР ЛЖИ ---
+      if (chapter === 3) {
+        return `
+          <div class="bg-stone-100/90 border-2 border-stone-300 p-5 rounded-2xl shadow-md my-auto flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-16 h-16 rounded-full bg-stone-300 flex items-center justify-center text-3xl border-2 border-stone-400 flex-shrink-0">
+              🕵️
+            </div>
+            <div class="text-left flex-1">
+              <span class="text-[11px] font-mono uppercase tracking-widest text-stone-500 font-bold block">
+                ПОКАЗАНИЯ СВИДЕТЕЛЯ: ${c.witness}
+              </span>
+              <p class="font-typewriter text-base md:text-lg font-bold text-stone-950 mt-1">
+                «${c.phrase}»
+              </p>
+            </div>
+          </div>
+          <div id="caseVerdictFeedback" class="hidden mt-3 p-3 rounded-xl text-xs md:text-sm font-typewriter"></div>
+
+          <div id="actionButtons" class="grid grid-cols-2 gap-4 mt-6">
+            <button onclick="handleChapter3(true)" class="bg-[#1c291e] hover:bg-emerald-950 border-2 border-emerald-500 text-emerald-300 font-typewriter font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-check text-emerald-400"></i> ИСТИНА (1)
+            </button>
+            <button onclick="handleChapter3(false)" class="bg-[#2b1b1a] hover:bg-rose-950 border-2 border-rose-500 text-rose-300 font-typewriter font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-xmark text-rose-400"></i> ЛОЖЬ (0)
+            </button>
+          </div>
+        `;
+      }
+
+      // --- ГЛАВА 4: ТАЙНЫЙ ШИФР ---
+      if (chapter === 4) {
+        return `
+          <div class="bg-stone-900 border-2 border-amber-600/40 p-6 rounded-2xl text-center shadow-lg my-auto text-amber-200">
+            <span class="text-[11px] font-mono uppercase tracking-widest text-amber-400/80 font-bold block mb-2">
+              <i class="fa-solid fa-key"></i> ПЕРЕХВАЧЕННОЕ СОСТАВНОЕ ВЫСКАЗЫВАНИЕ:
+            </span>
+            <p class="font-typewriter text-lg md:text-2xl font-bold py-2 text-amber-300">
+              ${c.cipher}
+            </p>
+            <div id="caseVerdictFeedback" class="hidden mt-3 p-3 rounded-xl text-xs md:text-sm font-typewriter text-left"></div>
+          </div>
+
+          <div id="actionButtons" class="grid grid-cols-2 gap-4 mt-6">
+            <button onclick="handleChapter4(true)" class="bg-[#1c291e] hover:bg-emerald-950 border-2 border-emerald-500 text-emerald-300 font-typewriter font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-unlock text-emerald-400"></i> РЕЗУЛЬТАТ: ИСТИНА (1)
+            </button>
+            <button onclick="handleChapter4(false)" class="bg-[#2b1b1a] hover:bg-rose-950 border-2 border-rose-500 text-rose-300 font-typewriter font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-95">
+              <i class="fa-solid fa-lock text-rose-400"></i> РЕЗУЛЬТАТ: ЛОЖЬ (0)
+            </button>
+          </div>
+        `;
+      }
+
+      // --- ГЛАВА 5: СУД НАД ДОНОМ ---
+      if (chapter === 5) {
+        return `
+          <div class="bg-stone-100/90 border-2 border-stone-300 p-5 rounded-2xl shadow-md my-auto flex flex-col sm:flex-row items-center gap-4">
+            <div class="w-20 h-20 rounded-2xl bg-stone-900 flex items-center justify-center border-2 border-amber-600 flex-shrink-0">
+              <svg viewBox="0 0 100 100" class="w-16 h-16">
+                <!-- Крёстный отец Мафии -->
+                <circle cx="50" cy="50" r="30" fill="#292019" />
+                <path d="M30 40 Q50 30 70 40" stroke="#b91c1c" stroke-width="4" fill="none" />
+                <!-- Усы -->
+                <path d="M38 60 Q50 68 62 60" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round" />
+                <ellipse cx="42" cy="48" rx="3" ry="2" fill="#fff" />
+                <ellipse cx="58" cy="48" rx="3" ry="2" fill="#fff" />
+              </svg>
+            </div>
+            <div class="text-left flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-red-900 text-sm font-typewriter">ПОД ПРИСЯГОЙ: ${c.speaker}</span>
+                <span class="text-[10px] bg-red-900/10 text-red-800 px-2 py-0.5 rounded font-mono font-bold">ГЛАВНЫЙ БОСС</span>
+              </div>
+              <p class="font-typewriter text-lg md:text-xl font-bold text-stone-950 mt-1">
+                «${c.phrase}»
+              </p>
+            </div>
+          </div>
+          <div id="caseVerdictFeedback" class="hidden mt-3 p-3 rounded-xl text-xs md:text-sm font-typewriter"></div>
+
+          <div id="actionButtons" class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
+            <button onclick="handleChapter5('true')" class="bg-[#1c291e] hover:bg-emerald-950 border-2 border-emerald-600 text-emerald-300 font-typewriter font-bold py-3.5 px-2 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm shadow-md transition-all active:scale-95">
+              <i class="fa-solid fa-stamp text-emerald-400"></i> ВЫСКАЗЫВАНИЕ: ИСТИНА
+            </button>
+            <button onclick="handleChapter5('false')" class="bg-[#242838] hover:bg-blue-950 border-2 border-blue-600 text-blue-300 font-typewriter font-bold py-3.5 px-2 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm shadow-md transition-all active:scale-95">
+              <i class="fa-solid fa-stamp text-blue-400"></i> ВЫСКАЗЫВАНИЕ: ЛОЖЬ
+            </button>
+            <button onclick="handleChapter5('mafia')" class="bg-[#2b1b1a] hover:bg-red-950 border-2 border-red-600 text-red-300 font-typewriter font-bold py-3.5 px-2 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm shadow-md transition-all active:scale-95">
+              <i class="fa-solid fa-mask text-red-400"></i> САМОЗВАНЕЦ / МАФИЯ
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    /* ======================================================================
+       ОБРАБОТЧИКИ ОТВЕТОВ ПО ГЛАВАМ
+       ====================================================================== */
+
+    function evaluateAnswer(isCorrect, explanation, onNext) {
+      sound.stampThud();
+      const feedback = document.getElementById("caseVerdictFeedback");
+      const actionButtons = document.getElementById("actionButtons");
+      feedback.classList.remove("hidden");
+
+      if (isCorrect) {
+        sound.noirChord();
+        feedback.className = "mt-3 p-3.5 rounded-xl text-xs md:text-sm font-typewriter bg-emerald-900/20 border-2 border-emerald-600 text-emerald-950";
+        feedback.innerHTML = `
+          <div class="font-bold text-emerald-800 flex items-center gap-1.5 mb-1 text-sm">
+            <i class="fa-solid fa-circle-check"></i> ВЕРДИКТ ВЕРЕН, ДЕТЕКТИВ!
+          </div>
+          ${explanation}
+        `;
+      } else {
+        sound.alarmBuzzer();
+        reputation = Math.max(1, reputation - 1);
+        updateReputationDisplay();
+        feedback.className = "mt-3 p-3.5 rounded-xl text-xs md:text-sm font-typewriter bg-red-900/20 border-2 border-red-600 text-red-950";
+        feedback.innerHTML = `
+          <div class="font-bold text-red-800 flex items-center gap-1.5 mb-1 text-sm">
+            <i class="fa-solid fa-triangle-exclamation"></i> СУДЕБНАЯ ОШИБКА!
+          </div>
+          ${explanation}
+        `;
+      }
+
+      actionButtons.innerHTML = `
+        <button onclick="${onNext}" class="col-span-full w-full bg-[#292019] hover:bg-[#3d3025] border-2 border-amber-600 text-amber-200 font-mono font-bold py-3.5 px-6 rounded-xl text-sm md:text-base transition-all shadow-xl flex items-center justify-center gap-2">
+          <span>ПОДШИТЬ К ДЕЛУ И СЛЕДУЮЩИЙ ШАГ</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      `;
+    }
+
+    // Обработчик Главы 1
+    function handleChapter1(userChoice) {
+      const c = gameData.chapter1.cases[currentStage];
+      const isCorrect = (userChoice === c.isStatement);
+      evaluateAnswer(isCorrect, c.explain, "nextStage()");
+    }
+
+    // Обработчик Главы 2
+    function handleChapter2(userMask) {
+      const c = gameData.chapter2.cases[currentStage];
+      const isCorrect = (userMask === c.mask);
+      evaluateAnswer(isCorrect, c.explain, "nextStage()");
+    }
+
+    // Обработчик Главы 3
+    function handleChapter3(userTruth) {
+      const c = gameData.chapter3.cases[currentStage];
+      const isCorrect = (userTruth === c.truth);
+      evaluateAnswer(isCorrect, c.explain, "nextStage()");
+    }
+
+    // Обработчик Главы 4
+    function handleChapter4(userTruth) {
+      const c = gameData.chapter4.cases[currentStage];
+      const isCorrect = (userTruth === c.truth);
+      evaluateAnswer(isCorrect, c.explain, "nextStage()");
+    }
+
+    // Обработчик Главы 5
+    function handleChapter5(userVerdict) {
+      const c = gameData.chapter5.cases[currentStage];
+      const isCorrect = (userVerdict === c.verdict);
+      evaluateAnswer(isCorrect, c.explain, "nextStage()");
+    }
+
+    /* Переход по шагам и главам */
+    function nextStage() {
+      sound.typewriterKey();
+      const maxStages = gameData[`chapter${currentChapter}`].cases.length;
+      currentStage++;
+      if (currentStage >= maxStages) {
+        // Завершение главы
+        if (currentChapter < 5) {
+          currentChapter++;
+          currentStage = 0;
+          renderChapter();
+        } else {
+          // Победа в игре!
+          showFinalDiploma();
+        }
+      } else {
+        renderChapter();
+      }
+    }
+
+    function jumpToChapter(ch) {
+      sound.typewriterKey();
+      currentChapter = ch;
+      currentStage = 0;
+      renderChapter();
+    }
+
+    function updateReputationDisplay() {
+      const el = document.getElementById("reputationStars");
+      el.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        if (i < reputation) {
+          el.innerHTML += `<i class="fa-solid fa-shield text-amber-400 text-sm"></i>`;
+        } else {
+          el.innerHTML += `<i class="fa-regular fa-shield text-stone-600 text-sm"></i>`;
+        }
+      }
+    }
+
+    /* ======================================================================
+       ФИНАЛЬНЫЙ ДИПЛОМ ДЕТЕКТИВА
+       ====================================================================== */
+    function showFinalDiploma() {
+      sound.victoryFanfare();
+      const container = document.getElementById("investigationArea");
+      container.innerHTML = `
+        <div class="dossier-paper rounded-2xl p-6 md:p-10 border-8 border-amber-900/60 shadow-2xl text-center relative overflow-hidden">
+          <div class="absolute -top-16 -right-16 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div class="w-20 h-20 mx-auto rounded-full bg-amber-500/20 border-4 border-amber-800 flex items-center justify-center text-amber-900 text-4xl mb-3">
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+
+          <span class="bg-amber-950 text-amber-300 font-mono text-xs uppercase font-bold px-3 py-1 rounded tracking-widest">
+            ВЕРХОВНЫЙ СОВЕТ ЛОГИК-СИТИ
+          </span>
+
+          <h2 class="font-noir-title text-3xl md:text-5xl font-black text-stone-900 mt-2 mb-1">
+            ДИПЛОМ ШЕРИФА ЛОГИКИ
+          </h2>
+          <p class="font-typewriter text-xs md:text-sm text-stone-700 uppercase tracking-widest mb-6">
+            Настоящим подтверждается квалификация эксперта 8 класса
+          </p>
+
+          <div class="max-w-xl mx-auto bg-stone-100/90 border-2 border-stone-300 rounded-xl p-5 text-left font-typewriter text-xs md:text-sm text-stone-800 leading-relaxed mb-6 shadow-inner">
+            <p class="mb-2"><strong>ЗАСЛУГИ ДЕТЕКТИВА:</strong></p>
+            <p>✔ Безошибочно отделяет законные высказывания от вопросов, команд и бессмысленного шума.</p>
+            <p>✔ Разоблачил все 4 маски кланов Мафии: Вопросительные, Побудительные, Мнения и Переменные $x$.</p>
+            <p>✔ Освоил Детектор Лжи: знает, что ложь — это полноценное высказывание со значением 0.</p>
+            <p>✔ Взломал сложные шифры со связками НЕ (инверсия), И (конъюнкция) и ИЛИ (дизъюнкция).</p>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <button onclick="restartGame()" class="bg-[#292019] hover:bg-[#3d3025] border-2 border-amber-600 text-amber-200 font-mono font-bold py-3.5 px-8 rounded-xl text-sm transition-all shadow-xl hover:scale-105 active:scale-95">
+              <i class="fa-solid fa-rotate-right mr-1.5"></i> НАЧАТЬ РАССЛЕДОВАНИЕ СНАЧАЛА
+            </button>
+            <button onclick="openNotebook()" class="bg-stone-200 hover:bg-stone-300 border-2 border-stone-400 text-stone-900 font-typewriter font-bold py-3.5 px-6 rounded-xl text-sm transition-all shadow">
+              <i class="fa-solid fa-book-bookmark mr-1.5"></i> ПОВТОРИТЬ КОДЕКС
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function restartGame() {
+      sound.typewriterKey();
+      currentChapter = 1;
+      currentStage = 0;
+      reputation = 5;
+      updateReputationDisplay();
+      renderChapter();
+    }
+
+    function openNotebook() {
+      sound.typewriterKey();
+      document.getElementById("notebookModal").classList.remove("hidden");
+      document.getElementById("notebookModal").classList.add("flex");
+    }
+
+    function closeNotebook() {
+      sound.typewriterKey();
+      document.getElementById("notebookModal").classList.add("hidden");
+      document.getElementById("notebookModal").classList.remove("flex");
+    }
+
+    // Инициализация при загрузке
+    window.onload = () => {
+      renderChapter();
+    };
+  </script>
+</body>
+</html>
