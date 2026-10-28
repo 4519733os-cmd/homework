@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>КИБЕР-МАФИЯ: ТЕНИ ЛОГИК-СИТИ // 8 КЛАСС</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+    :root {
+      --bg-dark: #070a13;
+      --card-bg: rgba(16, 23, 41, 0.88);
+      --neon-cyan: #00f5d4;
+      --neon-violet: #a855f7;
+      --neon-red: #ff2a5f;
+      --neon-gold: #f59e0b;
+      --neon-green: #10b981;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 85% 90%, rgba(0, 245, 212, 0.08) 0%, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      font-family: 'Rajdhani', sans-serif;
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+
+    /* Нуарный сканлайн эффект */
+    .scanlines {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 40;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Кибер-неоновое свечение */
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(0, 245, 212, 0.35), inset 0 0 15px rgba(0, 245, 212, 0.1);
+      border-color: var(--neon-cyan);
+    }
+    .glow-red {
+      box-shadow: 0 0 25px rgba(255, 42, 95, 0.4), inset 0 0 15px rgba(255, 42, 95, 0.15);
+      border-color: var(--neon-red);
+    }
+    .glow-violet {
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
+      border-color: var(--neon-violet);
+    }
+
+    .stamp-badge {
+      transform: rotate(-8deg) scale(0.95);
+      animation: stampDrop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes stampDrop {
+      0% { transform: scale(2.2) rotate(15deg); opacity: 0; }
+      100% { transform: scale(1) rotate(-8deg); opacity: 1; }
+    }
+
+    /* Анимированный туман и шум */
+    .fog-vignette {
+      position: fixed;
+      inset: 0;
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.85);
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* Кастомный скроллбар */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10, 15, 28, 0.9); }
+    ::-webkit-scrollbar-thumb { background: #2a3756; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+  </style>
+</head>
+<body class="p-3 md:p-6 flex flex-col items-center justify-center">
+
+  <div class="scanlines"></div>
+  <div class="fog-vignette"></div>
+
+  <!-- Главный контейнер игры -->
+  <div class="w-full max-w-4xl relative z-20 flex flex-col gap-4">
+
+    <!-- Верхняя статусная панель Детектива -->
+    <header class="bg-slate-900/80 backdrop-blur-md border border-slate-700/80 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-2xl">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-900 flex items-center justify-center text-cyan-300 text-2xl shadow-lg border border-cyan-400/40">
+          <i class="fa-solid fa-user-secret"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs uppercase tracking-widest font-mono-code text-cyan-400 font-bold">// ДЕТЕКТИВНЫЙ ОТДЕЛ</span>
+            <span id="rankBadge" class="bg-violet-950/80 border border-violet-500/50 text-violet-300 px-2 py-0.5 rounded text-xs font-bold">Стажёр</span>
+          </div>
+          <h1 class="text-xl md:text-2xl font-black font-orbitron text-white tracking-wider flex items-center gap-2">
+            ЛОГИК-СИТИ: <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">КИБЕР-МАФИЯ</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Метрики расследования -->
+      <div class="flex items-center gap-5">
+        <!-- Доверие города (HP) -->
+        <div class="flex flex-col items-end">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved text-emerald-400"></i> Репутация Города
+          </span>
+          <div class="flex items-center gap-1.5 mt-1" id="reputationHearts">
+            <i class="fa-solid fa-heart text-red-500 text-base drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>
+            <i class="fa-solid fa-heart text-red-500 text-base drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>
+            <i class="fa-solid fa-heart text-red-500 text-base drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>
+            <i class="fa-solid fa-heart text-red-500 text-base drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>
+          </div>
+        </div>
+
+        <!-- Раскрытые дела -->
+        <div class="flex flex-col items-center bg-slate-950/70 border border-slate-700/60 px-3.5 py-1.5 rounded-xl">
+          <span class="text-[10px] text-slate-400 uppercase font-mono-code">Раскрыто</span>
+          <span id="scoreDisplay" class="font-orbitron font-extrabold text-cyan-400 text-lg">0 / 12</span>
+        </div>
+
+        <!-- Кнопка Кодекса / Справки -->
+        <button onclick="openCodexModal()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-cyan-500/40 text-cyan-300 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg" title="Кодекс Логики (Шпаргалка)">
+          <i class="fa-solid fa-book-bookmark text-base"></i>
+        </button>
+
+        <!-- Звук -->
+        <button id="soundToggleBtn" onclick="toggleAudio()" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 flex items-center justify-center transition-all hover:scale-105" title="Вкл/Выкл звук">
+          <i class="fa-solid fa-volume-high text-base"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Основной игровой экран -->
+    <main id="gameMainScreen" class="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-5 md:p-8 shadow-2xl relative overflow-hidden min-h-[460px] flex flex-col justify-between">
+      
+      <!-- Индикатор раунда и атмосфера -->
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center gap-2">
+          <span id="caseTypeBadge" class="bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-crosshairs"></i> ДЕНЬ: ДОПРОС ПОДОЗРЕВАЕМОГО
+          </span>
+          <span id="caseNumberIndicator" class="text-xs font-mono-code text-slate-400">ДЕЛО #1</span>
+        </div>
+        <div id="cityStatusMood" class="text-xs font-mono-code text-amber-400 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> ГОРОД НАПРЯЖЕН
+        </div>
+      </div>
+
+      <!-- Досье подозреваемого (Свидетеля) -->
+      <div id="suspectCard" class="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 md:p-6 my-auto relative transition-all duration-300">
+        
+        <!-- Верхняя шапка досье -->
+        <div class="flex items-start justify-between gap-4 border-b border-slate-800/80 pb-4 mb-4">
+          <div class="flex items-center gap-3.5">
+            <div id="suspectAvatar" class="w-14 h-14 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center text-3xl shadow-inner text-cyan-400">
+              🎭
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 id="suspectName" class="font-orbitron font-bold text-lg md:text-xl text-white">Доктор Тьюринг</h3>
+                <span id="suspectRole" class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-mono-code">Инженер кибер-сетей</span>
+              </div>
+              <p id="suspectLocation" class="text-xs text-slate-400 mt-0.5">Место задержания: Сектор «База Данных 01»</p>
+            </div>
+          </div>
+          
+          <!-- Место под штамп-печать вердикта -->
+          <div id="stampSlot" class="h-10 flex items-center"></div>
+        </div>
+
+        <!-- Реплика / Показания свидетеля -->
+        <div class="bg-slate-900/90 rounded-xl p-4 md:p-5 border border-slate-800/90 relative">
+          <span class="absolute -top-2.5 left-4 bg-slate-800 px-2.5 py-0.5 rounded text-[11px] font-mono-code font-bold uppercase tracking-wider text-slate-300">
+            ПРОТОКОЛ ПОКАЗАНИЙ // АУДИО-ЗАПИСЬ:
+          </span>
+          <p id="suspectQuote" class="text-lg md:text-2xl font-bold font-mono-code text-cyan-200 leading-relaxed text-center py-2">
+            «В одном байте содержится ровно 8 бит информации.»
+          </p>
+        </div>
+
+        <!-- Подсказка-анализатор улики (появляется при вердикте) -->
+        <div id="verdictDetails" class="mt-4 p-3.5 rounded-xl text-sm hidden font-medium leading-normal"></div>
+      </div>
+
+      <!-- Панель принятия решений Шерифа -->
+      <div id="decisionPanel" class="mt-4 flex flex-col gap-3">
+        <!-- Шаг 1: Определение природы (Высказывание или Мафия) -->
+        <div id="step1Controls" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <button onclick="makeStep1Verdict(true)" class="group bg-gradient-to-r from-emerald-950/50 to-slate-900 hover:from-emerald-900/60 hover:to-slate-800 border-2 border-emerald-500/50 hover:border-emerald-400 p-4 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-98 shadow-xl">
+            <div class="flex items-center gap-3.5 text-left">
+              <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <div>
+                <div class="font-orbitron font-bold text-base md:text-lg text-emerald-300">МИРНЫЙ ЖИТЕЛЬ</div>
+                <div class="text-xs text-slate-400">Это строгое логическое ВЫСКАЗЫВАНИЕ</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-arrow-right text-emerald-400 opacity-60 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+
+          <button onclick="makeStep1Verdict(false)" class="group bg-gradient-to-r from-rose-950/50 to-slate-900 hover:from-rose-900/60 hover:to-slate-800 border-2 border-rose-500/50 hover:border-rose-400 p-4 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-98 shadow-xl">
+            <div class="flex items-center gap-3.5 text-left">
+              <div class="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-mask"></i>
+              </div>
+              <div>
+                <div class="font-orbitron font-bold text-base md:text-lg text-rose-300">КЛАН МАФИИ</div>
+                <div class="text-xs text-slate-400">НЕ-высказывание (вопрос, команда, вкус, x)</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-arrow-right text-rose-400 opacity-60 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+        </div>
+
+        <!-- Шаг 2: Уточнение для Высказывания (Истина или Ложь) -->
+        <div id="step2Controls" class="hidden flex-col gap-2 animate-fadeIn">
+          <div class="text-center text-xs font-mono-code text-cyan-300 uppercase tracking-widest mb-1">
+            Житель признан Высказыванием. Определи его истинность:
+          </div>
+          <div class="grid grid-cols-2 gap-3.5">
+            <button onclick="makeStep2Verdict(true)" class="bg-slate-900 hover:bg-emerald-950/70 border-2 border-emerald-500/60 hover:border-emerald-400 text-emerald-300 font-orbitron font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-base md:text-lg transition-all shadow-lg active:scale-95">
+              <i class="fa-solid fa-check-double text-emerald-400"></i> ИСТИНА (1)
+            </button>
+            <button onclick="makeStep2Verdict(false)" class="bg-slate-900 hover:bg-amber-950/70 border-2 border-amber-500/60 hover:border-amber-400 text-amber-300 font-orbitron font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-base md:text-lg transition-all shadow-lg active:scale-95">
+              <i class="fa-solid fa-xmark text-amber-400"></i> ЛОЖЬ (0)
+            </button>
+          </div>
+        </div>
+
+        <!-- Кнопка «Следующее дело» (активна после вынесения вердикта) -->
+        <div id="nextCaseControls" class="hidden">
+          <button onclick="nextCase()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-orbitron font-black py-4 px-6 rounded-2xl text-base md:text-lg shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-98">
+            <span>ПРИОБЩИТЬ К МАТЕРИАЛАМ И СЛЕДУЮЩИЙ ДОПРОС</span>
+            <i class="fa-solid fa-forward-step"></i>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Экран завершения дела (Победа или Поражение) -->
+    <div id="gameOverScreen" class="hidden bg-slate-900/95 border border-slate-700/80 rounded-3xl p-6 md:p-10 shadow-2xl text-center flex-col items-center justify-center gap-5">
+      <div id="gameOverIcon" class="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl shadow-2xl mb-2"></div>
+      <h2 id="gameOverTitle" class="text-3xl md:text-4xl font-black font-orbitron tracking-wide"></h2>
+      <p id="gameOverDesc" class="text-slate-300 max-w-lg text-base md:text-lg leading-relaxed"></p>
+      
+      <!-- Итоговая карточка статистики -->
+      <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 w-full max-w-md flex justify-around items-center my-2 font-mono-code text-sm">
+        <div>
+          <div class="text-slate-400 text-xs">РЕПУТАЦИЯ</div>
+          <div id="finalReputation" class="font-bold text-emerald-400 text-lg">100%</div>
+        </div>
+        <div class="w-px h-8 bg-slate-800"></div>
+        <div>
+          <div class="text-slate-400 text-xs">ТОЧНОСТЬ ВЕРДИКТОВ</div>
+          <div id="finalAccuracy" class="font-bold text-cyan-400 text-lg">12 / 12</div>
+        </div>
+        <div class="w-px h-8 bg-slate-800"></div>
+        <div>
+          <div class="text-slate-400 text-xs">ЗВАНИЕ</div>
+          <div id="finalRank" class="font-bold text-violet-400 text-lg">Шериф</div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mt-2">
+        <button onclick="restartGame()" class="bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-orbitron font-extrabold px-8 py-3.5 rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95">
+          <i class="fa-solid fa-rotate-right mr-2"></i> НОВОЕ РАССЛЕДОВАНИЕ
+        </button>
+        <button onclick="openCodexModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 font-bold px-6 py-3.5 rounded-xl transition-all">
+          <i class="fa-solid fa-book mr-1.5"></i> КОДЕКС
+        </button>
+      </div>
+    </div>
+
+    <!-- Модальное окно: «Кодекс Шерифа» (Справочник-шпаргалка) -->
+    <div id="codexModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-700 max-w-2xl w-full max-h-[85vh] rounded-3xl p-6 md:p-8 flex flex-col shadow-2xl relative">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-book-skull"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-black font-orbitron text-white">КОДЕКС ЛОГИКИ ШЕРИФА</h2>
+              <p class="text-xs text-slate-400">Шпаргалка по отлову самозванцев для 8 класса</p>
+            </div>
+          </div>
+          <button onclick="closeCodexModal()" class="text-slate-400 hover:text-white text-xl p-2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="overflow-y-auto space-y-4 pr-1 text-sm md:text-base leading-relaxed text-slate-300">
+          <div class="bg-slate-950/80 p-4 rounded-2xl border border-emerald-500/30">
+            <h4 class="font-orbitron font-bold text-emerald-400 text-base mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-shield"></i> 1. КТО ТАКОЙ «МИРНЫЙ ЖИТЕЛЬ» (ВЫСКАЗЫВАНИЕ)?
+            </h4>
+            <p>
+              Это <strong>повествовательное предложение</strong>, о котором можно однозначно и объективно сказать: 
+              <span class="text-emerald-300 font-semibold">ИСТИННО (1)</span> оно или 
+              <span class="text-amber-300 font-semibold">ЛОЖНО (0)</span>.
+            </p>
+            <p class="text-xs text-slate-400 mt-2 font-mono-code bg-slate-900 p-2 rounded">
+              Примеры: «В байте 8 бит» (Истина), «Волга впадает в Байкал» (Ложь — но это полноценное высказывание!).
+            </p>
+          </div>
+
+          <div class="bg-slate-950/80 p-4 rounded-2xl border border-rose-500/30">
+            <h4 class="font-orbitron font-bold text-rose-400 text-base mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-mask"></i> 2. ЧЕТЫРЕ МАСКИ МАФИИ (НЕ-ВЫСКАЗЫВАНИЯ):
+            </h4>
+            <ul class="space-y-2 text-xs md:text-sm">
+              <li class="flex items-start gap-2">
+                <span class="text-rose-400 font-bold">1. ВОПРОСЫ:</span>
+                <span>«Который час?», «Где мой процессор?» — на вопрос нельзя ответить «Истина» или «Ложь».</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-400 font-bold">2. КОМАНДЫ / ПРИКАЗЫ:</span>
+                <span>«Закрой окно!», «Сохрани файл на диск!» — это побуждение к действию.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-400 font-bold">3. МНЕНИЯ И ОЦЕНКИ ВКУСА:</span>
+                <span>«Python красивее С++», «Этот трек самый крутой» — у каждого свой вкус, объективной истины нет.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-rose-400 font-bold">4. ПЕРЕМЕННЫЕ БЕЗ КОНТЕКСТА:</span>
+                <span>«x + 5 = 12», «Она учится на отлично» — пока не знаем, кто такие x и она, истинность определить невозможно.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-950/80 p-4 rounded-2xl border border-violet-500/30">
+            <h4 class="font-orbitron font-bold text-violet-400 text-base mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-moon"></i> 3. НОЧНОЙ СОВЕТ: СВЯЗКИ
+            </h4>
+            <p class="text-xs md:text-sm">
+              • <strong>НЕ (Инверсия):</strong> переворачивает истину в ложь и наоборот.<br>
+              • <strong>И (Конъюнкция):</strong> истинно только когда <em>оба</em> факта истинны.<br>
+              • <strong>ИЛИ (Дизъюнкция):</strong> истинно, если выполняется <em>хотя бы один</em> факт.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-800 text-center">
+          <button onclick="closeCodexModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-orbitron font-bold px-6 py-2.5 rounded-xl text-sm transition-all">
+            ВСЁ ЯСНО, К РАССЛЕДОВАНИЮ!
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* =========================================================
+       БАЗА ДОПРОСОВ (КИБЕР-СВИДЕТЕЛИ И САМОЗВАНЦЫ)
+       ========================================================= */
+    const suspectsDatabase = [
+      // 1. Высказывание ИСТИНА
+      {
+        name: "Профессор Вайт",
+        role: "Хранитель Архивов",
+        avatar: "👴",
+        location: "Сектор Архитектуры ПК",
+        quote: "В одном байте содержится ровно 8 бит.",
+        isStatement: true,
+        statementTruth: true,
+        category: "statement",
+        explanation: "Это строгое повествовательное утверждение, соответствующее факту информатики (ИСТИНА)."
+      },
+      // 2. НЕ-высказывание (Вопрос)
+      {
+        name: "Инспектор Клик",
+        role: "Патрульный Сети",
+        avatar: "🕵️",
+        location: "Шлюз Локальной Сети",
+        quote: "Сколько файлов хранится в системной папке?",
+        isStatement: false,
+        reason: "вопрос",
+        explanation: "Мафия раскрыта! Это вопросительное предложение. Ему нельзя присвоить значение «Истина» или «Ложь»."
+      },
+      // 3. Высказывание ЛОЖЬ
+      {
+        name: "Сержант Байт",
+        role: "Оператор Терминала",
+        avatar: "🤖",
+        location: "Серверный Узел 04",
+        quote: "Число 28 делится на 5 без остатка.",
+        isStatement: true,
+        statementTruth: false,
+        category: "statement",
+        explanation: "Это полноценное высказывание! Но оно математически ложно: 28 / 5 = 5 с остатком 3 (ЛОЖЬ)."
+      },
+      // 4. НЕ-высказывание (Команда / Побуждение)
+      {
+        name: "Тень Дона",
+        role: "Неизвестный в плаще",
+        avatar: "🕶️",
+        location: "Переулок Багов",
+        quote: "Немедленно закрой все вкладки и отключи питание!",
+        isStatement: false,
+        reason: "команда",
+        explanation: "Мафия поймана! Это побудительное предложение (приказ/команда). Оно не констатирует факт."
+      },
+      // 5. НЕ-высказывание (Оценка / Вкус)
+      {
+        name: "Мадам Пиксель",
+        role: "Дизайнер Интерфейсов",
+        avatar: "👩‍🎤",
+        location: "Неоновый Квартал",
+        quote: "Язык Python — самый стильный и лёгкий язык программирования в мире.",
+        isStatement: false,
+        reason: "мнение",
+        explanation: "Мафия нейтрализована! Это субъективное оценочное суждение. Для одного разработчика он удобен, для другого — нет."
+      },
+      // 6. НЕ-высказывание (Переменная без значения)
+      {
+        name: "Хакер Икс",
+        role: "Шифровальщик",
+        avatar: "🥷",
+        location: "Подземный Хаб",
+        quote: "x + 15 > 40",
+        isStatement: false,
+        reason: "переменная",
+        explanation: "Мафия арестована! Это выражение с неизвестной переменной x. Без значения x невозможно определить, истинно оно или ложно."
+      },
+      // 7. Высказывание ИСТИНА
+      {
+        name: "Аналитик Ада",
+        role: "Математик Города",
+        avatar: "👩‍💼",
+        location: "Логический Центр",
+        quote: "Сумма углов любого плоского треугольника равна 180 градусам.",
+        isStatement: true,
+        statementTruth: true,
+        category: "statement",
+        explanation: "Мирный житель оправдан! Общеизвестная геометрическая теорема. Это истинное высказывание."
+      },
+      // 8. Высказывание ЛОЖЬ
+      {
+        name: "Курьер Бит",
+        role: "Доставщик пакетов",
+        avatar: "🚴",
+        location: "Оптоволоконный мост",
+        quote: "Клавиатура является основным устройством вывода графической информации.",
+        isStatement: true,
+        statementTruth: false,
+        category: "statement",
+        explanation: "Это высказывание, но оно ложное (фальшивка): клавиатура служит для ввода данных, а вывод графики делает монитор."
+      },
+      // 9. НЕ-высказывание (Побуждение / Призыв)
+      {
+        name: "Активист Неон",
+        role: "Спикер Городской Площади",
+        avatar: "📢",
+        location: "Центральная Магистраль",
+        quote: "Соблюдайте правила безопасного поведения в сети Интернет!",
+        isStatement: false,
+        reason: "команда",
+        explanation: "Мафия! Призыв и лозунг не являются высказываниями, так как не несут утверждения факта."
+      },
+      // 10. Высказывание ИСТИНА
+      {
+        name: "Инженер Паскаль",
+        role: "Системный Архитектор",
+        avatar: "👨‍💻",
+        location: "Дата-Центр Омега",
+        quote: "Число 19 является простым числом.",
+        isStatement: true,
+        statementTruth: true,
+        category: "statement",
+        explanation: "Истинное высказывание: 19 делится только на 1 и на само себя."
+      },
+      // 11. НЕ-высказывание (Вопрос)
+      {
+        name: "Кадет Скан",
+        role: "Младший Офицер",
+        avatar: "👮",
+        location: "Контрольно-пропускной пункт",
+        quote: "В какой кодировке один символ весит 16 бит?",
+        isStatement: false,
+        reason: "вопрос",
+        explanation: "Это вопрос. Вопросы не могут быть ни истинными, ни ложными."
+      },
+      // 12. НОЧНОЙ РАУНД / СЛОЖНОЕ ВЫСКАЗЫВАНИЕ (Связка И)
+      {
+        name: "Детектив Буль",
+        role: "Специальный Агент Ночного Совета",
+        avatar: "🦉",
+        location: "Ночной Городской Совет",
+        isNightCouncil: true,
+        quote: "(2 * 2 = 4) И (5 > 10)",
+        isStatement: true,
+        statementTruth: false,
+        category: "logic_and",
+        explanation: "Сложное высказывание со связкой «И» (конъюнкция). Первая часть истинна, но вторая ложна (5 не больше 10). При связке И результат — ЛОЖЬ (0)."
+      },
+      // 13. НОЧНОЙ РАУНД (Связка ИЛИ)
+      {
+        name: "Агент Матрица",
+        role: "Ночной Координатор",
+        avatar: "🛰️",
+        location: "Ночной Городской Совет",
+        isNightCouncil: true,
+        quote: "(Число 9 чётное) ИЛИ (Число 9 делится на 3)",
+        isStatement: true,
+        statementTruth: true,
+        category: "logic_or",
+        explanation: "Сложное высказывание со связкой «ИЛИ» (дизъюнкция). Первая часть ложна, но вторая истинна (9 делится на 3). При связке ИЛИ достаточно одной истины -> ИСТИНА (1)!"
+      },
+      // 14. НОЧНОЙ РАУНД (Отрицание НЕ)
+      {
+        name: "Магистр Инверт",
+        role: "Судья Логической Палаты",
+        avatar: "⚖️",
+        location: "Ночной Городской Совет",
+        isNightCouncil: true,
+        quote: "НЕ (Принтер — это устройство ввода)",
+        isStatement: true,
+        statementTruth: true,
+        category: "logic_not",
+        explanation: "«Принтер — устройство ввода» — это ложь. Отрицание НЕ превращает ложь в ИСТИНУ (1)."
+      }
+    ];
+
+    /* =========================================================
+       ЗВУКОВОЙ ДВИЖОК (WEB AUDIO API — 100% АВТОНОМНО)
+       ========================================================= */
+    class CyberSoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      }
+
+      playClick() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      playSuccess() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.25);
+        });
+      }
+
+      playStamp() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "square";
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(40, now + 0.12);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.12);
+      }
+
+      playAlarm() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.linearRampToValueAtTime(180, now + 0.25);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.25);
+      }
+    }
+
+    const sound = new CyberSoundEngine();
+
+    function toggleAudio() {
+      sound.muted = !sound.muted;
+      const btn = document.getElementById("soundToggleBtn");
+      btn.innerHTML = sound.muted 
+        ? '<i class="fa-solid fa-volume-xmark text-rose-400 text-base"></i>'
+        : '<i class="fa-solid fa-volume-high text-base"></i>';
+      sound.playClick();
+    }
+
+    /* =========================================================
+       СОСТОЯНИЕ ИГРЫ
+       ========================================================= */
+    let currentCaseIndex = 0;
+    let reputation = 4; // Количество жизней
+    let correctAnswersCount = 0;
+    let userStep1Choice = null; // true (мирный) или false (мафия)
+    const targetCasesTotal = 12; // Длина одного следственного дела
+    let activeCases = [];
+
+    function initGame() {
+      // Перемешиваем дела и берем срез
+      const shuffled = [...suspectsDatabase].sort(() => 0.5 - Math.random());
+      activeCases = shuffled.slice(0, targetCasesTotal);
+      currentCaseIndex = 0;
+      reputation = 4;
+      correctAnswersCount = 0;
+      updateReputationUI();
+      updateScoreUI();
+      renderCase();
+    }
+
+    function updateScoreUI() {
+      document.getElementById("scoreDisplay").textContent = `${correctAnswersCount} / ${targetCasesTotal}`;
+      
+      // Динамический ранг
+      let rank = "Стажёр";
+      if (correctAnswersCount >= 10) rank = "Легенда Сыска 🌟";
+      else if (correctAnswersCount >= 7) rank = "Старший Детектив";
+      else if (correctAnswersCount >= 4) rank = "Следователь";
+      document.getElementById("rankBadge").textContent = rank;
+    }
+
+    function updateReputationUI() {
+      const container = document.getElementById("reputationHearts");
+      container.innerHTML = "";
+      for (let i = 0; i < 4; i++) {
+        if (i < reputation) {
+          container.innerHTML += `<i class="fa-solid fa-heart text-red-500 text-base drop-shadow-[0_0_8px_rgba(239,68,68,0.7)]"></i>`;
+        } else {
+          container.innerHTML += `<i class="fa-regular fa-heart text-slate-600 text-base"></i>`;
+        }
+      }
+    }
+
+    function renderCase() {
+      const c = activeCases[currentCaseIndex];
+      const card = document.getElementById("suspectCard");
+      card.className = "bg-slate-950/70 border border-slate-800 rounded-2xl p-5 md:p-6 my-auto relative transition-all duration-300";
+      
+      document.getElementById("caseNumberIndicator").textContent = `ДЕЛО #${currentCaseIndex + 1} ИЗ ${targetCasesTotal}`;
+      document.getElementById("suspectName").textContent = c.name;
+      document.getElementById("suspectRole").textContent = c.role;
+      document.getElementById("suspectAvatar").textContent = c.avatar;
+      document.getElementById("suspectLocation").textContent = `Место задержания: ${c.location}`;
+      document.getElementById("suspectQuote").textContent = `«${c.quote}»`;
+
+      const typeBadge = document.getElementById("caseTypeBadge");
+      if (c.isNightCouncil) {
+        typeBadge.innerHTML = `<i class="fa-solid fa-moon text-violet-400"></i> НОЧЬ: ЗАСЕДАНИЕ ГОРОДСКОГО СОВЕТА`;
+        typeBadge.className = "bg-violet-950/60 border border-violet-500/50 text-violet-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5";
+      } else {
+        typeBadge.innerHTML = `<i class="fa-solid fa-crosshairs text-cyan-400"></i> ДЕНЬ: ДОПРОС ПОДОЗРЕВАЕМОГО`;
+        typeBadge.className = "bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5";
+      }
+
+      // Сброс панелей вердикта
+      document.getElementById("stampSlot").innerHTML = "";
+      const details = document.getElementById("verdictDetails");
+      details.className = "mt-4 p-3.5 rounded-xl text-sm hidden font-medium leading-normal";
+      details.textContent = "";
+
+      // Переключатели кнопок
+      document.getElementById("step1Controls").classList.remove("hidden");
+      document.getElementById("step2Controls").classList.add("hidden");
+      document.getElementById("nextCaseControls").classList.add("hidden");
+    }
+
+    /* ---------------------------------------------------------
+       ШАГ 1: ВЕРДИКТ (ВЫСКАЗЫВАНИЕ ИЛИ САМОЗВАНЕЦ)
+       --------------------------------------------------------- */
+    function makeStep1Verdict(isStatementClaim) {
+      sound.playClick();
+      const current = activeCases[currentCaseIndex];
+      userStep1Choice = isStatementClaim;
+
+      // Если игрок сказал «Мирный житель» (Высказывание)
+      if (isStatementClaim) {
+        if (current.isStatement) {
+          // Игрок прав, что это высказывание -> переходим к шагу 2 (Истина или Ложь)
+          document.getElementById("step1Controls").classList.add("hidden");
+          document.getElementById("step2Controls").classList.remove("hidden");
+        } else {
+          // Игрок ошибся: назвал мафию мирным жителем!
+          applyVerdictResult(false, `ОШИБКА ШЕРИФА! Вы приняли самозванца за мирного жителя. ${current.explanation}`);
+        }
+      } 
+      // Если игрок сказал «Клан Мафии» (НЕ-высказывание)
+      else {
+        if (!current.isStatement) {
+          // Игрок прав: это действительно мафия
+          applyVerdictResult(true, `БЛЕСТЯЩЕ, ШЕРИФ! Мафия поймана с поличным. ${current.explanation}`);
+        } else {
+          // Игрок ошибся: обвинил мирного жителя
+          applyVerdictResult(false, `СУДЕБНАЯ ОШИБКА! Это законопослушное высказывание, а не мафия. ${current.explanation}`);
+        }
+      }
+    }
+
+    /* ---------------------------------------------------------
+       ШАГ 2: ВЕРДИКТ ДЛЯ ВЫСКАЗЫВАНИЯ (ИСТИНА ИЛИ ЛОЖЬ)
+       --------------------------------------------------------- */
+    function makeStep2Verdict(userTruthClaim) {
+      sound.playClick();
+      const current = activeCases[currentCaseIndex];
+
+      if (userTruthClaim === current.statementTruth) {
+        const valStr = current.statementTruth ? "ИСТИНУ (1)" : "ЛОЖЬ (0)";
+        applyVerdictResult(true, `АБСОЛЮТНО ВЕРНО! Вы безошибочно доказали ${valStr}. ${current.explanation}`);
+      } else {
+        const expected = current.statementTruth ? "ИСТИНОЙ" : "ЛОЖЬЮ";
+        applyVerdictResult(false, `НЕВЕРНЫЙ СТАТУС! На самом деле это высказывание является ${expected}. ${current.explanation}`);
+      }
+    }
+
+    /* ---------------------------------------------------------
+       ПРИМЕНЕНИЕ РЕЗУЛЬТАТА И ШТАМПЫ
+       --------------------------------------------------------- */
+    function applyVerdictResult(isCorrect, explanationText) {
+      document.getElementById("step1Controls").classList.add("hidden");
+      document.getElementById("step2Controls").classList.add("hidden");
+      document.getElementById("nextCaseControls").classList.remove("hidden");
+
+      const card = document.getElementById("suspectCard");
+      const stampSlot = document.getElementById("stampSlot");
+      const details = document.getElementById("verdictDetails");
+
+      details.classList.remove("hidden");
+      details.textContent = explanationText;
+
+      if (isCorrect) {
+        sound.playStamp();
+        setTimeout(() => sound.playSuccess(), 100);
+        correctAnswersCount++;
+        updateScoreUI();
+
+        card.classList.add("glow-cyan");
+        stampSlot.innerHTML = `
+          <div class="stamp-badge border-2 border-emerald-400 bg-emerald-950/80 text-emerald-300 font-orbitron font-black text-xs md:text-sm px-3 py-1 rounded shadow-lg uppercase tracking-wider">
+            ✓ ДЕЛО РАСКРЫТО
+          </div>`;
+        details.className = "mt-4 p-3.5 rounded-xl text-sm font-medium leading-normal bg-emerald-950/60 border border-emerald-500/40 text-emerald-200";
+      } else {
+        sound.playAlarm();
+        reputation--;
+        updateReputationUI();
+
+        card.classList.add("glow-red");
+        stampSlot.innerHTML = `
+          <div class="stamp-badge border-2 border-rose-500 bg-rose-950/80 text-rose-300 font-orbitron font-black text-xs md:text-sm px-3 py-1 rounded shadow-lg uppercase tracking-wider">
+            ✗ ПРОВАЛ ОПЕРАЦИИ
+          </div>`;
+        details.className = "mt-4 p-3.5 rounded-xl text-sm font-medium leading-normal bg-rose-950/60 border border-rose-500/40 text-rose-200";
+
+        // Проверка на поражение
+        if (reputation <= 0) {
+          setTimeout(() => finishGame(false), 800);
+          return;
+        }
+      }
+    }
+
+    /* ---------------------------------------------------------
+       СЛЕДУЮЩЕЕ ДЕЛО ИЛИ ФИНИШ
+       --------------------------------------------------------- */
+    function nextCase() {
+      sound.playClick();
+      currentCaseIndex++;
+      if (currentCaseIndex >= targetCasesTotal) {
+        finishGame(true);
+      } else {
+        renderCase();
+      }
+    }
+
+    function finishGame(isVictory) {
+      document.getElementById("gameMainScreen").classList.add("hidden");
+      const overScreen = document.getElementById("gameOverScreen");
+      overScreen.classList.remove("hidden");
+      overScreen.classList.add("flex");
+
+      const icon = document.getElementById("gameOverIcon");
+      const title = document.getElementById("gameOverTitle");
+      const desc = document.getElementById("gameOverDesc");
+
+      const accuracy = Math.round((correctAnswersCount / targetCasesTotal) * 100);
+      document.getElementById("finalAccuracy").textContent = `${correctAnswersCount} / ${targetCasesTotal}`;
+      document.getElementById("finalReputation").textContent = `${Math.max(0, reputation * 25)}%`;
+
+      let finalRankText = "Младший Детектив";
+      if (accuracy >= 90) finalRankText = "Главный Шериф Логики";
+      else if (accuracy >= 70) finalRankText = "Старший Следователь";
+      document.getElementById("finalRank").textContent = finalRankText;
+
+      if (isVictory) {
+        sound.playSuccess();
+        icon.className = "w-24 h-24 rounded-3xl flex items-center justify-center text-5xl shadow-2xl mb-2 bg-emerald-500/20 text-emerald-400 border-2 border-emerald-400";
+        icon.innerHTML = `<i class="fa-solid fa-trophy"></i>`;
+        title.innerHTML = `ПОБЕДА! ГОРОД СПАСЁН`;
+        title.className = "text-3xl md:text-4xl font-black font-orbitron tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-300";
+        desc.textContent = `Клан самозванцев Логик-Сити обезврежен! Вы безошибочно отделили истинные и ложные высказывания от вопросов, команд, субъективных вкусов и неизвестных переменных.`;
+      } else {
+        sound.playAlarm();
+        icon.className = "w-24 h-24 rounded-3xl flex items-center justify-center text-5xl shadow-2xl mb-2 bg-rose-500/20 text-rose-400 border-2 border-rose-500";
+        icon.innerHTML = `<i class="fa-solid fa-city"></i>`;
+        title.innerHTML = `ГОРОД ПОГРУЗИЛСЯ ВО ТЬМУ`;
+        title.className = "text-3xl md:text-4xl font-black font-orbitron tracking-wide text-rose-500";
+        desc.textContent = `Репутация департамента исчерпана. Самозванцы из клана Мафии запутали следствие. Изучите Кодекс Логики и начните операцию заново!`;
+      }
+    }
+
+    function restartGame() {
+      sound.playClick();
+      document.getElementById("gameOverScreen").classList.add("hidden");
+      document.getElementById("gameOverScreen").classList.remove("flex");
+      document.getElementById("gameMainScreen").classList.remove("hidden");
+      initGame();
+    }
+
+    /* Модальное окно Кодекса */
+    function openCodexModal() {
+      sound.playClick();
+      const m = document.getElementById("codexModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeCodexModal() {
+      sound.playClick();
+      const m = document.getElementById("codexModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    // Запуск при старте
+    window.onload = () => {
+      initGame();
+    };
+  </script>
+</body>
+</html>
