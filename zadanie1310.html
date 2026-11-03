@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ Информатика // Проверочный практикум: Задания №1, №3, №10</title>
+<style>
+  :root {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --card-inner: #f1f5f9;
+    --card-border: #e2e8f0;
+    
+    --accent-purple: #7c3aed;
+    --accent-purple-light: #ede9fe;
+    --accent-teal: #0284c7;
+    --accent-teal-light: #e0f2fe;
+    --accent-mint: #10b981;
+    --accent-mint-light: #d1fae5;
+    --accent-amber: #d97706;
+    --accent-amber-light: #fef3c7;
+    --accent-rose: #e11d48;
+    --accent-rose-light: #ffe4e6;
+    
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --text-subtle: #334155;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 60%, #e2e8f0 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+      radial-gradient(rgba(124, 58, 237, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(to right, rgba(2, 132, 199, 0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-wrapper {
+    max-width: 980px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header Card */
+  .header-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 24px 30px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent-purple);
+    background: var(--accent-purple-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    margin-bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: var(--text-main);
+  }
+
+  .header-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Timer Widget */
+  .timer-box {
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 12px 20px;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 170px;
+  }
+
+  .timer-val {
+    font-size: 28px;
+    font-weight: 800;
+    font-family: "Consolas", monospace;
+    color: var(--accent-purple);
+  }
+
+  .timer-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .timer-btns {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .btn-t {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    cursor: pointer;
+    color: var(--text-subtle);
+  }
+  .btn-t:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+
+  /* Карточка профиля ученика */
+  .student-bar {
+    background: var(--card-bg);
+    border: 1.5px solid var(--accent-purple-light);
+    border-radius: 20px;
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 12px -2px rgba(124, 58, 237, 0.05);
+  }
+
+  .student-inputs {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .student-field {
+    flex: 2;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .student-field:focus {
+    border-color: var(--accent-purple);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+
+  .student-class {
+    flex: 1;
+    max-width: 140px;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    outline: none;
+  }
+  .student-class:focus { border-color: var(--accent-purple); background: #ffffff; }
+
+  .export-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-report {
+    background: var(--accent-mint);
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 16px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+  }
+  .btn-report:hover { background: #059669; }
+
+  .btn-download {
+    background: var(--card-inner);
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .btn-download:hover { border-color: var(--accent-purple); color: var(--accent-purple); }
+
+  /* Навигация по фильтрам / вариантам */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--card-bg);
+    padding: 10px 14px;
+    border-radius: 18px;
+    border: 1px solid var(--card-border);
+  }
+
+  .filter-btn {
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { color: var(--accent-purple); border-color: var(--accent-purple); }
+  .filter-btn.active {
+    background: var(--accent-purple);
+    color: #ffffff;
+    border-color: var(--accent-purple);
+  }
+
+  /* Статистика */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-purple);
+    margin-bottom: 2px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* Task Card */
+  .task-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 24px 28px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .task-num {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--accent-purple);
+  }
+
+  .task-badge {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .badge-t1 { background: var(--accent-teal-light); color: var(--accent-teal); border: 1px solid rgba(2, 132, 199, 0.25); }
+  .badge-t3 { background: var(--accent-purple-light); color: var(--accent-purple); border: 1px solid rgba(124, 58, 237, 0.25); }
+  .badge-t10 { background: var(--accent-mint-light); color: var(--accent-mint); border: 1px solid rgba(16, 185, 129, 0.25); }
+
+  .task-body {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--text-main);
+    white-space: pre-line;
+    margin-bottom: 20px;
+    background: var(--card-inner);
+    padding: 20px 22px;
+    border-radius: 16px;
+    border-left: 4px solid var(--accent-purple);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: #ffffff;
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+  }
+  input[type="text"]:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 20px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-check {
+    background: var(--accent-purple);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  }
+  .btn-check:hover { background: #6d28d9; transform: translateY(-1px); }
+
+  /* Кнопка подсказки с состоянием блокировки */
+  .btn-hint {
+    background: var(--accent-amber-light);
+    color: var(--accent-amber);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    padding: 10px 16px;
+    transition: all 0.2s;
+  }
+  .btn-hint:hover:not(:disabled) { background: #fde68a; }
+  .btn-hint:disabled {
+    background: var(--card-inner);
+    color: var(--text-muted);
+    border-color: var(--card-border);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .btn-nav {
+    background: var(--card-inner);
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    padding: 10px 16px;
+  }
+  .btn-nav:hover { background: #e2e8f0; color: var(--text-main); }
+
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.5;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: var(--accent-mint-light);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #065f46;
+  }
+  .feedback.wrong {
+    background: var(--accent-rose-light);
+    border: 1px solid rgba(225, 29, 72, 0.3);
+    color: #9f1239;
+  }
+  .feedback.hint {
+    background: var(--accent-teal-light);
+    border: 1px solid rgba(2, 132, 199, 0.3);
+    color: #075985;
+    white-space: pre-line;
+  }
+
+  /* Matrix */
+  .grid-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 22px 28px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .grid-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 6px;
+  }
+
+  .matrix-btn {
+    height: 40px;
+    border-radius: 10px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-subtle);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .matrix-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); transform: translateY(-1px); }
+  .matrix-btn.current { border-color: var(--accent-purple); background: var(--accent-purple-light); color: var(--accent-purple); }
+  .matrix-btn.solved { background: var(--accent-mint-light); border-color: var(--accent-mint); color: #065f46; }
+  .matrix-btn.failed { background: var(--accent-rose-light); border-color: var(--accent-rose); color: #9f1239; }
+
+  .btn-reset {
+    margin-top: 14px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--card-border);
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  .btn-reset:hover { color: var(--accent-rose); border-color: var(--accent-rose); background: var(--accent-rose-light); }
+
+  /* Всплывающее модальное окно для отчета */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+  }
+  .modal-card {
+    background: #ffffff;
+    max-width: 600px;
+    width: 100%;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--text-main);
+  }
+  .modal-text {
+    width: 100%;
+    height: 220px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px;
+    font-family: "Consolas", monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    outline: none;
+    resize: none;
+    color: var(--text-main);
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <!-- Header Card -->
+  <div class="header-card">
+    <div>
+      <div class="header-tag">УРОК-ПРАКТИКУМ // 40 МИНУТ</div>
+      <h1 class="header-title">ОГЭ Практикум: Задания №1, №3, №10</h1>
+      <p class="header-desc">
+        Комплексная проверочная работа. Разбор решения становится доступен только после первой попытки ввода ответа.
+      </p>
+    </div>
+    <div class="timer-box">
+      <div class="timer-lbl">⏱ ТАЙМЕР ПРАКТИКИ</div>
+      <div class="timer-val" id="timerDisplay">20:00</div>
+      <div class="timer-btns">
+        <button class="btn-t" onclick="startTimer()">Старт</button>
+        <button class="btn-t" onclick="pauseTimer()">Пауза</button>
+        <button class="btn-t" onclick="resetTimer()">20:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Карточка ученика и отправки учителю -->
+  <div class="student-bar">
+    <div class="student-inputs">
+      <input type="text" id="studentName" class="student-field" placeholder="Введите фамилию и имя ученика..." oninput="saveStudentInfo()">
+      <input type="text" id="studentClass" class="student-class" placeholder="Класс (напр. 9А)" oninput="saveStudentInfo()">
+    </div>
+    <div class="export-btns">
+      <button class="btn-report" onclick="generateTeacherReport()">📋 Сдать работу учителю</button>
+      <button class="btn-download" onclick="downloadReportFile()">📥 Скачать отчет</button>
+    </div>
+  </div>
+
+  <!-- Фильтры вариантов / тем -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setMode('all')">Все 100 задач</button>
+    <button class="filter-btn" onclick="setMode('v1')">Вариант 1 (25)</button>
+    <button class="filter-btn" onclick="setMode('v2')">Вариант 2 (25)</button>
+    <button class="filter-btn" onclick="setMode('v3')">Вариант 3 (25)</button>
+    <button class="filter-btn" onclick="setMode('v4')">Вариант 4 (25)</button>
+    <button class="filter-btn" onclick="setMode('t1')">Только №1 (Текст)</button>
+    <button class="filter-btn" onclick="setMode('t3')">Только №3 (Логика)</button>
+    <button class="filter-btn" onclick="setMode('t10')">Только №10 (Системы)</button>
+  </div>
+
+  <!-- Статистика -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="statSolved">0 / 100</div>
+      <div class="stat-lbl">Решено верно</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statStreak">0 🔥</div>
+      <div class="stat-lbl">Серия побед</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statAccuracy">0%</div>
+      <div class="stat-lbl">Точность</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statMark">—</div>
+      <div class="stat-lbl">Оценка (из 25)</div>
+    </div>
+  </div>
+
+  <!-- Task Card -->
+  <div class="task-card">
+    <div class="task-top">
+      <div class="task-num" id="taskNumber">ЗАДАЧА #1</div>
+      <div class="task-badge badge-t1" id="taskBadge">ЗАДАНИЕ 1</div>
+    </div>
+
+    <div class="task-body" id="taskText">Загрузка задачи...</div>
+
+    <div class="input-group">
+      <input type="text" id="answerInput" placeholder="Введи ответ (слово или число)..." autocomplete="off">
+      <button class="btn-check" onclick="checkAnswer()">ПРОВЕРИТЬ</button>
+    </div>
+
+    <div class="actions-row">
+      <div>
+        <button class="btn-nav" onclick="prevTask()">← Назад</button>
+        <button class="btn-nav" onclick="nextTask()">Вперёд →</button>
+      </div>
+      <!-- Кнопка разбора заблокирована до ввода ответа! -->
+      <button class="btn-hint" id="hintBtn" onclick="toggleHint()" disabled title="Сначала введите ответ и нажмите 'ПРОВЕРИТЬ'">
+        🔒 Решение (доступно после ответа)
+      </button>
+    </div>
+
+    <div id="feedbackBox" class="feedback"></div>
+    <div id="hintBox" class="feedback hint"></div>
+  </div>
+
+  <!-- Matrix -->
+  <div class="grid-card">
+    <div class="grid-title" id="matrixTitle">Сетка задач текущей выборки</div>
+    <div class="matrix" id="taskMatrix"></div>
+    <button class="btn-reset" onclick="resetProgress()">🔄 Сбросить прогресс тренировки</button>
+  </div>
+</div>
+
+<!-- Модальное окно отчета для учителя -->
+<div class="modal-overlay" id="reportModal" onclick="closeModalOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-title">Готовый отчет для учителя</div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+      Скопируйте текст ниже и отправьте учителю в личные сообщения или в школьный мессенджер:
+    </p>
+    <textarea id="reportTextarea" class="modal-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-nav" onclick="closeModal()">Закрыть</button>
+      <button class="btn-check" onclick="copyReportText()">Скопировать в буфер</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const allTasks = [{"global_id": 1, "variant": 1, "num": 1, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#1)", "text": "1. [Задание 1] В кодировке Unicode каждый символ кодируется 16 битами. Ученик написал текст:
+«Липа, ясень, клён, рябина, тополь, берёза, лиственница, каштан — деревья парка».
+Затем он вычеркнул название одного дерева, запятую и пробел. Размер текста уменьшился на 14 байт. Напишите вычеркнутое слово.", "answer": "ясень", "solution": "16 бит=2 байта; 14/2=7; 7-2=5 букв -> ясень"}, {"global_id": 2, "variant": 1, "num": 2, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#2)", "text": "2. [Задание 1] В кодировке КОИ-8 (8 бит на символ) текст:
+«Ока, Дон, Волга, Енисей, Лена, Амур, Обь, Иртыш — реки России».
+Вычеркнули одно слово, запятую и пробел. Текст стал на 7 байт меньше. Напишите вычеркнутое слово.", "answer": "Волга", "solution": "8 бит=1 байт; 7/1=7; 7-2=5 букв -> Волга"}, {"global_id": 3, "variant": 1, "num": 3, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#3)", "text": "3. [Задание 1] В 32-битной кодировке UTF-32 каждый символ весит 4 байта. Из списка:
+«Флешка, диск, лента, картридж, накопитель — носители информации»
+вычеркнули одно слово, запятую и пробел. Объём текста уменьшился на 28 байт. Какое слово вычеркнуто?", "answer": "лента", "solution": "32 бита=4 байта; 28/4=7; 7-2=5 букв -> лента"}, {"global_id": 4, "variant": 1, "num": 4, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#4)", "text": "4. [Задание 1] В кодировке Unicode (16 бит) написан текст:
+«Астра, роза, тюльпан, пион, нарцисс, гладиолус, хризантема, ирис — цветы в саду».
+Удалили название одного цветка, запятую и пробел. Текст стал на 18 байт меньше. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "тюльпан", "solution": "18/2=9; 9-2=7 букв -> тюльпан (нарцисс тоже 7, но тюльпан первый)"}, {"global_id": 5, "variant": 1, "num": 5, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#5)", "text": "5. [Задание 1] В 32-битной кодировке список:
+«Байкал, Чаны, Ладога, Онега, Ильмень, Селигер — озёра России».
+Удалили одно слово, запятую и пробел. Размер текста уменьшился на 36 байт. Напишите вычеркнутое слово.", "answer": "Ильмень", "solution": "36/4=9; 9-2=7 букв -> Ильмень"}, {"global_id": 6, "variant": 1, "num": 6, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#6)", "text": "6. [Задание 1] В 16-битной кодировке список:
+«Ёж, волк, лиса, олень, барсук, медведь, росомаха — млекопитающие».
+Вычеркнули слово, запятую и пробел. Размер уменьшился на 14 байт. Напишите вычеркнутое слово.", "answer": "олень", "solution": "14/2=7; 7-2=5 букв -> олень"}, {"global_id": 7, "variant": 1, "num": 7, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#7)", "text": "7. [Задание 1] В кодировке Windows-1251 (8 бит) набран текст:
+«Щука, судак, окунь, плотва, карась, пескарь — рыбы».
+Вычеркнули одно слово, запятую и пробел. Текст стал на 8 байт меньше. Напишите вычеркнутое слово.", "answer": "судак", "solution": "8/1=8; 8-2=6 букв -> судак"}, {"global_id": 8, "variant": 1, "num": 8, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 1 // Задание 1 (#8)", "text": "8. [Задание 1] В 32-битной кодировке текст:
+«Материки: Евразия, Африка, Австралия, Антарктида».
+После удаления названия одного материка, запятой и пробела объём текста уменьшился на 36 байт. Напишите удалённое слово.", "answer": "Евразия", "solution": "36/4=9; 9-2=7 букв -> Евразия"}, {"global_id": 9, "variant": 1, "num": 9, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#9)", "text": "9. [Задание 10] Среди приведенных трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+63 (8), 34 (16), 110101 (2)", "answer": "53", "solution": "63(8)=51, 34(16)=52, 110101(2)=53 -> max: 53"}, {"global_id": 10, "variant": 1, "num": 10, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#10)", "text": "10. [Задание 10] Среди приведенных чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:
+54 (8), 2D (16), 101100 (2)", "answer": "44", "solution": "54(8)=44, 2D(16)=45, 101100(2)=44 -> min: 44"}, {"global_id": 11, "variant": 1, "num": 11, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#11)", "text": "11. [Задание 10] Переведите число 152 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученная запись?", "answer": "5", "solution": "152 = 10011000(2) -> 5 нулей"}, {"global_id": 12, "variant": 1, "num": 12, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#12)", "text": "12. [Задание 10] Переведите число 120 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная запись?", "answer": "4", "solution": "120 = 1111000(2) -> 4 единицы"}, {"global_id": 13, "variant": 1, "num": 13, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#13)", "text": "13. [Задание 10] Вычислите значение выражения в десятичной системе счисления:
+2A (16) + 57 (8) - 110010 (2)
+В ответе запишите только число.", "answer": "39", "solution": "42 + 47 - 50 = 39"}, {"global_id": 14, "variant": 1, "num": 14, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#14)", "text": "14. [Задание 10] Среди приведенных трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:
+43 (8), 24 (16), 100101 (2)", "answer": "37", "solution": "43(8)=35, 24(16)=36, 100101(2)=37 -> max: 37"}, {"global_id": 15, "variant": 1, "num": 15, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#15)", "text": "15. [Задание 10] Переведите число 148 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученная запись?", "answer": "5", "solution": "148 = 10010100(2) -> 5 нулей"}, {"global_id": 16, "variant": 1, "num": 16, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 1 // Задание 10 (#16)", "text": "16. [Задание 10] Сколько целых чисел x удовлетворяют условию: 35 (8) <= x < 24 (16)? В ответе укажите только количество чисел.", "answer": "7", "solution": "35(8)=29, 24(16)=36; 29 <= x < 36 -> 36-29=7"}, {"global_id": 17, "variant": 1, "num": 17, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#17)", "text": "17. [Задание 3] Напишите НАИМЕНЬШЕЕ натуральное число X, для которого ИСТИННО высказывание:
+НЕ (X < 7) И (X чётное)", "answer": "8", "solution": "X >= 7, чётное -> 8"}, {"global_id": 18, "variant": 1, "num": 18, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#18)", "text": "18. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X <= 14) И (X < 25)", "answer": "24", "solution": "14 < X < 25 -> 24"}, {"global_id": 19, "variant": 1, "num": 19, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#19)", "text": "19. [Задание 3] Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X <= 19) И (X нечётное)", "answer": "21", "solution": "X > 19, нечётное -> 21"}, {"global_id": 20, "variant": 1, "num": 20, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#20)", "text": "20. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+(X < 36) И НЕ (X нечётное)", "answer": "34", "solution": "X < 36, чётное -> 34"}, {"global_id": 21, "variant": 1, "num": 21, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#21)", "text": "21. [Задание 3] Напишите НАИМЕНЬШЕЕ натуральное двузначное число X, для которого ИСТИННО:
+НЕ (X < 26) И (X делится на 4)", "answer": "28", "solution": "X >= 26, делится на 4 -> 28"}, {"global_id": 22, "variant": 1, "num": 22, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#22)", "text": "22. [Задание 3] Напишите НАИБОЛЬШЕЕ двузначное число X, для которого ИСТИННО:
+(X < 92) И НЕ (X не делится на 5)", "answer": "90", "solution": "X < 92, делится на 5 -> 90"}, {"global_id": 23, "variant": 1, "num": 23, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#23)", "text": "23. [Задание 3] Для какого НАИБОЛЬШЕГО целого числа X ЛОЖНО высказывание:
+(X > 8) ИЛИ НЕ (X > 3)", "answer": "8", "solution": "Ложно ИЛИ: X <= 8 и X > 3 -> 3 < X <= 8 -> наиб: 8"}, {"global_id": 24, "variant": 1, "num": 24, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#24)", "text": "24. [Задание 3] Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X < -7) И (X <= 1)", "answer": "-7", "solution": "-7 <= X <= 1 -> наим: -7"}, {"global_id": 25, "variant": 1, "num": 25, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 1 // Задание 3 (#25)", "text": "25. [Задание 3] Для какого из приведенных имён ИСТИННО высказывание:
+НЕ (Первая буква согласная) И (Последняя буква согласная)?
+1) Елена   2) Артем   3) Максим   4) Ольга", "answer": "Артем", "solution": "Первая гласная И последняя согласная -> Артем"}, {"global_id": 26, "variant": 2, "num": 1, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#1)", "text": "1. [Задание 1] В кодировке Unicode каждый символ кодируется 16 битами. Записан текст:
+«Астра, роза, тюльпан, пион, нарцисс, гладиолус, хризантема, ирис — цветы в саду».
+Ученица вычеркнула название одного цветка, запятую и пробел. Размер текста уменьшился на 18 байт. Напишите вычеркнутое слово. Если слов несколько, укажите первое по порядку.", "answer": "тюльпан", "solution": "18/2=9; 9-2=7 букв -> тюльпан"}, {"global_id": 27, "variant": 2, "num": 2, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#2)", "text": "2. [Задание 1] В 32-битной кодировке (1 символ = 32 бита) набран текст:
+«Материки: Евразия, Африка, Австралия, Антарктида».
+После удаления названия одного материка, запятой и пробела объём текста стал на 36 байт меньше. Напишите удалённое слово.", "answer": "Евразия", "solution": "36/4=9; 9-2=7 букв -> Евразия"}, {"global_id": 28, "variant": 2, "num": 3, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#3)", "text": "3. [Задание 1] В кодировке КОИ-8 (8 бит на символ) набран текст:
+«Азия, Европа, Африка, Австралия, Антарктида — части света».
+Вычеркнули одно слово, запятую и пробел. Текст стал на 8 байт меньше. Напишите вычеркнутое слово.", "answer": "Европа", "solution": "8/1=8; 8-2=6 букв -> Европа"}, {"global_id": 29, "variant": 2, "num": 4, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#4)", "text": "4. [Задание 1] В 16-битной кодировке набран список:
+«Свинец, олово, медь, цинк, железо, серебро, платина — металлы».
+Удалили одно слово, запятую и пробел. Объём уменьшился на 18 байт. Напишите удалённое слово. Если вариантов несколько, выберите первое слово.", "answer": "серебро", "solution": "18/2=9; 9-2=7 букв -> серебро (платина тоже 7, но серебро первое)"}, {"global_id": 30, "variant": 2, "num": 5, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#5)", "text": "5. [Задание 1] В 16-битной кодировке из перечня:
+«Астрахань, Тверь, Курск, Пермь, Вологда, Смоленск — города»
+вычеркнули слово, запятую и пробел. Текст уменьшился на 16 байт. Напишите вычеркнутое слово. Если вариантов несколько, укажите первое слово.", "answer": "Тверь", "solution": "16/2=8; 8-2=6 букв -> Тверь"}, {"global_id": 31, "variant": 2, "num": 6, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#6)", "text": "6. [Задание 1] В кодировке с весом 32 бита записан текст:
+«Овощи: лук, боб, тыква, редис, чеснок, огурец, томат, перец».
+Ученик вычеркнул одно слово, запятую и пробел. Текст уменьшился на 28 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое.", "answer": "тыква", "solution": "28/4=7; 7-2=5 букв -> тыква"}, {"global_id": 32, "variant": 2, "num": 7, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#7)", "text": "7. [Задание 1] В 16-битной кодировке текст:
+«Python, Pascal, Basic, Java, Kotlin, Swift — языки программирования».
+Вычеркнули одно слово, запятую и пробел. Размер текста уменьшился на 14 байт. Напишите вычеркнутое слово. Если вариантов несколько, выберите первое слово.", "answer": "Basic", "solution": "14/2=7; 7-2=5 букв -> Basic"}, {"global_id": 33, "variant": 2, "num": 8, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 2 // Задание 1 (#8)", "text": "8. [Задание 1] В 32-битной кодировке список:
+«Птицы: стриж, сокол, коршун, ласточка, ястреб, глухарь».
+После вычеркивания названия одной птицы, запятой и пробела объём уменьшился на 32 байта. Напишите вычеркнутое слово. Если слов несколько, выберите первое.", "answer": "коршун", "solution": "32/4=8; 8-2=6 букв -> коршун"}, {"global_id": 34, "variant": 2, "num": 9, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#9)", "text": "9. [Задание 10] Среди приведенных трех чисел найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+323 (8), D7 (16), 11100000 (2)", "answer": "224", "solution": "323(8)=211, D7(16)=215, 11100000(2)=224 -> max: 224"}, {"global_id": 35, "variant": 2, "num": 10, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#10)", "text": "10. [Задание 10] Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+55 (8), 2D (16), 101110 (2)", "answer": "45", "solution": "55(8)=45, 2D(16)=45, 101110(2)=46 -> min: 45"}, {"global_id": 36, "variant": 2, "num": 11, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#11)", "text": "11. [Задание 10] Переведите число 105 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная запись?", "answer": "4", "solution": "105 = 64+32+8+1 = 1101001(2) -> 4 единицы"}, {"global_id": 37, "variant": 2, "num": 12, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#12)", "text": "12. [Задание 10] Переведите число 136 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученная запись?", "answer": "6", "solution": "136 = 10001000(2) -> 6 нулей"}, {"global_id": 38, "variant": 2, "num": 13, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#13)", "text": "13. [Задание 10] Вычислите значение выражения в десятичной системе счисления:
+10110 (2) + 35 (8) - 1C (16)
+В ответе запишите только число.", "answer": "23", "solution": "22 + 29 - 28 = 23"}, {"global_id": 39, "variant": 2, "num": 14, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#14)", "text": "14. [Задание 10] Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:
+72 (8), 3B (16), 111010 (2)", "answer": "59", "solution": "72(8)=58, 3B(16)=59, 111010(2)=58 -> max: 59"}, {"global_id": 40, "variant": 2, "num": 15, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#15)", "text": "15. [Задание 10] Сколько ЕДИНИЦ содержит двоичная запись восьмеричного числа 673 (8)?", "answer": "7", "solution": "6=110, 7=111, 3=011 -> 110111011(2) -> 7 единиц"}, {"global_id": 41, "variant": 2, "num": 16, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 2 // Задание 10 (#16)", "text": "16. [Задание 10] Найдите количество целых чисел x, для которых выполняется неравенство:
+101110 (2) <= x < 62 (8)
+В ответе укажите только количество чисел.", "answer": "4", "solution": "46 <= x < 50 -> 46, 47, 48, 49 -> 4 числа"}, {"global_id": 42, "variant": 2, "num": 17, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#17)", "text": "17. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X <= 11) И (X < 19)", "answer": "18", "solution": "11 < X < 19 -> 18"}, {"global_id": 43, "variant": 2, "num": 18, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#18)", "text": "18. [Задание 3] Напишите НАИМЕНЬШЕЕ натуральное число X, для которого ИСТИННО высказывание:
+НЕ (X <= 8) И НЕ (X > 21)", "answer": "9", "solution": "8 < X <= 21 -> наим. нат: 9"}, {"global_id": 44, "variant": 2, "num": 19, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#19)", "text": "19. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X >= 27) И (X нечётное)", "answer": "25", "solution": "X < 27, нечётное -> 25"}, {"global_id": 45, "variant": 2, "num": 20, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#20)", "text": "20. [Задание 3] Напишите НАИМЕНЬШЕЕ двузначное число X, для которого ИСТИННО высказывание:
+НЕ (X <= 30) И (X делится на 6)", "answer": "36", "solution": "X > 30, делится на 6 -> 36"}, {"global_id": 46, "variant": 2, "num": 21, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#21)", "text": "21. [Задание 3] Напишите НАИМЕНЬШЕЕ натуральное число X, для которого ИСТИННО высказывание:
+НЕ (X < 26) И (X делится на 4)", "answer": "28", "solution": "X >= 26, делится на 4 -> 28"}, {"global_id": 47, "variant": 2, "num": 22, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#22)", "text": "22. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+(X <= 63) И НЕ (X не делится на 9)", "answer": "63", "solution": "X <= 63, кратно 9 -> 63"}, {"global_id": 48, "variant": 2, "num": 23, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#23)", "text": "23. [Задание 3] Для какого НАИМЕНЬШЕГО целого числа X ЛОЖНО высказывание:
+(X < 4) ИЛИ НЕ (X < 13)", "answer": "4", "solution": "X >= 4 и X < 13 -> наим: 4"}, {"global_id": 49, "variant": 2, "num": 24, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#24)", "text": "24. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X >= -4) И (X > -18)", "answer": "-5", "solution": "-18 < X < -4 -> наиб: -5"}, {"global_id": 50, "variant": 2, "num": 25, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 2 // Задание 3 (#25)", "text": "25. [Задание 3] Для какого из приведенных названий городов ИСТИННО высказывание:
+(Первая буква согласная) И НЕ (В слове больше 5 букв)?
+1) Астрахань   2) Тверь   3) Волгоград   4) Кострома", "answer": "Тверь", "solution": "Первая согласная И длина <= 5 букв -> Тверь"}, {"global_id": 51, "variant": 3, "num": 1, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#1)", "text": "1. [Задание 1] В кодировке Unicode (1 символ = 16 бит) ученик набрал текст:
+«Щука, судак, окунь, плотва, карась, пескарь — речные рыбы».
+Затем вычеркнул одно слово, запятую и пробел. Текст уменьшился на 16 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "судак", "solution": "16/2=8; 8-2=6 букв -> судак"}, {"global_id": 52, "variant": 3, "num": 2, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#2)", "text": "2. [Задание 1] В 32-битной кодировке список:
+«Байкал, Чаны, Ладога, Онега, Ильмень, Селигер — озёра России».
+Удалили название одного озера, запятую и пробел. Текст стал на 36 байт меньше. Напишите удалённое слово. Если слов несколько, укажите первое.", "answer": "Ильмень", "solution": "36/4=9; 9-2=7 букв -> Ильмень"}, {"global_id": 53, "variant": 3, "num": 3, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#3)", "text": "3. [Задание 1] В кодировке Unicode (16 бит) каждый символ кодируется 2 байтами. Текст:
+«Ока, Волга, Енисей, Лена, Амур, Обь, Иртыш, Ангара — реки России».
+Ученик вычеркнул одно слово, запятую и пробел. Текст уменьшился на 16 байт. Напишите вычеркнутое слово. Если слов несколько, укажите первое.", "answer": "Енисей", "solution": "16/2=8; 8-2=6 букв -> Енисей"}, {"global_id": 54, "variant": 3, "num": 4, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#4)", "text": "4. [Задание 1] В 32-битной кодировке из перечня:
+«Флешка, диск, лента, картридж, накопитель — носители информации»
+вычеркнули одно слово, запятую и пробел. Текст уменьшился на 28 байт. Напишите вычеркнутое слово.", "answer": "лента", "solution": "28/4=7; 7-2=5 букв -> лента"}, {"global_id": 55, "variant": 3, "num": 5, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#5)", "text": "5. [Задание 1] В 16-битной кодировке записан текст:
+«Марс, Венера, Юпитер, Сатурн, Уран, Нептун, Меркурий — планеты Солнечной системы».
+Удалили название одной планеты, запятую и пробел. Текст уменьшился на 16 байт. Напишите вычеркнутое слово. Если вариантов несколько, выберите первое слово.", "answer": "Венера", "solution": "16/2=8; 8-2=6 букв -> Венера"}, {"global_id": 56, "variant": 3, "num": 6, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#6)", "text": "6. [Задание 1] В кодировке КОИ-8 (8 бит на символ) текст:
+«Ока, Дон, Волга, Енисей, Лена, Амур, Обь, Иртыш — реки России».
+Удалили одно слово, запятую и пробел. Текст стал на 7 байт меньше. Напишите вычеркнутое слово.", "answer": "Волга", "solution": "7/1=7; 7-2=5 букв -> Волга"}, {"global_id": 57, "variant": 3, "num": 7, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#7)", "text": "7. [Задание 1] В 16-битной кодировке список:
+«Рим, Вена, Прага, Мадрид, Берлин, Варшава, Лиссабон — столицы стран Европы».
+Вычеркнули одно слово, запятую и пробел. Текст стал на 16 байт меньше. Напишите вычеркнутое слово. Если вариантов несколько, выберите первое слово.", "answer": "Мадрид", "solution": "16/2=8; 8-2=6 букв -> Мадрид (Берлин тоже 6, но Мадрид первый)"}, {"global_id": 58, "variant": 3, "num": 8, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 3 // Задание 1 (#8)", "text": "8. [Задание 1] В 32-битной кодировке текст:
+«Лесные животные: заяц, лиса, ёж, волк, медведь, кабан, белка, бурундук».
+Вычеркнули название одного животного, запятую и пробел. Текст стал на 24 байта меньше. Напишите вычеркнутое слово. Если слов несколько, выберите первое.", "answer": "заяц", "solution": "24/4=6; 6-2=4 буквы -> заяц"}, {"global_id": 59, "variant": 3, "num": 9, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#9)", "text": "9. [Задание 10] Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+73 (8), 3A (16), 111011 (2)", "answer": "59", "solution": "73(8)=59, 3A(16)=58, 111011(2)=59 -> max: 59"}, {"global_id": 60, "variant": 3, "num": 10, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#10)", "text": "10. [Задание 10] Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+103 (8), 44 (16), 1000100 (2)", "answer": "67", "solution": "103(8)=67, 44(16)=68, 1000100(2)=68 -> min: 67"}, {"global_id": 61, "variant": 3, "num": 11, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#11)", "text": "11. [Задание 10] Переведите число 89 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная запись?", "answer": "4", "solution": "89 = 64+16+8+1 = 1011001(2) -> 4 единицы"}, {"global_id": 62, "variant": 3, "num": 12, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#12)", "text": "12. [Задание 10] Переведите число 205 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученная запись?", "answer": "3", "solution": "205 = 11001101(2) -> 3 нуля"}, {"global_id": 63, "variant": 3, "num": 13, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#13)", "text": "13. [Задание 10] Вычислите значение выражения в десятичной системе счисления:
+101101 (2) + 10 (8) + 101 (16)
+В ответе укажите только число.", "answer": "310", "solution": "45 + 8 + 257 = 310"}, {"global_id": 64, "variant": 3, "num": 14, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#14)", "text": "14. [Задание 10] Среди приведенных чисел найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления:
+5A (16), 133 (8), 1011010 (2)", "answer": "91", "solution": "5A(16)=90, 133(8)=91, 1011010(2)=90 -> max: 91"}, {"global_id": 65, "variant": 3, "num": 15, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#15)", "text": "15. [Задание 10] Сколько ЗНАЧАЩИХ НУЛЕЙ содержит двоичная запись шестнадцатеричного числа 2A5 (16)?", "answer": "5", "solution": "2=10, A=1010, 5=0101 -> 1010100101(2) -> 5 нулей"}, {"global_id": 66, "variant": 3, "num": 16, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 3 // Задание 10 (#16)", "text": "16. [Задание 10] Найдите количество целых чисел x, для которых выполняется неравенство:
+1011011 (2) < x <= 205 (8)", "answer": "42", "solution": "91 < x <= 133 -> 133-91=42"}, {"global_id": 67, "variant": 3, "num": 17, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#17)", "text": "17. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+(X < 15) И НЕ (X < 7)", "answer": "14", "solution": "7 <= X < 15 -> 14"}, {"global_id": 68, "variant": 3, "num": 18, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#18)", "text": "18. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X >= 16) И НЕ (X <= 5)", "answer": "15", "solution": "5 < X < 16 -> 15"}, {"global_id": 69, "variant": 3, "num": 19, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#19)", "text": "19. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X >= 48) И (X чётное)", "answer": "46", "solution": "X < 48, чётное -> 46"}, {"global_id": 70, "variant": 3, "num": 20, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#20)", "text": "20. [Задание 3] Напишите НАИМЕНЬШЕЕ двузначное число X, для которого ИСТИННО высказывание:
+НЕ (X < 16) И (X чётное)", "answer": "16", "solution": "X >= 16, чётное -> 16"}, {"global_id": 71, "variant": 3, "num": 21, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#21)", "text": "21. [Задание 3] Напишите НАИМЕНЬШЕЕ натуральное двузначное число X, для которого ИСТИННО:
+НЕ (X <= 38) И (X делится на 7)", "answer": "42", "solution": "X > 38, делится на 7 -> 42"}, {"global_id": 72, "variant": 3, "num": 22, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#22)", "text": "22. [Задание 3] Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X < 15) И (X делится на 3) И (X чётное)", "answer": "18", "solution": "X >= 15, делится на 6 -> 18"}, {"global_id": 73, "variant": 3, "num": 23, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#23)", "text": "23. [Задание 3] Для какого НАИБОЛЬШЕГО целого числа X ЛОЖНО высказывание:
+(X >= 15) ИЛИ НЕ (X > 7)", "answer": "14", "solution": "X < 15 и X > 7 -> 7 < X <= 14 -> наиб: 14"}, {"global_id": 74, "variant": 3, "num": 24, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#24)", "text": "24. [Задание 3] Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X < -5) И (X <= 4)", "answer": "-5", "solution": "-5 <= X <= 4 -> наим: -5"}, {"global_id": 75, "variant": 3, "num": 25, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 3 // Задание 3 (#25)", "text": "25. [Задание 3] Для какого из приведенных имён ИСТИННО высказывание:
+(Первая буква согласная) И НЕ (В слове 4 буквы)?
+1) Иван   2) Пётр   3) Дмитрий   4) Анна", "answer": "Дмитрий", "solution": "Первая согласная И длина != 4 -> Дмитрий"}, {"global_id": 76, "variant": 4, "num": 1, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#1)", "text": "1. [Задание 1] В одной из кодировок Unicode каждый символ кодируется 16 битами. Записан список:
+«Марс, Венера, Юпитер, Сатурн, Уран, Нептун, Меркурий — планеты Солнечной системы».
+После удаления названия одной планеты, запятой и пробела объём текста уменьшился на 16 байт. Напишите вычеркнутое слово. Если слов несколько, укажите первое по порядку.", "answer": "Венера", "solution": "16/2=8; 8-2=6 букв -> Венера"}, {"global_id": 77, "variant": 4, "num": 2, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#2)", "text": "2. [Задание 1] В кодировке с весом одного символа 32 бита составлен список:
+«Птицы: стриж, сокол, коршун, ласточка, ястреб, глухарь».
+После вычеркивания названия одной птицы, запятой и пробела объём уменьшился на 32 байта. Напишите вычеркнутое слово. Если вариантов несколько, выберите первое слово.", "answer": "коршун", "solution": "32/4=8; 8-2=6 букв -> коршун"}, {"global_id": 78, "variant": 4, "num": 3, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#3)", "text": "3. [Задание 1] В 16-битной кодировке Unicode набран текст:
+«Свинец, олово, медь, цинк, железо, серебро, платина — металлы».
+Удалили одно слово, запятую и пробел. Объём уменьшился на 18 байт. Напишите удалённое слово. Если вариантов несколько, выберите первое слово.", "answer": "серебро", "solution": "18/2=9; 9-2=7 букв -> серебро"}, {"global_id": 79, "variant": 4, "num": 4, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#4)", "text": "4. [Задание 1] В кодировке КОИ-8 (8 бит на символ) набран текст:
+«Азия, Европа, Африка, Австралия, Антарктида — части света».
+Вычеркнули одно слово, запятую и пробел. Текст стал на 8 байт меньше. Напишите вычеркнутое слово. Если слов несколько, выберите первое.", "answer": "Европа", "solution": "8/1=8; 8-2=6 букв -> Европа"}, {"global_id": 80, "variant": 4, "num": 5, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#5)", "text": "5. [Задание 1] В кодировке с весом символа 16 бит из перечня:
+«Астрахань, Тверь, Курск, Пермь, Вологда, Смоленск — города»
+вычеркнули слово, запятую и пробел. Текст уменьшился на 16 байт. Напишите вычеркнутое слово. Если вариантов несколько, укажите первое.", "answer": "Тверь", "solution": "16/2=8; 8-2=6 букв -> Тверь"}, {"global_id": 81, "variant": 4, "num": 6, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#6)", "text": "6. [Задание 1] В 32-битной кодировке записан текст:
+«Овощи: лук, боб, тыква, редис, чеснок, огурец, томат, перец».
+Ученик вычеркнул одно слово, запятую и пробел. Текст уменьшился на 28 байт. Напишите вычеркнутое слово. Если слов несколько, выберите первое.", "answer": "тыква", "solution": "28/4=7; 7-2=5 букв -> тыква"}, {"global_id": 82, "variant": 4, "num": 7, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#7)", "text": "7. [Задание 1] В 16-битной кодировке список:
+«Липа, ясень, клён, рябина, тополь, берёза, лиственница, каштан — деревья парка».
+Вычеркнули одно дерево, запятую и пробел. Размер текста уменьшился на 14 байт. Напишите вычеркнутое слово. Если вариантов несколько, укажите первое.", "answer": "ясень", "solution": "14/2=7; 7-2=5 букв -> ясень"}, {"global_id": 83, "variant": 4, "num": 8, "task_oge": "Задание 1", "badge": "Текст (№1)", "title": "Вариант 4 // Задание 1 (#8)", "text": "8. [Задание 1] В кодировке Unicode (16 бит) написан текст:
+«Астра, роза, тюльпан, пион, нарцисс, гладиолус, хризантема, ирис — цветы в саду».
+Удалили название одного цветка, запятую и пробел. Текст стал на 18 байт меньше. Напишите вычеркнутое слово. Если слов несколько, выберите первое по порядку.", "answer": "тюльпан", "solution": "18/2=9; 9-2=7 букв -> тюльпан"}, {"global_id": 84, "variant": 4, "num": 9, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#9)", "text": "9. [Задание 10] Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в ответе в десятичной системе счисления:
+65 (8), 34 (16), 110101 (2)", "answer": "52", "solution": "65(8)=53, 34(16)=52, 110101(2)=53 -> min: 52"}, {"global_id": 85, "variant": 4, "num": 10, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#10)", "text": "10. [Задание 10] Среди приведенных трех чисел найдите МИНИМАЛЬНОЕ и запишите его в десятичной системе счисления:
+4B (16), 114 (8), 1001011 (2)", "answer": "75", "solution": "4B(16)=75, 114(8)=76, 1001011(2)=75 -> min: 75"}, {"global_id": 86, "variant": 4, "num": 11, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#11)", "text": "11. [Задание 10] Переведите число 77 из десятичной системы счисления в двоичную. Сколько ЕДИНИЦ содержит полученная запись?", "answer": "4", "solution": "77 = 64+8+4+1 = 1001101(2) -> 4 единицы"}, {"global_id": 87, "variant": 4, "num": 12, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#12)", "text": "12. [Задание 10] Переведите число 205 из десятичной системы счисления в двоичную. Сколько ЗНАЧАЩИХ НУЛЕЙ содержит полученная запись?", "answer": "3", "solution": "205 = 11001101(2) -> 3 нуля"}, {"global_id": 88, "variant": 4, "num": 13, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#13)", "text": "13. [Задание 10] Вычислите значение выражения в десятичной системе счисления:
+11011111 (2) + 1011 (8) - 111 (16)
+В ответе запишите десятичное число.", "answer": "471", "solution": "223 + 521 - 273 = 471"}, {"global_id": 89, "variant": 4, "num": 14, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#14)", "text": "14. [Задание 10] Среди чисел 101 (8), 42 (16), 1000010 (2) найдите МАКСИМАЛЬНОЕ и запишите его в десятичной системе счисления.", "answer": "66", "solution": "101(8)=65, 42(16)=66, 1000010(2)=66 -> max: 66"}, {"global_id": 90, "variant": 4, "num": 15, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#15)", "text": "15. [Задание 10] Переведите число 420 из пятеричной системы счисления в десятичную систему счисления. В ответе запишите только число.", "answer": "110", "solution": "4*25 + 2*5 + 0 = 110"}, {"global_id": 91, "variant": 4, "num": 16, "task_oge": "Задание 10", "badge": "Системы (№10)", "title": "Вариант 4 // Задание 10 (#16)", "text": "16. [Задание 10] Решите уравнение: 404 (x) + 1 (x) = 1301 (5). В ответе запишите натуральное значение основания x.", "answer": "7", "solution": "4x^2 + 5 = 201 => 4x^2 = 196 => x^2 = 49 => x = 7"}, {"global_id": 92, "variant": 4, "num": 17, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#17)", "text": "17. [Задание 3] Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X <= 17) И (X нечётное)", "answer": "19", "solution": "X > 17, нечётное -> 19"}, {"global_id": 93, "variant": 4, "num": 18, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#18)", "text": "18. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+(X < 30) И НЕ (X нечётное)", "answer": "28", "solution": "X < 30, чётное -> 28"}, {"global_id": 94, "variant": 4, "num": 19, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#19)", "text": "19. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+(X <= 53) И НЕ (X чётное)", "answer": "53", "solution": "X <= 53, нечётное -> 53"}, {"global_id": 95, "variant": 4, "num": 20, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#20)", "text": "20. [Задание 3] Напишите НАИБОЛЬШЕЕ натуральное двузначное число X, для которого ИСТИННО:
+(X < 75) И НЕ (X не делится на 10)", "answer": "70", "solution": "X < 75, делится на 10 -> 70"}, {"global_id": 96, "variant": 4, "num": 21, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#21)", "text": "21. [Задание 3] Для какого НАИБОЛЬШЕГО целого числа X ЛОЖНО высказывание:
+(X > 9) ИЛИ НЕ (X >= 3)", "answer": "9", "solution": "X <= 9 и X >= 3 -> 3 <= X <= 9 -> наиб: 9"}, {"global_id": 97, "variant": 4, "num": 22, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#22)", "text": "22. [Задание 3] Для какого НАИМЕНЬШЕГО целого числа X ЛОЖНО высказывание:
+(X <= 9) ИЛИ НЕ (X <= 18)", "answer": "10", "solution": "X > 9 и X <= 18 -> 10 <= X <= 18 -> наим: 10"}, {"global_id": 98, "variant": 4, "num": 23, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#23)", "text": "23. [Задание 3] Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО высказывание:
+НЕ (X > 0) И (X >= -6)", "answer": "0", "solution": "-6 <= X <= 0 -> наиб: 0"}, {"global_id": 99, "variant": 4, "num": 24, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#24)", "text": "24. [Задание 3] Сколько существует целых чисел X, для которых ИСТИННО высказывание:
+НЕ (X <= 7) И (X < 15)", "answer": "7", "solution": "7 < X < 15 -> 8, 9, 10, 11, 12, 13, 14 -> 7 чисел"}, {"global_id": 100, "variant": 4, "num": 25, "task_oge": "Задание 3", "badge": "Логика (№3)", "title": "Вариант 4 // Задание 3 (#25)", "text": "25. [Задание 3] Для какого из приведенных названий городов ИСТИННО высказывание:
+НЕ (Первая буква гласная) И (Последняя буква гласная)?
+1) Калуга   2) Иркутск   3) Владимир   4) Анапа", "answer": "Калуга", "solution": "Первая согласная И последняя гласная -> Калуга"}];
+
+let filteredTasks = [...allTasks];
+let currentIndex = 0;
+let userAnswers = {};
+let streak = 0;
+
+// Таймер на 20 минут (1200 сек)
+let timerSeconds = 1200;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timerDisplay').textContent = 
+    `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+  if (timerInterval) return;
+  timerInterval = setInterval(() => {
+    if (timerSeconds > 0) {
+      timerSeconds--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      alert("⏱ Время 20-минутного практикума вышло! Нажмите 'Сдать работу учителю'.");
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  pauseTimer();
+  timerSeconds = 1200;
+  updateTimerDisplay();
+}
+
+function setMode(mode) {
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (mode === 'all') {
+    filteredTasks = [...allTasks];
+  } else if (mode.startsWith('v')) {
+    const vNum = parseInt(mode.replace('v', ''));
+    filteredTasks = allTasks.filter(t => t.variant === vNum);
+  } else if (mode === 't1') {
+    filteredTasks = allTasks.filter(t => t.task_oge.includes('1'));
+  } else if (mode === 't3') {
+    filteredTasks = allTasks.filter(t => t.task_oge.includes('3'));
+  } else if (mode === 't10') {
+    filteredTasks = allTasks.filter(t => t.task_oge.includes('10'));
+  }
+  currentIndex = 0;
+  renderTask();
+}
+
+function saveStudentInfo() {
+  localStorage.setItem('oge_student_name', document.getElementById('studentName').value);
+  localStorage.setItem('oge_student_class', document.getElementById('studentClass').value);
+}
+
+function loadProgress() {
+  const savedName = localStorage.getItem('oge_student_name');
+  if (savedName) document.getElementById('studentName').value = savedName;
+  const savedClass = localStorage.getItem('oge_student_class');
+  if (savedClass) document.getElementById('studentClass').value = savedClass;
+
+  const saved = localStorage.getItem('oge_3tasks_v2_progress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      userAnswers = data.answers || {};
+      streak = data.streak || 0;
+    } catch(e){}
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('oge_3tasks_v2_progress', JSON.stringify({
+    answers: userAnswers,
+    streak: streak
+  }));
+}
+
+function updateStats() {
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  document.getElementById('statSolved').textContent = `${solvedCount} / ${allTasks.length}`;
+  document.getElementById('statStreak').textContent = `${streak} 🔥`;
+  const acc = attemptedCount > 0 ? Math.round((solvedCount / attemptedCount) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = `${acc}%`;
+
+  let mark = "—";
+  if (solvedCount >= 22) mark = "«5» (отлично)";
+  else if (solvedCount >= 17) mark = "«4» (хорошо)";
+  else if (solvedCount >= 11) mark = "«3» (зачёт)";
+  else if (solvedCount >= 16) mark = "«4» (хорошо)";
+  else if (solvedCount >= 10) mark = "«3» (зачёт)";
+  else if (solvedCount > 0) mark = "«2» (доработать)";
+  document.getElementById('statMark').textContent = mark;
+}
+
+function renderMatrix() {
+  const container = document.getElementById('taskMatrix');
+  container.innerHTML = '';
+  filteredTasks.forEach((t, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'matrix-btn';
+    btn.textContent = t.global_id;
+    if (idx === currentIndex) btn.classList.add('current');
+    if (userAnswers[t.global_id]) {
+      btn.classList.add(userAnswers[t.global_id].status);
+    }
+    btn.onclick = () => {
+      currentIndex = idx;
+      renderTask();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTask() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  document.getElementById('taskNumber').textContent = `${t.title} // ${t.type_desc}`;
+  
+  const bEl = document.getElementById('taskBadge');
+  bEl.textContent = t.task_oge;
+  if (t.task_oge.includes('10')) bEl.className = 'task-badge badge-t10';
+  else if (t.task_oge.includes('3')) bEl.className = 'task-badge badge-t3';
+  else bEl.className = 'task-badge badge-t1';
+
+  document.getElementById('taskText').textContent = t.text;
+
+  const inp = document.getElementById('answerInput');
+  inp.value = userAnswers[t.global_id] ? userAnswers[t.global_id].userText : '';
+  inp.focus();
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('hintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  // Управление кнопкой разбора решения:
+  const hintBtn = document.getElementById('hintBtn');
+  if (userAnswers[t.global_id]) {
+    // Ответ уже давался => разблокируем решение
+    hintBtn.disabled = false;
+    hintBtn.textContent = '💡 Ход решения';
+    hintBtn.title = 'Посмотреть пошаговое решение';
+
+    if (userAnswers[t.global_id].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${t.answer}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Нажмите '💡 Ход решения', чтобы посмотреть разбор.`;
+    }
+  } else {
+    // Ответ ещё не дан => кнопка заблокирована
+    hintBtn.disabled = true;
+    hintBtn.textContent = '🔒 Решение (доступно после ответа)';
+    hintBtn.title = 'Сначала введите свой ответ и нажмите кнопку ПРОВЕРИТЬ';
+  }
+
+  renderMatrix();
+  updateStats();
+}
+
+function checkAnswer() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  const inputEl = document.getElementById('answerInput');
+  const userVal = inputEl.value.trim().toLowerCase();
+  const correctVal = t.answer.trim().toLowerCase();
+  const fb = document.getElementById('feedbackBox');
+
+  if (!userVal) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Сначала введите ответ в поле ввода!';
+    return;
+  }
+
+  // Разблокируем кнопку решения сразу после отправки ответа
+  const hintBtn = document.getElementById('hintBtn');
+  hintBtn.disabled = false;
+  hintBtn.textContent = '💡 Ход решения';
+  hintBtn.title = 'Посмотреть пошаговое решение';
+
+  if (userVal === correctVal) {
+    if (!userAnswers[t.global_id] || userAnswers[t.global_id].status !== 'solved') {
+      streak++;
+    }
+    userAnswers[t.global_id] = { status: 'solved', userText: inputEl.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Верно!</strong> Твой ответ: <code>${t.answer}</code> (+1 первичный балл ОГЭ)`;
+  } else {
+    streak = 0;
+    userAnswers[t.global_id] = { status: 'failed', userText: inputEl.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Теперь вы можете открыть '💡 Ход решения', чтобы увидеть разбор ошибки.`;
+  }
+
+  saveProgress();
+  renderMatrix();
+  updateStats();
+}
+
+function toggleHint() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  const hb = document.getElementById('hintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.innerHTML = `<strong>Подробный разбор задачи:</strong><br>${t.solution.replace(/\n/g, '<br>')}`;
+  }
+}
+
+function prevTask() {
+  if (currentIndex > 0) { currentIndex--; renderTask(); }
+}
+function nextTask() {
+  if (currentIndex < filteredTasks.length - 1) { currentIndex++; renderTask(); }
+}
+
+function resetProgress() {
+  if (confirm("Точно сбросить весь прогресс тренировки?")) {
+    userAnswers = {};
+    streak = 0;
+    saveProgress();
+    currentIndex = 0;
+    renderTask();
+  }
+}
+
+// ----------------- СБОР И ОТПРАВКА ДАННЫХ УЧИТЕЛЮ -----------------
+function buildReportData() {
+  const name = document.getElementById('studentName').value.trim() || 'Без имени';
+  const sClass = document.getElementById('studentClass').value.trim() || '—';
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  const now = new Date().toLocaleString('ru-RU');
+
+  let report = `РЕЗУЛЬТАТЫ ПРОВЕРОЧНОЙ РАБОТЫ (ОГЭ 2026)\n`;
+  report += `Ученик: ${name}\n`;
+  report += `Класс: ${sClass}\n`;
+  report += `Дата сдачи: ${now}\n`;
+  report += `Решено верно: ${solvedCount} из ${allTasks.length} (Попыток: ${attemptedCount})\n`;
+  
+  // Расчёт отметки по 6 задачам (если решал вариант)
+  let mark = "2";
+  if (solvedCount >= 6) mark = "5 (отлично)";
+  else if (solvedCount >= 4) mark = "4 (хорошо)";
+  else if (solvedCount >= 3) mark = "3 (удовл.)";
+  report += `Итоговая отметка: ${mark}\n`;
+  report += `--------------------------------------\n`;
+  report += `ДЕТАЛИЗАЦИЯ ОТВЕТОВ:\n`;
+
+  allTasks.forEach(t => {
+    const ansInfo = userAnswers[t.global_id];
+    if (ansInfo) {
+      const icon = ansInfo.status === 'solved' ? '✔ ВЕРНО' : '❌ ОШИБКА';
+      report += `Вар.${t.variant} №${t.num} [${t.task_oge}]: ${icon} | Ответ: "${ansInfo.userText}" (Эталон: ${t.answer})\n`;
+    } else {
+      report += `Вар.${t.variant} №${t.num} [${t.task_oge}]: — НЕ РЕШАЛОСЬ\n`;
+    }
+  });
+
+  return report;
+}
+
+function generateTeacherReport() {
+  const report = buildReportData();
+  document.getElementById('reportTextarea').value = report;
+  document.getElementById('reportModal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('reportModal').style.display = 'none';
+}
+
+function closeModalOnBg(e) {
+  if (e.target.id === 'reportModal') closeModal();
+}
+
+function copyReportText() {
+  const ta = document.getElementById('reportTextarea');
+  ta.select();
+  document.execCommand('copy');
+  alert("📋 Отчет скопирован в буфер обмена! Теперь ученик может отправить его учителю в личные сообщения или в чат.");
+  closeModal();
+}
+
+function downloadReportFile() {
+  const report = buildReportData();
+  const name = document.getElementById('studentName').value.trim() || 'student';
+  const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `OGE_Report_${name.replace(/\s+/g, '_')}.txt`;
+  a.click();
+}
+
+document.getElementById('answerInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { checkAnswer(); }
+});
+
+updateTimerDisplay();
+loadProgress();
+renderTask();
+</script>
+</body>
+</html>
