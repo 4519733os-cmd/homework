@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Лаборатория Эйлера // Визуальная игра-практикум ОГЭ</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --card-inner: #f1f5f9;
+    --border: #e2e8f0;
+    --primary: #7c3aed;
+    --primary-light: #ede9fe;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --mint: #059669;
+    --mint-light: #d1fae5;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --rose: #e11d48;
+    --rose-light: #ffe4e6;
+    --text: #0f172a;
+    --text-muted: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 60%, #e2e8f0 100%); color: var(--text); padding: 24px 16px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+  
+  .wrapper { max-width: 960px; width: 100%; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Header */
+  .header {
+    background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px 30px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--primary); background: var(--primary-light); padding: 4px 14px; border-radius: 20px; margin-bottom: 8px; }
+  .title { font-size: 26px; font-weight: 800; color: var(--text); }
+  .desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.5; }
+  .badge-icon { width: 70px; height: 70px; background: var(--primary-light); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; flex-shrink: 0; }
+
+  /* Navigation Tabs */
+  .tabs { display: flex; gap: 10px; background: var(--card); padding: 8px; border-radius: 18px; border: 1px solid var(--border); }
+  .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; background: transparent; border: none; color: var(--text-muted); transition: all 0.2s; }
+  .tab-btn.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
+
+  /* Interactive Sandbox */
+  .sandbox-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 26px 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 20px; }
+  .sandbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; }
+  @media (max-width: 768px) { .sandbox-grid { grid-template-columns: 1fr; } }
+
+  .svg-box { background: var(--card-inner); border-radius: 20px; border: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  svg { max-width: 380px; width: 100%; height: auto; }
+
+  .circle-a { fill: rgba(37, 99, 235, 0.25); stroke: var(--blue); stroke-width: 3; transition: all 0.3s; cursor: pointer; }
+  .circle-b { fill: rgba(5, 150, 105, 0.25); stroke: var(--mint); stroke-width: 3; transition: all 0.3s; cursor: pointer; }
+  .intersect-zone { fill: rgba(124, 58, 237, 0.45); stroke: var(--primary); stroke-width: 2.5; transition: all 0.3s; cursor: pointer; }
+  .circle-a:hover { fill: rgba(37, 99, 235, 0.4); }
+  .circle-b:hover { fill: rgba(5, 150, 105, 0.4); }
+  .intersect-zone:hover { fill: rgba(124, 58, 237, 0.65); }
+
+  .label-text { font-size: 15px; font-weight: 800; fill: var(--text); pointer-events: none; }
+
+  /* Controls */
+  .controls-box { display: flex; flex-direction: column; gap: 14px; }
+  .formula-banner { background: var(--amber-light); border: 1px solid rgba(217, 119, 6, 0.3); border-radius: 16px; padding: 14px 18px; font-family: "Consolas", monospace; font-size: 16px; font-weight: 700; color: var(--amber); text-align: center; }
+
+  .zone-info { background: var(--card-inner); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+  .zone-row { display: flex; justify-content: space-between; align-items: center; }
+  .zone-row span { font-weight: 700; }
+
+  /* Game Quest Mode */
+  .quest-box { display: none; flex-direction: column; gap: 20px; }
+  .quest-box.active { display: flex; }
+
+  .quest-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 26px 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); }
+  .table-kim { width: 100%; max-width: 550px; border-collapse: collapse; margin: 16px 0; border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .table-kim th { background: var(--card-inner); padding: 10px 14px; font-size: 13.5px; text-align: left; border-bottom: 1.5px solid var(--border); }
+  .table-kim th:last-child { text-align: center; width: 200px; }
+  .table-kim td { padding: 9px 14px; font-size: 14.5px; font-family: "Consolas", monospace; border-bottom: 1px solid var(--border); font-weight: 600; }
+  .table-kim td:last-child { text-align: center; color: var(--blue); font-weight: 700; }
+
+  .input-row { display: flex; gap: 12px; margin-top: 14px; }
+  input[type="text"] { flex: 1; background: #fff; border: 2px solid var(--border); border-radius: 12px; padding: 12px 18px; font-size: 16px; font-weight: 600; outline: none; }
+  input[type="text"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
+
+  button.btn-act { padding: 0 24px; border-radius: 12px; border: none; font-weight: 700; font-size: 14.5px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-check { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
+  .btn-check:hover { background: #6d28d9; }
+  .btn-hint { background: var(--amber-light); color: var(--amber); border: 1px solid rgba(217, 119, 6, 0.2); padding: 10px 16px; }
+  .btn-hint:hover:not(:disabled) { background: #fde68a; }
+  .btn-hint:disabled { background: var(--card-inner); color: var(--text-muted); cursor: not-allowed; opacity: 0.6; }
+
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 14.5px; display: none; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--mint-light); border: 1px solid rgba(5, 150, 105, 0.3); color: #065f46; }
+  .feedback.wrong { background: var(--rose-light); border: 1px solid rgba(225, 29, 72, 0.3); color: #9f1239; }
+  .feedback.hint { background: var(--blue-light); border: 1px solid rgba(37, 99, 235, 0.3); color: #1e3a8a; white-space: pre-line; }
+
+  .score-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 6px; }
+  .score-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; text-align: center; }
+  .score-val { font-size: 22px; font-weight: 800; color: var(--primary); }
+  .score-lbl { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="tag">Интерактивный тренажер // ОГЭ 9 класс</div>
+      <h1 class="title">Лаборатория кругов Эйлера</h1>
+      <p class="desc">Интерактивная модель для наглядного понимания связок ИЛИ («|») и И («&»).</p>
+    </div>
+    <div class="badge-icon">🔬</div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchMode('sandbox')">1. Визуальный конструктор кругов</button>
+    <button class="tab-btn" onclick="switchMode('quest')">2. Детектив-практикум (10 миссий)</button>
+  </div>
+
+  <!-- РЕЖИМ 1: ВИЗУАЛЬНЫЙ КОНСТРУКТОР -->
+  <div id="sandboxView" class="sandbox-card">
+    <div class="sandbox-grid">
+      <!-- Интерактивная SVG схема -->
+      <div class="svg-box">
+        <svg viewBox="0 0 400 240">
+          <defs>
+            <!-- Область пересечения кругов -->
+            <clipPath id="clipA"><circle cx="150" cy="120" r="85" /></clipPath>
+          </defs>
+          
+          <!-- Круг A -->
+          <circle cx="150" cy="120" r="85" class="circle-a" id="svgCircleA" onclick="clickZone('A')"></circle>
+          <!-- Круг B -->
+          <circle cx="250" cy="120" r="85" class="circle-b" id="svgCircleB" onclick="clickZone('B')"></circle>
+          
+          <!-- Зона пересечения A & B -->
+          <circle cx="250" cy="120" r="85" clip-path="url(#clipA)" class="intersect-zone" id="svgIntersect" onclick="clickZone('AB')"></circle>
+
+          <!-- Подписи зон -->
+          <text x="110" y="125" class="label-text" id="labelOnlyA">Только A</text>
+          <text x="200" y="125" class="label-text" id="labelIntersect" text-anchor="middle">A & B</text>
+          <text x="290" y="125" class="label-text" id="labelOnlyB">Только B</text>
+        </svg>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 10px;">
+          💡 Кликайте по кругам или серединке, чтобы увидеть их математический смысл!
+        </p>
+      </div>
+
+      <!-- Панель формул и расчета -->
+      <div class="controls-box">
+        <div class="formula-banner" id="formulaBanner">
+          ( A | B ) + ( A & B ) = A + B
+        </div>
+
+        <div class="zone-info" id="zoneDetails">
+          <div class="zone-row">
+            <span>Объединение (A | B):</span>
+            <strong style="color: var(--amber);" id="valOr">7000 тыс.</strong>
+          </div>
+          <div class="zone-row">
+            <span>Круг A целиком:</span>
+            <strong style="color: var(--blue);" id="valA">4800 тыс.</strong>
+          </div>
+          <div class="zone-row">
+            <span>Круг B целиком:</span>
+            <strong style="color: var(--mint);" id="valB">4500 тыс.</strong>
+          </div>
+          <div class="zone-row">
+            <span>Пересечение (A & B):</span>
+            <strong style="color: var(--primary);" id="valAnd">2300 тыс.</strong>
+          </div>
+        </div>
+
+        <div style="background: var(--card-inner); padding: 14px 18px; border-radius: 16px; font-size: 13.5px; line-height: 1.5; color: var(--text-subtle);">
+          🎯 <strong>Главный инсайт:</strong> Площадь пересечения (A & B) — это излишек, возникающий при простом сложении A + B. Чтобы найти его, нужно из (A + B) вычесть объединение (A | B)!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЖИМ 2: ПРАКТИКА-МИССИИ -->
+  <div id="questView" class="quest-box">
+    <div class="score-bar">
+      <div class="score-card">
+        <div class="score-val" id="qSolved">0 / 10</div>
+        <div class="score-lbl">Пройдено дел</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val" id="qStreak">0 🔥</div>
+        <div class="score-lbl">Серия побед</div>
+      </div>
+      <div class="score-card">
+        <div class="score-val" id="qAccuracy">0%</div>
+        <div class="score-lbl">Точность</div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <span style="font-weight: 800; color: var(--primary);" id="missionNum">МИССИЯ #1 ИЗ 10</span>
+        <span style="background: var(--blue-light); color: var(--blue); padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 700;" id="missionBadge">2 СЛОВА</span>
+      </div>
+
+      <p style="font-size: 14.5px; color: var(--text-muted); margin-bottom: 8px;">
+        В языке запросов поискового сервера: «|» — ИЛИ, «&» — И. По таблице найдите неизвестный сегмент:
+      </p>
+
+      <div id="missionTable"></div>
+
+      <div style="font-size: 16px; font-weight: 700; background: var(--card-inner); padding: 14px 18px; border-radius: 14px; border-left: 4px solid var(--primary); margin: 16px 0;" id="missionQuestion">
+        Какое количество страниц (в тысячах) будет найдено?
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="questInput" placeholder="Введите число..." autocomplete="off">
+        <button class="btn-act btn-check" onclick="checkQuestAnswer()">Проверить</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+        <div>
+          <button class="btn-act" style="background: var(--card-inner); color: var(--text); padding: 10px 16px;" onclick="prevQuest()">← Назад</button>
+          <button class="btn-act" style="background: var(--card-inner); color: var(--text); padding: 10px 16px;" onclick="nextQuest()">Вперёд →</button>
+        </div>
+        <button class="btn-act btn-hint" id="questHintBtn" onclick="toggleQuestHint()" disabled>
+          🔒 Разбор (после ответа)
+        </button>
+      </div>
+
+      <div id="questFeedback" class="feedback"></div>
+      <div id="questHintBox" class="feedback hint"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Аудио-эффекты через Web Audio API
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playBeep(type) {
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    if (type === 'click') {
+      osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    } else if (type === 'success') {
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
+  } catch(e){}
+}
+
+function switchMode(mode) {
+  playBeep('click');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'sandbox') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('sandboxView').style.display = 'flex';
+    document.getElementById('questView').style.display = 'none';
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('sandboxView').style.display = 'none';
+    document.getElementById('questView').style.display = 'flex';
+    renderQuest();
+  }
+}
+
+function clickZone(zone) {
+  playBeep('click');
+  const banner = document.getElementById('formulaBanner');
+  if (zone === 'A') {
+    banner.textContent = "Только Круг A: N(A) - N(A & B) = 4800 - 2300 = 2500";
+    banner.style.color = "var(--blue)";
+  } else if (zone === 'B') {
+    banner.textContent = "Только Круг B: N(B) - N(A & B) = 4500 - 2300 = 2200";
+    banner.style.color = "var(--mint)";
+  } else {
+    banner.textContent = "Пересечение A & B: N(A) + N(B) - N(A | B) = 2300";
+    banner.style.color = "var(--primary)";
+  }
+}
+
+// 10 миссий для индивидуального практикума
+const questData = [
+  {
+    badge: "2 СЛОВА",
+    rows: [{q: "Крейсер | Линкор", c: "7000"}, {q: "Крейсер", c: "4800"}, {q: "Линкор", c: "4500"}],
+    quest: "Какое количество страниц (в тысячах) будет найдено по запросу «Крейсер & Линкор»?",
+    ans: "2300",
+    hint: "Формула: И = A + B - ИЛИ\n4800 + 4500 - 7000 = 9300 - 7000 = 2300."
+  },
+  {
+    badge: "2 СЛОВА",
+    rows: [{q: "Франция", c: "3500"}, {q: "Испания", c: "2800"}, {q: "Франция & Испания", c: "900"}],
+    quest: "Сколько страниц (в тысячах) будет найдено по запросу «Франция | Испания»?",
+    ans: "5400",
+    hint: "Формула: ИЛИ = A + B - И\n3500 + 2800 - 900 = 6300 - 900 = 5400."
+  },
+  {
+    badge: "2 СЛОВА",
+    rows: [{q: "Пирожное | Пирог", c: "14200"}, {q: "Пирожное", c: "8700"}, {q: "Пирожное & Пирог", c: "2600"}],
+    quest: "Какое количество страниц (в тысячах) будет найдено по запросу «Пирог»?",
+    ans: "8100",
+    hint: "Баланс: Пирог = (ИЛИ + И) - Пирожное\n(14200 + 2600) - 8700 = 16800 - 8700 = 8100."
+  },
+  {
+    badge: "3 СЛОВА (ВЫЧЕРКИВАНИЕ)",
+    rows: [{q: "Сириус & Вега & Звезда", c: "50"}, {q: "(Сириус | Вега) & Звезда", c: "450"}, {q: "Сириус & Звезда", c: "260"}],
+    quest: "Сколько страниц (в тысячах) найдётся по запросу «Вега & Звезда»?",
+    ans: "240",
+    hint: "Вычеркни общее слово «& Звезда»!\nИ = 50, ИЛИ = 450, Сириус = 260.\nВега = (450 + 50) - 260 = 500 - 260 = 240."
+  },
+  {
+    badge: "3 СЛОВА (ВЫЧЕРКИВАНИЕ)",
+    rows: [{q: "(Корвет | Фрегат) & Корабль", c: "3800"}, {q: "Корвет & Корабль", c: "2100"}, {q: "Фрегат & Корабль", c: "2500"}],
+    quest: "Сколько страниц найдётся по запросу «Корвет & Фрегат & Корабль»?",
+    ans: "800",
+    hint: "Вычеркиваем «& Корабль»:\nИ = Корвет + Фрегат - ИЛИ = 2100 + 2500 - 3800 = 4600 - 3800 = 800."
+  },
+  {
+    badge: "0 В ПЕРЕСЕЧЕНИИ",
+    rows: [{q: "Орёл | Беркут", c: "5800"}, {q: "Орёл", c: "3400"}, {q: "Беркут", c: "2400"}],
+    quest: "Какое количество страниц найдётся по запросу «Орёл & Беркут»?",
+    ans: "0",
+    hint: "И = 3400 + 2400 - 5800 = 5800 - 5800 = 0 (круги не пересекаются!)."
+  },
+  {
+    badge: "2 СЛОВА",
+    rows: [{q: "Урал | Сибирь", c: "8200"}, {q: "Урал", c: "4900"}, {q: "Сибирь", c: "5100"}],
+    quest: "Сколько страниц найдётся по запросу «Урал & Сибирь»?",
+    ans: "1800",
+    hint: "И = 4900 + 5100 - 8200 = 10000 - 8200 = 1800."
+  },
+  {
+    badge: "3 СЛОВА (ВЫЧЕРКИВАНИЕ)",
+    rows: [{q: "Пионы & Розы & Сад", c: "120"}, {q: "Пионы & Сад", c: "680"}, {q: "Розы & Сад", c: "740"}],
+    quest: "Сколько страниц найдётся по запросу «(Пионы | Розы) & Сад»?",
+    ans: "1300",
+    hint: "Вычеркиваем «& Сад»:\nИЛИ = 680 + 740 - 120 = 1420 - 120 = 1300."
+  },
+  {
+    badge: "3 СЛОВА (ВЫЧЕРКИВАНИЕ)",
+    rows: [{q: "(Байкал | Ангара) & Озеро", c: "5600"}, {q: "Байкал & Озеро", c: "4100"}, {q: "Байкал & Ангара & Озеро", c: "1200"}],
+    quest: "Сколько страниц найдётся по запросу «Ангара & Озеро»?",
+    ans: "2700",
+    hint: "Вычеркиваем «& Озеро»:\nАнгара = (5600 + 1200) - 4100 = 6800 - 4100 = 2700."
+  },
+  {
+    badge: "2 СЛОВА",
+    rows: [{q: "Пушкин | Лермонтов", c: "7400"}, {q: "Пушкин", c: "5200"}, {q: "Пушкин & Лермонтов", c: "1500"}],
+    quest: "Какое количество страниц будет найдено по запросу «Лермонтов»?",
+    ans: "3700",
+    hint: "Лермонтов = 7400 + 1500 - 5200 = 8900 - 5200 = 3700."
+  }
+];
+
+let qIndex = 0;
+let qAnswers = {};
+let qStreak = 0;
+
+function renderQuest() {
+  const item = questData[qIndex];
+  document.getElementById('missionNum').textContent = `МИССИЯ #${qIndex + 1} ИЗ ${questData.length}`;
+  document.getElementById('missionBadge').textContent = item.badge;
+  document.getElementById('missionQuestion').textContent = item.quest;
+
+  let tHtml = `<table class="table-kim"><thead><tr><th>Запрос</th><th>Страниц (тыс.)</th></tr></thead><tbody>`;
+  item.rows.forEach(r => {
+    tHtml += `<tr><td>${r.q}</td><td>${r.c}</td></tr>`;
+  });
+  tHtml += `</tbody></table>`;
+  document.getElementById('missionTable').innerHTML = tHtml;
+
+  const inp = document.getElementById('questInput');
+  inp.value = qAnswers[qIndex] ? qAnswers[qIndex].text : '';
+  inp.focus();
+
+  const fb = document.getElementById('questFeedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('questHintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  const hintBtn = document.getElementById('questHintBtn');
+  if (qAnswers[qIndex]) {
+    hintBtn.disabled = false;
+    hintBtn.textContent = '💡 Разбор решения';
+    if (qAnswers[qIndex].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${item.ans}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Нажмите '💡 Разбор решения', чтобы проверить вычисления.`;
+    }
+  } else {
+    hintBtn.disabled = true;
+    hintBtn.textContent = '🔒 Разбор (после ответа)';
+  }
+
+  updateQuestStats();
+}
+
+function checkQuestAnswer() {
+  const item = questData[qIndex];
+  const inp = document.getElementById('questInput');
+  const val = inp.value.trim().toLowerCase();
+  const fb = document.getElementById('questFeedback');
+
+  if (!val) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Сначала введите число в поле ввода!';
+    return;
+  }
+
+  document.getElementById('questHintBtn').disabled = false;
+  document.getElementById('questHintBtn').textContent = '💡 Разбор решения';
+
+  if (val === item.ans.trim().toLowerCase()) {
+    playBeep('success');
+    if (!qAnswers[qIndex] || qAnswers[qIndex].status !== 'solved') qStreak++;
+    qAnswers[qIndex] = { status: 'solved', text: inp.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Верно! Зачётный балл в копилку!</strong> Ответ: <code>${item.ans}</code>`;
+  } else {
+    qStreak = 0;
+    qAnswers[qIndex] = { status: 'failed', text: inp.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Теперь вы можете открыть разбор.`;
+  }
+
+  updateQuestStats();
+}
+
+function toggleQuestHint() {
+  const item = questData[qIndex];
+  const hb = document.getElementById('questHintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.innerHTML = `<strong>Ход решения:</strong><br>${item.hint.replace(/\n/g, '<br>')}`;
+  }
+}
+
+function prevQuest() { if (qIndex > 0) { qIndex--; renderQuest(); } }
+function nextQuest() { if (qIndex < questData.length - 1) { qIndex++; renderQuest(); } }
+
+function updateQuestStats() {
+  const solved = Object.values(qAnswers).filter(a => a.status === 'solved').length;
+  const attempted = Object.keys(qAnswers).length;
+  document.getElementById('qSolved').textContent = `${solved} / ${questData.length}`;
+  document.getElementById('qStreak').textContent = `${qStreak} 🔥`;
+  const acc = attempted > 0 ? Math.round((solved / attempted) * 100) : 0;
+  document.getElementById('qAccuracy').textContent = `${acc}%`;
+}
+
+document.getElementById('questInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkQuestAnswer();
+});
+</script>
+</body>
+</html>
