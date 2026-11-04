@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ОГЭ Информатика // Задание №8 (Официальный формат ФИПИ)</title>
+<style>
+  :root {
+    --bg-main: #f5f7fa;
+    --card-bg: #ffffff;
+    --card-inner: #eef2f6;
+    --card-border: #cbd5e1;
+    
+    --accent-cobalt: #2563eb;
+    --accent-cobalt-light: #dbeafe;
+    --accent-emerald: #059669;
+    --accent-emerald-light: #d1fae5;
+    --accent-amber: #d97706;
+    --accent-amber-light: #fef3c7;
+    --accent-rose: #e11d48;
+    --accent-rose-light: #ffe4e6;
+    
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --text-subtle: #334155;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #edf2f7 60%, #e2e8f0 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+      radial-gradient(rgba(37, 99, 235, 0.05) 1.5px, transparent 1.5px),
+      linear-gradient(to right, rgba(5, 150, 105, 0.02) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .main-wrapper {
+    max-width: 980px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header Card */
+  .header-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 24px;
+    padding: 24px 30px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent-cobalt);
+    background: var(--accent-cobalt-light);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    margin-bottom: 8px;
+  }
+
+  .header-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: var(--text-main);
+  }
+
+  .header-desc {
+    font-size: 14.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Timer Widget */
+  .timer-box {
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 12px 20px;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 170px;
+  }
+
+  .timer-val {
+    font-size: 28px;
+    font-weight: 800;
+    font-family: "Consolas", monospace;
+    color: var(--accent-cobalt);
+  }
+
+  .timer-lbl {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .timer-btns {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .btn-t {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    cursor: pointer;
+    color: var(--text-subtle);
+  }
+  .btn-t:hover { border-color: var(--accent-cobalt); color: var(--accent-cobalt); }
+
+  /* Карточка профиля ученика */
+  .student-bar {
+    background: var(--card-bg);
+    border: 1.5px solid var(--accent-cobalt-light);
+    border-radius: 20px;
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.05);
+  }
+
+  .student-inputs {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .student-field {
+    flex: 2;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .student-field:focus {
+    border-color: var(--accent-cobalt);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .student-class {
+    flex: 1;
+    max-width: 140px;
+    background: var(--card-inner);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    outline: none;
+  }
+  .student-class:focus { border-color: var(--accent-cobalt); background: #ffffff; }
+
+  .export-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-report {
+    background: var(--accent-emerald);
+    color: #ffffff;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 16px;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+  }
+  .btn-report:hover { background: #047857; }
+
+  .btn-download {
+    background: var(--card-inner);
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+  }
+  .btn-download:hover { border-color: var(--accent-cobalt); color: var(--accent-cobalt); }
+
+  /* Навигация по фильтрам */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--card-bg);
+    padding: 10px 14px;
+    border-radius: 18px;
+    border: 1px solid var(--card-border);
+  }
+
+  .filter-btn {
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { color: var(--accent-cobalt); border-color: var(--accent-cobalt); }
+  .filter-btn.active {
+    background: var(--accent-cobalt);
+    color: #ffffff;
+    border-color: var(--accent-cobalt);
+  }
+
+  /* Памятка */
+  .cheatsheet {
+    background: var(--card-bg);
+    border: 1px dashed var(--accent-emerald);
+    border-radius: 16px;
+    padding: 12px 18px;
+    font-size: 13.5px;
+    color: var(--text-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+  }
+  .cheat-item span { font-weight: 700; color: var(--accent-emerald); }
+
+  /* Статистика */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  }
+
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent-cobalt);
+    margin-bottom: 2px;
+  }
+
+  .stat-lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  /* Task Card (Официальный стиль ФИПИ) */
+  .task-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 26px 30px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .task-num {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--accent-cobalt);
+  }
+
+  .task-badge {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    background: var(--accent-cobalt-light);
+    color: var(--accent-cobalt);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+  }
+
+  .task-intro {
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  /* Официальная таблица КИМ */
+  .table-kim {
+    width: 100%;
+    max-width: 620px;
+    border-collapse: collapse;
+    margin: 14px 0 20px 0;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-kim th {
+    background: var(--card-inner);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    border-bottom: 1.5px solid var(--card-border);
+    text-align: left;
+  }
+
+  .table-kim th:last-child {
+    text-align: center;
+    width: 220px;
+  }
+
+  .table-kim td {
+    padding: 9px 16px;
+    font-size: 15px;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--card-border);
+    font-family: "Consolas", monospace;
+    font-weight: 600;
+  }
+
+  .table-kim td:last-child {
+    text-align: center;
+    font-weight: 700;
+    color: var(--accent-cobalt);
+  }
+
+  .task-question {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 20px;
+    background: var(--card-inner);
+    padding: 14px 18px;
+    border-radius: 14px;
+    border-left: 4px solid var(--accent-cobalt);
+  }
+
+  .input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    background: #ffffff;
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+  }
+  input[type="text"]:focus {
+    border-color: var(--accent-cobalt);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 20px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-check {
+    background: var(--accent-cobalt);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+  .btn-check:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+  .btn-hint {
+    background: var(--accent-amber-light);
+    color: var(--accent-amber);
+    border: 1px solid rgba(217, 119, 6, 0.25);
+    padding: 10px 16px;
+    transition: all 0.2s;
+  }
+  .btn-hint:hover:not(:disabled) { background: #fde68a; }
+  .btn-hint:disabled {
+    background: var(--card-inner);
+    color: var(--text-muted);
+    border-color: var(--card-border);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .btn-nav {
+    background: var(--card-inner);
+    color: var(--text-subtle);
+    border: 1px solid var(--card-border);
+    padding: 10px 16px;
+  }
+  .btn-nav:hover { background: #e2e8f0; color: var(--text-main); }
+
+  .actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.5;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct {
+    background: var(--accent-emerald-light);
+    border: 1px solid rgba(5, 150, 105, 0.3);
+    color: #065f46;
+  }
+  .feedback.wrong {
+    background: var(--accent-rose-light);
+    border: 1px solid rgba(225, 29, 72, 0.3);
+    color: #9f1239;
+  }
+  .feedback.hint {
+    background: var(--accent-cobalt-light);
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    color: #1e3a8a;
+    white-space: pre-line;
+  }
+
+  /* Matrix */
+  .grid-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 22px 28px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .grid-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+  }
+
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+    gap: 6px;
+  }
+
+  .matrix-btn {
+    height: 40px;
+    border-radius: 10px;
+    background: var(--card-inner);
+    border: 1px solid var(--card-border);
+    color: var(--text-subtle);
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .matrix-btn:hover { border-color: var(--accent-cobalt); color: var(--accent-cobalt); transform: translateY(-1px); }
+  .matrix-btn.current { border-color: var(--accent-cobalt); background: var(--accent-cobalt-light); color: var(--accent-cobalt); }
+  .matrix-btn.solved { background: var(--accent-emerald-light); border-color: var(--accent-emerald); color: #065f46; }
+  .matrix-btn.failed { background: var(--accent-rose-light); border-color: var(--accent-rose); color: #9f1239; }
+
+  .btn-reset {
+    margin-top: 14px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--card-border);
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+  .btn-reset:hover { color: var(--accent-rose); border-color: var(--accent-rose); background: var(--accent-rose-light); }
+
+  /* Модальное окно */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 16px;
+  }
+  .modal-card {
+    background: #ffffff;
+    max-width: 600px;
+    width: 100%;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+  .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; color: var(--text-main); }
+  .modal-text {
+    width: 100%; height: 220px; background: var(--card-inner); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 12px; font-family: "Consolas", monospace; font-size: 13px;
+    line-height: 1.45; outline: none; resize: none; color: var(--text-main);
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<div class="main-wrapper">
+  <!-- Header Card -->
+  <div class="header-card">
+    <div>
+      <div class="header-tag">ОФИЦИАЛЬНЫЙ БАНК ФИПИ & СБОРНИКИ КРЫЛОВА</div>
+      <h1 class="header-title">ОГЭ Практикум: Задание №8 (Поисковые запросы)</h1>
+      <p class="header-desc">
+        Таблицы запросов в точности как в контрольных измерительных материалах (КИМ). Решение доступно после первой попытки ответа.
+      </p>
+    </div>
+    <div class="timer-box">
+      <div class="timer-lbl">⏱ ТАЙМЕР ПРАКТИКИ</div>
+      <div class="timer-val" id="timerDisplay">20:00</div>
+      <div class="timer-btns">
+        <button class="btn-t" onclick="startTimer()">Старт</button>
+        <button class="btn-t" onclick="pauseTimer()">Пауза</button>
+        <button class="btn-t" onclick="resetTimer()">20:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Карточка ученика -->
+  <div class="student-bar">
+    <div class="student-inputs">
+      <input type="text" id="studentName" class="student-field" placeholder="Введите фамилию и имя ученика..." oninput="saveStudentInfo()">
+      <input type="text" id="studentClass" class="student-class" placeholder="Класс (напр. 9А)" oninput="saveStudentInfo()">
+    </div>
+    <div class="export-btns">
+      <button class="btn-report" onclick="generateTeacherReport()">📋 Сдать работу учителю</button>
+      <button class="btn-download" onclick="downloadReportFile()">📥 Скачать отчет</button>
+    </div>
+  </div>
+
+  <!-- Фильтры -->
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="setFilter('all')">Все 30 задач</button>
+    <button class="filter-btn" onclick="setFilter('2 слова')">2 слова (база)</button>
+    <button class="filter-btn" onclick="setFilter('3 слова')">3 слова (вычеркивание)</button>
+    <button class="filter-btn" onclick="setFilter('0 в пересечении')">0 в пересечении</button>
+  </div>
+
+  <!-- Памятка -->
+  <div class="cheatsheet">
+    <div class="cheat-item">🔹 <span>Баланс 4 чисел:</span> (ИЛИ) + (И) = A + B</div>
+    <div class="cheat-item">🔹 <span>Поиск пересечения (И):</span> A + B - (ИЛИ)</div>
+    <div class="cheat-item">🔹 <span>Таблицы с 3 словами:</span> вычеркни повторяющееся «& Слово»!</div>
+  </div>
+
+  <!-- Статистика -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-val" id="statSolved">0 / 30</div>
+      <div class="stat-lbl">Решено верно</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statStreak">0 🔥</div>
+      <div class="stat-lbl">Серия побед</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statAccuracy">0%</div>
+      <div class="stat-lbl">Точность</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="statMark">—</div>
+      <div class="stat-lbl">Оценка (из 10)</div>
+    </div>
+  </div>
+
+  <!-- Task Card -->
+  <div class="task-card">
+    <div class="task-top">
+      <div class="task-num" id="taskNumber">ПРОТОТИП #1 ИЗ 30</div>
+      <div class="task-badge" id="taskBadge">2 СЛОВА</div>
+    </div>
+
+    <div class="task-intro">
+      В языке запросов поискового сервера для обозначения логической операции «ИЛИ» используется символ «|», а для обозначения логической операции «И» — символ «&».<br>
+      В таблице приведены запросы и количество найденных по ним страниц некоторого сегмента сети Интернет:
+    </div>
+
+    <!-- Область таблицы КИМ -->
+    <div id="tableContainer"></div>
+
+    <div class="task-question" id="taskQuestion">
+      Какое количество страниц (в тысячах) будет найдено по запросу?
+    </div>
+
+    <div class="input-group">
+      <input type="text" id="answerInput" placeholder="Введи найденное число (только число)..." autocomplete="off">
+      <button class="btn-check" onclick="checkAnswer()">ПРОВЕРИТЬ</button>
+    </div>
+
+    <div class="actions-row">
+      <div>
+        <button class="btn-nav" onclick="prevTask()">← Назад</button>
+        <button class="btn-nav" onclick="nextTask()">Вперёд →</button>
+      </div>
+      <button class="btn-hint" id="hintBtn" onclick="toggleHint()" disabled title="Сначала введите ответ и нажмите 'ПРОВЕРИТЬ'">
+        🔒 Решение (доступно после ответа)
+      </button>
+    </div>
+
+    <div id="feedbackBox" class="feedback"></div>
+    <div id="hintBox" class="feedback hint"></div>
+  </div>
+
+  <!-- Matrix -->
+  <div class="grid-card">
+    <div class="grid-title">Сетка задач текущей выборки</div>
+    <div class="matrix" id="taskMatrix"></div>
+    <button class="btn-reset" onclick="resetProgress()">🔄 Сбросить прогресс тренировки</button>
+  </div>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal-overlay" id="reportModal" onclick="closeModalOnBg(event)">
+  <div class="modal-card">
+    <div class="modal-title">Готовый отчет для учителя</div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+      Скопируйте текст ниже и отправьте учителю в личные сообщения:
+    </p>
+    <textarea id="reportTextarea" class="modal-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-nav" onclick="closeModal()">Закрыть</button>
+      <button class="btn-check" onclick="copyReportText()">Скопировать в буфер</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const allTasks = [{"id": 1, "type": "Два слова (поиск И)", "badge": "2 слова", "table_rows": [{"query": "Крейсер | Линкор", "count": "7000"}, {"query": "Крейсер", "count": "4800"}, {"query": "Линкор", "count": "4500"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Крейсер & Линкор»?", "answer": "2300", "hint": "Используем формулу: N(A & B) = N(A) + N(B) - N(A | B).\nN(Крейсер & Линкор) = 4800 + 4500 - 7000 = 9300 - 7000 = 2300."}, {"id": 2, "type": "Два слова (поиск ИЛИ)", "badge": "2 слова", "table_rows": [{"query": "Франция", "count": "3500"}, {"query": "Испания", "count": "2800"}, {"query": "Франция & Испания", "count": "900"}], "question_html": "Сколько страниц (в тысячах) найдёт поисковый сервер по запросу «Франция | Испания»?", "answer": "5400", "hint": "Формула: N(A | B) = N(A) + N(B) - N(A & B).\nN(Франция | Испания) = 3500 + 2800 - 900 = 6300 - 900 = 5400."}, {"id": 3, "type": "Два слова (поиск одного круга)", "badge": "2 слова", "table_rows": [{"query": "Пирожное | Пирог", "count": "14200"}, {"query": "Пирожное", "count": "8700"}, {"query": "Пирожное & Пирог", "count": "2600"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Пирог»?", "answer": "8100", "hint": "Формула баланса: N(A | B) + N(A & B) = N(A) + N(B).\n14200 + 2600 = 8700 + Пирог => 16800 = 8700 + Пирог => Пирог = 16800 - 8700 = 8100."}, {"id": 4, "type": "Два слова (поиск И)", "badge": "2 слова", "table_rows": [{"query": "Волейбол | Баскетбол", "count": "6500"}, {"query": "Волейбол", "count": "4200"}, {"query": "Баскетбол", "count": "3800"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Волейбол & Баскетбол»?", "answer": "1500", "hint": "N(Волейбол & Баскетбол) = 4200 + 3800 - 6500 = 8000 - 6500 = 1500."}, {"id": 5, "type": "Два слова (поиск ИЛИ)", "badge": "2 слова", "table_rows": [{"query": "Ромашка", "count": "2100"}, {"query": "Василек", "count": "1600"}, {"query": "Ромашка & Василек", "count": "450"}], "question_html": "Сколько страниц будет найдено по запросу «Ромашка | Василек»?", "answer": "3250", "hint": "N(Ромашка | Василек) = 2100 + 1600 - 450 = 3700 - 450 = 3250."}, {"id": 6, "type": "Два слова (поиск одного круга)", "badge": "2 слова", "table_rows": [{"query": "Физика | Химия", "count": "4900"}, {"query": "Химия", "count": "2600"}, {"query": "Физика & Химия", "count": "800"}], "question_html": "Какое количество страниц будет найдено по запросу «Физика»?", "answer": "3100", "hint": "Физика = (Физика | Химия) + (Физика & Химия) - Химия = 4900 + 800 - 2600 = 5700 - 2600 = 3100."}, {"id": 7, "type": "Два слова (поиск И)", "badge": "2 слова", "table_rows": [{"query": "Урал | Сибирь", "count": "8200"}, {"query": "Урал", "count": "4900"}, {"query": "Сибирь", "count": "5100"}], "question_html": "Какое количество страниц будет найдено по запросу «Урал & Сибирь»?", "answer": "1800", "hint": "N(Урал & Сибирь) = 4900 + 5100 - 8200 = 10000 - 8200 = 1800."}, {"id": 8, "type": "Два слова (поиск ИЛИ)", "badge": "2 слова", "table_rows": [{"query": "Моцарт", "count": "6200"}, {"query": "Бах", "count": "5400"}, {"query": "Моцарт & Бах", "count": "1900"}], "question_html": "Сколько страниц (в тысячах) будет найдено по запросу «Моцарт | Бах»?", "answer": "9700", "hint": "N(Моцарт | Бах) = 6200 + 5400 - 1900 = 11600 - 1900 = 9700."}, {"id": 9, "type": "Два слова (поиск одного круга)", "badge": "2 слова", "table_rows": [{"query": "Пушкин | Лермонтов", "count": "7400"}, {"query": "Пушкин", "count": "5200"}, {"query": "Пушкин & Лермонтов", "count": "1500"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Лермонтов»?", "answer": "3700", "hint": "Лермонтов = 7400 + 1500 - 5200 = 8900 - 5200 = 3700."}, {"id": 10, "type": "Два слова (поиск И)", "badge": "2 слова", "table_rows": [{"query": "Соболь | Куница", "count": "3900"}, {"query": "Соболь", "count": "2700"}, {"query": "Куница", "count": "2100"}], "question_html": "Какое количество страниц будет найдено по запросу «Соболь & Куница»?", "answer": "900", "hint": "N(Соболь & Куница) = 2700 + 2100 - 3900 = 4800 - 3900 = 900."}, {"id": 11, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Сириус & Вега & Звезда", "count": "50"}, {"query": "(Сириус | Вега) & Звезда", "count": "450"}, {"query": "Сириус & Звезда", "count": "260"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Вега & Звезда»?", "answer": "240", "hint": "Лайфхак: Слово «& Звезда» есть во всех строках таблицы! Вычеркиваем его.\nОстается:\n• Сириус & Вега = 50\n• Сириус | Вега = 450\n• Сириус = 260\nНайти: Вега.\nВега = (450 + 50) - 260 = 500 - 260 = 240."}, {"id": 12, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Корвет | Фрегат) & Корабль", "count": "3800"}, {"query": "Корвет & Корабль", "count": "2100"}, {"query": "Фрегат & Корабль", "count": "2500"}], "question_html": "Сколько страниц (в тысячах) найдется по запросу «Корвет & Фрегат & Корабль»?", "answer": "800", "hint": "Вычеркиваем общее слово «& Корабль» из всех строк!\nПолучаем классическую задачу:\n• Корвет | Фрегат = 3800\n• Корвет = 2100\n• Фрегат = 2500\nНайти: Корвет & Фрегат.\nОтвет = 2100 + 2500 - 3800 = 4600 - 3800 = 800."}, {"id": 13, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Пионы & Розы & Сад", "count": "120"}, {"query": "Пионы & Сад", "count": "680"}, {"query": "Розы & Сад", "count": "740"}], "question_html": "Сколько страниц (в тысячах) найдёт поисковый сервер по запросу «(Пионы | Розы) & Сад»?", "answer": "1300", "hint": "Вычеркиваем общее слово «& Сад»:\n• Пионы & Розы = 120\n• Пионы = 680\n• Розы = 740\nНайти: Пионы | Розы.\nОтвет = 680 + 740 - 120 = 1420 - 120 = 1300."}, {"id": 14, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Байкал | Ангара) & Озеро", "count": "5600"}, {"query": "Байкал & Озеро", "count": "4100"}, {"query": "Байкал & Ангара & Озеро", "count": "1200"}], "question_html": "Какое количество страниц (в тысячах) найдётся по запросу «Ангара & Озеро»?", "answer": "2700", "hint": "Вычеркиваем «& Озеро»:\n• Байкал | Ангара = 5600\n• Байкал = 4100\n• Байкал & Ангара = 1200\nАнгара = 5600 + 1200 - 4100 = 6800 - 4100 = 2700."}, {"id": 15, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Шахматы & Шашки & Турнир", "count": "300"}, {"query": "(Шахматы | Шашки) & Турнир", "count": "2400"}, {"query": "Шашки & Турнир", "count": "1100"}], "question_html": "Какое количество страниц будет найдено по запросу «Шахматы & Турнир»?", "answer": "1600", "hint": "Вычеркиваем «& Турнир»:\n• И = 300, ИЛИ = 2400, Шашки = 1100.\nШахматы = (2400 + 300) - 1100 = 2700 - 1100 = 1600."}, {"id": 16, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Хоккей & Футбол & Спорт", "count": "650"}, {"query": "Хоккей & Спорт", "count": "1950"}, {"query": "Футбол & Спорт", "count": "2300"}], "question_html": "Какое количество страниц будет найдено по запросу «(Хоккей | Футбол) & Спорт»?", "answer": "3600", "hint": "Вычеркиваем «& Спорт»:\n(Хоккей | Футбол) = 1950 + 2300 - 650 = 4250 - 650 = 3600."}, {"id": 17, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Юпитер | Сатурн) & Планета", "count": "4700"}, {"query": "Юпитер & Планета", "count": "3200"}, {"query": "Сатурн & Планета", "count": "2800"}], "question_html": "Сколько страниц найдётся по запросу «Юпитер & Сатурн & Планета»?", "answer": "1300", "hint": "Вычеркиваем «& Планета»:\nИ = 3200 + 2800 - 4700 = 6000 - 4700 = 1300."}, {"id": 18, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Толстой | Достоевский) & Роман", "count": "6100"}, {"query": "Толстой & Роман", "count": "3900"}, {"query": "Толстой & Достоевский & Роман", "count": "1400"}], "question_html": "Сколько страниц найдётся по запросу «Достоевский & Роман»?", "answer": "3600", "hint": "Вычеркиваем «& Роман»:\nДостоевский = 6100 + 1400 - 3900 = 7500 - 3900 = 3600."}, {"id": 19, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Волга & Кама & Река", "count": "400"}, {"query": "(Волга | Кама) & Река", "count": "3200"}, {"query": "Кама & Река", "count": "1500"}], "question_html": "Сколько страниц найдётся по запросу «Волга & Река»?", "answer": "2100", "hint": "Вычеркиваем «& Река»:\nВолга = 3200 + 400 - 1500 = 3600 - 1500 = 2100."}, {"id": 20, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Принтер & Сканер & Устройство", "count": "220"}, {"query": "Принтер & Устройство", "count": "1450"}, {"query": "Сканер & Устройство", "count": "980"}], "question_html": "Сколько страниц найдётся по запросу «(Принтер | Сканер) & Устройство»?", "answer": "2210", "hint": "Вычеркиваем «& Устройство»:\n(Принтер | Сканер) = 1450 + 980 - 220 = 2430 - 220 = 2210."}, {"id": 21, "type": "Непересекающиеся множества", "badge": "0 в пересечении", "table_rows": [{"query": "Орёл | Беркут", "count": "5800"}, {"query": "Орёл", "count": "3400"}, {"query": "Беркут", "count": "2400"}], "question_html": "Какое количество страниц будет найдено по запросу «Орёл & Беркут»?", "answer": "0", "hint": "N(Орёл & Беркут) = 3400 + 2400 - 5800 = 5800 - 5800 = 0.\nМножества не пересекаются!"}, {"id": 22, "type": "Непересекающиеся множества", "badge": "0 в пересечении", "table_rows": [{"query": "Зима & Лето", "count": "0"}, {"query": "Зима", "count": "4500"}, {"query": "Лето", "count": "3800"}], "question_html": "Какое количество страниц (в тысячах) будет найдено по запросу «Зима | Лето»?", "answer": "8300", "hint": "Так как пересечение равно 0, объединение равно простой сумме: 4500 + 3800 - 0 = 8300."}, {"id": 23, "type": "Два слова (поиск одного круга)", "badge": "2 слова", "table_rows": [{"query": "Марс | Венера", "count": "9100"}, {"query": "Венера", "count": "4700"}, {"query": "Марс & Венера", "count": "1600"}], "question_html": "Сколько страниц найдётся по запросу «Марс»?", "answer": "6000", "hint": "Марс = 9100 + 1600 - 4700 = 10700 - 4700 = 6000."}, {"id": 24, "type": "Два слова (поиск И)", "badge": "2 слова", "table_rows": [{"query": "Сказка | Басня", "count": "4600"}, {"query": "Сказка", "count": "3100"}, {"query": "Басня", "count": "2300"}], "question_html": "Сколько страниц найдётся по запросу «Сказка & Басня»?", "answer": "800", "hint": "N(Сказка & Басня) = 3100 + 2300 - 4600 = 5400 - 4600 = 800."}, {"id": 25, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Москва | Казань) & Город", "count": "7200"}, {"query": "Казань & Город", "count": "2800"}, {"query": "Москва & Казань & Город", "count": "900"}], "question_html": "Сколько страниц найдётся по запросу «Москва & Город»?", "answer": "5300", "hint": "Вычеркиваем «& Город»:\nМосква = 7200 + 900 - 2800 = 8100 - 2800 = 5300."}, {"id": 26, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Воробей & Синица & Птица", "count": "180"}, {"query": "Воробей & Птица", "count": "950"}, {"query": "(Воробей | Синица) & Птица", "count": "1600"}], "question_html": "Сколько страниц найдётся по запросу «Синица & Птица»?", "answer": "830", "hint": "Вычеркиваем «& Птица»:\nСиница = 1600 + 180 - 950 = 1780 - 950 = 830."}, {"id": 27, "type": "Два слова (поиск ИЛИ)", "badge": "2 слова", "table_rows": [{"query": "Рубин", "count": "5300"}, {"query": "Изумруд", "count": "4100"}, {"query": "Рубин & Изумруд", "count": "1250"}], "question_html": "Какое количество страниц будет найдено по запросу «Рубин | Изумруд»?", "answer": "8150", "hint": "N(Рубин | Изумруд) = 5300 + 4100 - 1250 = 9400 - 1250 = 8150."}, {"id": 28, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "Гитара & Пианино & Инструмент", "count": "420"}, {"query": "Гитара & Инструмент", "count": "2150"}, {"query": "Пианино & Инструмент", "count": "1800"}], "question_html": "Сколько страниц найдётся по запросу «(Гитара | Пианино) & Инструмент»?", "answer": "3530", "hint": "Вычеркиваем «& Инструмент»:\n(Гитара | Пианино) = 2150 + 1800 - 420 = 3950 - 420 = 3530."}, {"id": 29, "type": "Два слова (поиск одного круга)", "badge": "2 слова", "table_rows": [{"query": "Танк | Самолёт", "count": "11500"}, {"query": "Танк", "count": "7200"}, {"query": "Танк & Самолёт", "count": "2400"}], "question_html": "Какое количество страниц (в тысячах) найдётся по запросу «Самолёт»?", "answer": "6700", "hint": "Самолёт = 11500 + 2400 - 7200 = 13900 - 7200 = 6700."}, {"id": 30, "type": "Три слова (общий множитель)", "badge": "3 слова", "table_rows": [{"query": "(Берёза | Сосна) & Дерево", "count": "8400"}, {"query": "Берёза & Дерево", "count": "4900"}, {"query": "Сосна & Дерево", "count": "5100"}], "question_html": "Сколько страниц (в тысячах) найдётся по запросу «Берёза & Сосна & Дерево»?", "answer": "1600", "hint": "Вычеркиваем «& Дерево»:\nБерёза & Сосна = 4900 + 5100 - 8400 = 10000 - 8400 = 1600."}];
+
+let filteredTasks = [...allTasks];
+let currentIndex = 0;
+let userAnswers = {};
+let streak = 0;
+
+let timerSeconds = 1200;
+let timerInterval = null;
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timerDisplay').textContent = 
+    `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+  if (timerInterval) return;
+  timerInterval = setInterval(() => {
+    if (timerSeconds > 0) {
+      timerSeconds--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      alert("⏱ Время вышло! Нажмите 'Сдать работу учителю'.");
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+function resetTimer() {
+  pauseTimer();
+  timerSeconds = 1200;
+  updateTimerDisplay();
+}
+
+function setFilter(filterType) {
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if (filterType === 'all') {
+    filteredTasks = [...allTasks];
+  } else {
+    filteredTasks = allTasks.filter(t => t.badge === filterType);
+  }
+  currentIndex = 0;
+  renderTask();
+}
+
+function saveStudentInfo() {
+  localStorage.setItem('oge_t8_official_name', document.getElementById('studentName').value);
+  localStorage.setItem('oge_t8_official_class', document.getElementById('studentClass').value);
+}
+
+function loadProgress() {
+  const savedName = localStorage.getItem('oge_t8_official_name');
+  if (savedName) document.getElementById('studentName').value = savedName;
+  const savedClass = localStorage.getItem('oge_t8_official_class');
+  if (savedClass) document.getElementById('studentClass').value = savedClass;
+
+  const saved = localStorage.getItem('oge_t8_official_progress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      userAnswers = data.answers || {};
+      streak = data.streak || 0;
+    } catch(e){}
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem('oge_t8_official_progress', JSON.stringify({
+    answers: userAnswers,
+    streak: streak
+  }));
+}
+
+function updateStats() {
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  document.getElementById('statSolved').textContent = `${solvedCount} / ${allTasks.length}`;
+  document.getElementById('statStreak').textContent = `${streak} 🔥`;
+  const acc = attemptedCount > 0 ? Math.round((solvedCount / attemptedCount) * 100) : 0;
+  document.getElementById('statAccuracy').textContent = `${acc}%`;
+
+  let mark = "—";
+  if (solvedCount >= 9) mark = "«5» (отлично)";
+  else if (solvedCount >= 7) mark = "«4» (хорошо)";
+  else if (solvedCount >= 5) mark = "«3» (зачёт)";
+  else if (solvedCount > 0) mark = "«2» (доработать)";
+  document.getElementById('statMark').textContent = mark;
+}
+
+function renderMatrix() {
+  const container = document.getElementById('taskMatrix');
+  container.innerHTML = '';
+  filteredTasks.forEach((t, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'matrix-btn';
+    btn.textContent = t.id;
+    if (idx === currentIndex) btn.classList.add('current');
+    if (userAnswers[t.id]) {
+      btn.classList.add(userAnswers[t.id].status);
+    }
+    btn.onclick = () => {
+      currentIndex = idx;
+      renderTask();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderTask() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  document.getElementById('taskNumber').textContent = `ПРОТОТИП #${t.id} ИЗ ${allTasks.length} // ${t.type}`;
+  document.getElementById('taskBadge').textContent = t.badge;
+
+  // Рендерим официальную таблицу КИМ
+  let tableHtml = `<table class="table-kim">
+    <thead>
+      <tr>
+        <th>Запрос</th>
+        <th>Количество страниц (в тысячах)</th>
+      </tr>
+    </thead>
+    <tbody>`;
+  
+  t.table_rows.forEach(r => {
+    tableHtml += `<tr>
+      <td>${r.query}</td>
+      <td>${r.count}</td>
+    </tr>`;
+  });
+  tableHtml += `</tbody></table>`;
+  document.getElementById('tableContainer').innerHTML = tableHtml;
+
+  // Текст вопроса
+  document.getElementById('taskQuestion').innerHTML = t.question_html;
+
+  const inp = document.getElementById('answerInput');
+  inp.value = userAnswers[t.id] ? userAnswers[t.id].userText : '';
+  inp.focus();
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  const hb = document.getElementById('hintBox');
+  hb.className = 'feedback hint';
+  hb.style.display = 'none';
+
+  const hintBtn = document.getElementById('hintBtn');
+  if (userAnswers[t.id]) {
+    hintBtn.disabled = false;
+    hintBtn.textContent = '💡 Ход решения';
+    hintBtn.title = 'Посмотреть пошаговое решение';
+
+    if (userAnswers[t.id].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${t.answer}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Нажмите '💡 Ход решения', чтобы проверить вычисления.`;
+    }
+  } else {
+    hintBtn.disabled = true;
+    hintBtn.textContent = '🔒 Решение (доступно после ответа)';
+    hintBtn.title = 'Сначала введите ответ и нажмите ПРОВЕРИТЬ';
+  }
+
+  renderMatrix();
+  updateStats();
+}
+
+function checkAnswer() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  const inputEl = document.getElementById('answerInput');
+  const userVal = inputEl.value.trim().toLowerCase();
+  const correctVal = t.answer.trim().toLowerCase();
+  const fb = document.getElementById('feedbackBox');
+
+  if (!userVal) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Сначала введите число в поле ввода!';
+    return;
+  }
+
+  const hintBtn = document.getElementById('hintBtn');
+  hintBtn.disabled = false;
+  hintBtn.textContent = '💡 Ход решения';
+
+  if (userVal === correctVal) {
+    if (!userAnswers[t.id] || userAnswers[t.id].status !== 'solved') {
+      streak++;
+    }
+    userAnswers[t.id] = { status: 'solved', userText: inputEl.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Верно!</strong> Твой ответ: <code>${t.answer}</code> (+1 первичный балл ОГЭ)`;
+  } else {
+    streak = 0;
+    userAnswers[t.id] = { status: 'failed', userText: inputEl.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Теперь вы можете открыть '💡 Ход решения'.`;
+  }
+
+  saveProgress();
+  renderMatrix();
+  updateStats();
+}
+
+function toggleHint() {
+  if (filteredTasks.length === 0) return;
+  const t = filteredTasks[currentIndex];
+  const hb = document.getElementById('hintBox');
+  if (hb.style.display === 'block') {
+    hb.style.display = 'none';
+  } else {
+    hb.style.display = 'block';
+    hb.innerHTML = `<strong>Подробный разбор задачи:</strong><br>${t.hint.replace(/\n/g, '<br>')}`;
+  }
+}
+
+function prevTask() {
+  if (currentIndex > 0) { currentIndex--; renderTask(); }
+}
+function nextTask() {
+  if (currentIndex < filteredTasks.length - 1) { currentIndex++; renderTask(); }
+}
+
+function resetProgress() {
+  if (confirm("Точно сбросить весь прогресс тренировки?")) {
+    userAnswers = {};
+    streak = 0;
+    saveProgress();
+    currentIndex = 0;
+    renderTask();
+  }
+}
+
+function buildReportData() {
+  const name = document.getElementById('studentName').value.trim() || 'Без имени';
+  const sClass = document.getElementById('studentClass').value.trim() || '—';
+  const solvedCount = Object.values(userAnswers).filter(a => a.status === 'solved').length;
+  const attemptedCount = Object.keys(userAnswers).length;
+  const now = new Date().toLocaleString('ru-RU');
+
+  let report = `РЕЗУЛЬТАТЫ ТРЕНИРОВКИ: ЗАДАНИЕ №8 (ФОРМАТ ФИПИ)\n`;
+  report += `Ученик: ${name}\n`;
+  report += `Класс: ${sClass}\n`;
+  report += `Дата: ${now}\n`;
+  report += `Решено верно: ${solvedCount} из ${allTasks.length}\n`;
+  report += `--------------------------------------\n`;
+  report += `ДЕТАЛИЗАЦИЯ:\n`;
+
+  allTasks.forEach(t => {
+    const ansInfo = userAnswers[t.id];
+    if (ansInfo) {
+      const icon = ansInfo.status === 'solved' ? '✔ ВЕРНО' : '❌ ОШИБКА';
+      report += `№${t.id} [${t.type}]: ${icon} | Ответ: "${ansInfo.userText}" (Эталон: ${t.answer})\n`;
+    } else {
+      report += `№${t.id} [${t.type}]: — НЕ РЕШАЛОСЬ\n`;
+    }
+  });
+
+  return report;
+}
+
+function generateTeacherReport() {
+  document.getElementById('reportTextarea').value = buildReportData();
+  document.getElementById('reportModal').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('reportModal').style.display = 'none'; }
+function closeModalOnBg(e) { if (e.target.id === 'reportModal') closeModal(); }
+
+function copyReportText() {
+  const ta = document.getElementById('reportTextarea');
+  ta.select();
+  document.execCommand('copy');
+  alert("📋 Отчет скопирован в буфер! Отправьте его учителю.");
+  closeModal();
+}
+
+function downloadReportFile() {
+  const report = buildReportData();
+  const name = document.getElementById('studentName').value.trim() || 'student';
+  const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `OGE_Task8_Report_${name.replace(/\s+/g, '_')}.txt`;
+  a.click();
+}
+
+document.getElementById('answerInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { checkAnswer(); }
+});
+
+updateTimerDisplay();
+loadProgress();
+renderTask();
+</script>
+</body>
+</html>
