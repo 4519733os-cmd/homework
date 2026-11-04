@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кибер-Щит: Логическая Числовая Ось // ОГЭ Задание 3</title>
+<style>
+  :root {
+    --bg-main: #f5f7fa;
+    --card-bg: #ffffff;
+    --card-inner: #eef2f6;
+    --border-main: #cbd5e1;
+    --accent-blue: #2563eb;
+    --accent-blue-light: #dbeafe;
+    --accent-emerald: #059669;
+    --accent-emerald-light: #d1fae5;
+    --accent-rose: #e11d48;
+    --accent-rose-light: #ffe4e6;
+    --accent-amber: #d97706;
+    --accent-amber-light: #fef3c7;
+    --accent-purple: #7c3aed;
+    --accent-purple-light: #ede9fe;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: linear-gradient(135deg, #f5f7fa 0%, #edf2f7 60%, #e2e8f0 100%); color: var(--text-main); min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; align-items: center; }
+  
+  .wrapper { max-width: 960px; width: 100%; display: flex; flex-direction: column; gap: 18px; }
+
+  /* Header */
+  .header-card {
+    background: var(--card-bg); border: 1px solid var(--border-main); border-radius: 24px; padding: 22px 28px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent-purple); background: var(--accent-purple-light); padding: 4px 12px; border-radius: 20px; margin-bottom: 6px; }
+  .title { font-size: 25px; font-weight: 800; color: var(--text-main); }
+  .desc { font-size: 14px; color: var(--text-muted); line-height: 1.45; }
+  .badge-icon { width: 68px; height: 68px; background: var(--accent-purple-light); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; flex-shrink: 0; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 10px; background: var(--card-bg); padding: 8px; border-radius: 18px; border: 1px solid var(--border-main); }
+  .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; background: transparent; border: none; color: var(--text-muted); transition: all 0.2s; }
+  .tab-btn.active { background: var(--accent-purple); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
+
+  /* Interactive Sandbox */
+  .sandbox-card { background: var(--card-bg); border: 1px solid var(--border-main); border-radius: 24px; padding: 26px 28px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 18px; }
+  
+  /* Number Line Container */
+  .axis-container {
+    background: var(--card-inner); border-radius: 20px; border: 1px solid var(--border-main); padding: 20px 16px;
+    display: flex; flex-direction: column; align-items: center; overflow-x: auto;
+  }
+  svg.axis-svg { width: 100%; max-width: 860px; height: 160px; overflow: visible; }
+  
+  .axis-line { stroke: var(--text-muted); stroke-width: 2.5; stroke-linecap: round; }
+  .tick { stroke: var(--border-main); stroke-width: 1.5; }
+  .tick-text { font-size: 13px; font-weight: 700; fill: var(--text-muted); text-anchor: middle; }
+  
+  /* Points */
+  .point-hollow { fill: #ffffff; stroke: var(--accent-rose); stroke-width: 3.5; cursor: pointer; transition: all 0.2s; }
+  .point-solid { fill: var(--accent-emerald); stroke: var(--accent-emerald); stroke-width: 3.5; cursor: pointer; transition: all 0.2s; }
+  .point-hollow:hover, .point-solid:hover { transform: scale(1.2); transform-origin: center; }
+
+  /* Shading */
+  .shade-zone { fill: rgba(37, 99, 235, 0.25); stroke: var(--accent-blue); stroke-dasharray: 4, 4; stroke-width: 1.5; }
+  .intersect-zone { fill: rgba(5, 150, 105, 0.35); stroke: var(--accent-emerald); stroke-width: 2; }
+
+  /* Controls in Sandbox */
+  .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .control-box { background: var(--card-inner); padding: 16px; border-radius: 16px; border: 1px solid var(--border-main); display: flex; flex-direction: column; gap: 8px; }
+  .control-box label { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+  .btn-choice { display: flex; gap: 6px; }
+  .btn-opt { flex: 1; padding: 7px 10px; border-radius: 10px; font-size: 13px; font-weight: 700; border: 1.5px solid var(--border-main); background: #fff; cursor: pointer; color: var(--text-main); transition: all 0.2s; }
+  .btn-opt.active { background: var(--accent-purple); color: #fff; border-color: var(--accent-purple); }
+
+  .formula-banner {
+    background: var(--accent-amber-light); border: 1px solid rgba(217, 119, 6, 0.3); border-radius: 16px;
+    padding: 12px 18px; font-family: "Consolas", monospace; font-size: 16px; font-weight: 800; color: var(--accent-amber); text-align: center;
+  }
+
+  /* Game Quest Mode */
+  .quest-view { display: none; flex-direction: column; gap: 18px; }
+  .quest-view.active { display: flex; }
+
+  .quest-card { background: var(--card-bg); border: 1px solid var(--border-main); border-radius: 24px; padding: 26px 30px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04); }
+  .quest-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .quest-title { font-size: 15px; font-weight: 800; color: var(--accent-purple); }
+  .quest-badge { padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 800; text-transform: uppercase; background: var(--accent-blue-light); color: var(--accent-blue); }
+
+  .quest-condition {
+    font-size: 17px; line-height: 1.6; font-family: "Consolas", monospace; font-weight: 700;
+    background: var(--card-inner); padding: 18px 22px; border-radius: 16px; border-left: 5px solid var(--accent-purple); margin-bottom: 16px;
+  }
+
+  .interactive-numbers {
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center;
+    background: var(--card-inner); padding: 16px; border-radius: 16px;
+  }
+  .num-pill {
+    width: 44px; height: 44px; border-radius: 12px; border: 2px solid var(--border-main); background: #ffffff;
+    font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .num-pill:hover { border-color: var(--accent-purple); transform: translateY(-2px); }
+  .num-pill.selected { background: var(--accent-purple); color: #fff; border-color: var(--accent-purple); }
+  .num-pill.valid { background: var(--accent-emerald-light); border-color: var(--accent-emerald); color: var(--accent-emerald); }
+  .num-pill.invalid { background: var(--accent-rose-light); border-color: var(--accent-rose); color: var(--accent-rose); opacity: 0.6; }
+
+  .input-row { display: flex; gap: 10px; margin-top: 14px; }
+  input[type="text"] { flex: 1; background: #fff; border: 2px solid var(--border-main); border-radius: 12px; padding: 12px 18px; font-size: 16px; font-weight: 600; outline: none; }
+  input[type="text"]:focus { border-color: var(--accent-purple); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
+
+  button.btn-act { padding: 0 24px; border-radius: 12px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn-check { background: var(--accent-purple); color: #fff; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25); }
+  .btn-check:hover { background: #6d28d9; }
+  .btn-hint { background: var(--accent-amber-light); color: var(--accent-amber); border: 1px solid rgba(217, 119, 6, 0.25); padding: 10px 16px; }
+  .btn-hint:hover:not(:disabled) { background: #fde68a; }
+  .btn-hint:disabled { background: var(--card-inner); color: var(--text-muted); cursor: not-allowed; opacity: 0.6; }
+
+  .feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 14.5px; display: none; line-height: 1.55; }
+  .feedback.show { display: block; }
+  .feedback.correct { background: var(--accent-emerald-light); border: 1px solid rgba(5, 150, 105, 0.3); color: #065f46; }
+  .feedback.wrong { background: var(--accent-rose-light); border: 1px solid rgba(225, 29, 72, 0.3); color: #9f1239; }
+  .feedback.hint { background: var(--accent-blue-light); border: 1px solid rgba(37, 99, 235, 0.3); color: #1e3a8a; white-space: pre-line; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .stat-card { background: var(--card-bg); border: 1px solid var(--border-main); border-radius: 16px; padding: 12px; text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 800; color: var(--accent-purple); }
+  .stat-lbl { font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+  <!-- Header -->
+  <div class="header-card">
+    <div>
+      <div class="tag">Интерактивная визуализация // ОГЭ Информатика</div>
+      <h1 class="title">Кибер-Ось: Задание №3</h1>
+      <p class="desc">Пошаговая геометрия логических условий: инверсия знаков, закрашенные точки и фильтр чисел.</p>
+    </div>
+    <div class="badge-icon">📐</div>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="setScreen('sandbox')">1. Интерактивная числовая ось (Песочница)</button>
+    <button class="tab-btn" onclick="setScreen('quest')">2. Игровой полигон (8 миссий ОГЭ)</button>
+  </div>
+
+  <!-- РЕЖИМ 1: ПЕСОЧНИЦА С ЧИСЛОВОЙ ОСЬЮ -->
+  <div id="sandboxScreen" class="sandbox-card">
+    <div class="formula-banner" id="bannerLive">
+      УСЛОВИЕ: НЕ (X < 7) И (X чётное)  ===>  X >= 7  И  X чётное
+    </div>
+
+    <!-- Интерактивный SVG график числовой оси -->
+    <div class="axis-container">
+      <svg class="axis-svg" viewBox="0 0 800 140" id="liveSvg">
+        <!-- Стрелка числовой оси -->
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+          </marker>
+        </defs>
+        <line x1="40" y1="80" x2="760" y2="80" class="axis-line" marker-end="url(#arrow)"/>
+        
+        <!-- Засечки и деления от 0 до 14 -->
+        <g id="axisTicks"></g>
+
+        <!-- Зона штриховки интервала -->
+        <rect id="zoneShade" x="440" y="30" width="300" height="48" class="intersect-zone" rx="6"></rect>
+
+        <!-- Граничная точка -->
+        <circle id="boundPoint" cx="440" cy="80" r="8" class="point-solid"></circle>
+        <text id="pointLabel" x="440" y="115" class="tick-text" style="fill: var(--accent-purple); font-weight: 800; font-size: 15px;">X = 7</text>
+      </svg>
+      <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
+        🟢 <strong>Закрашенная точка</strong> — знак нестрогий (&ge;, &le;), число <strong>входит</strong>! ⚪ <strong>Выколотая</strong> — строгий (&gt;, &lt;), число <strong>не входит</strong>!
+      </div>
+    </div>
+
+    <!-- Панель интерактивного управления условием -->
+    <div class="controls-grid">
+      <div class="control-box">
+        <label>1. Отрицание (НЕ перед скобкой):</label>
+        <div class="btn-choice">
+          <button class="btn-opt active" onclick="setNot(true)" id="btnNotOn">Включено: НЕ (X < A)</button>
+          <button class="btn-opt" onclick="setNot(false)" id="btnNotOff">Без НЕ: (X < A)</button>
+        </div>
+      </div>
+
+      <div class="control-box">
+        <label>2. Граничное число A (слайдер):</label>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <input type="range" id="sliderA" min="2" max="11" value="7" style="flex:1;" oninput="updateSandbox()">
+          <strong style="font-size: 18px; color: var(--accent-purple);" id="valA">7</strong>
+        </div>
+      </div>
+
+      <div class="control-box">
+        <label>3. Дополнительное условие:</label>
+        <div class="btn-choice">
+          <button class="btn-opt active" onclick="setFilterType('even')" id="btnEven">X чётное</button>
+          <button class="btn-opt" onclick="setFilterType('odd')" id="btnOdd">X нечётное</button>
+          <button class="btn-opt" onclick="setFilterType('none')" id="btnNone">Любое X</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Интерактивный ряд подходящих целых чисел -->
+    <div style="background: var(--card-inner); padding: 16px 20px; border-radius: 16px; border: 1px solid var(--border-main);">
+      <div style="font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">
+        Числа, прошедшие через логический фильтр:
+      </div>
+      <div id="filteredList" style="font-size: 18px; font-weight: 800; font-family: 'Consolas', monospace; color: var(--accent-emerald);">
+        8, 10, 12, 14... (Наименьшее натуральное число: 8)
+      </div>
+    </div>
+  </div>
+
+  <!-- РЕЖИМ 2: ИГРОВОЙ ПОЛИГОН (МИССИИ ОГЭ) -->
+  <div id="questScreen" class="quest-view">
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-val" id="statSolved">0 / 8</div>
+        <div class="stat-lbl">Пройдено миссий</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statStreak">0 🔥</div>
+        <div class="stat-lbl">Серия побед</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statRank">Новичок</div>
+        <div class="stat-lbl">Ранг логика</div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div class="quest-top">
+        <span class="quest-title" id="qTitle">МИССИЯ #1</span>
+        <span class="quest-badge" id="qBadge">НЕРАВЕНСТВО + ЧЁТНОСТЬ</span>
+      </div>
+
+      <div class="quest-condition" id="qCond">
+        Напишите НАИМЕНЬШЕЕ натуральное число X, для которого ИСТИННО:<br>
+        НЕ (X < 7) И (X чётное)
+      </div>
+
+      <!-- Интерактивная линейка кликабельных чисел-кандидатов -->
+      <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-bottom: 4px;">
+        💡 Выберите подходящее число на клавиатуре или кликните по карточке:
+      </p>
+      <div class="interactive-numbers" id="numRow"></div>
+
+      <div class="input-row">
+        <input type="text" id="qInput" placeholder="Введите число..." autocomplete="off">
+        <button class="btn-act btn-check" onclick="checkQuest()">Проверить</button>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+        <div>
+          <button class="btn-act" style="background: var(--card-inner); color: var(--text-main); padding: 10px 16px;" onclick="prevQ()">← Назад</button>
+          <button class="btn-act" style="background: var(--card-inner); color: var(--text-main); padding: 10px 16px;" onclick="nextQ()">Вперёд →</button>
+        </div>
+        <button class="btn-act btn-hint" id="hintBtn" onclick="toggleHint()" disabled>
+          🔒 Разбор (доступен после ответа)
+        </button>
+      </div>
+
+      <div id="qFeedback" class="feedback"></div>
+      <div id="qHintBox" class="feedback hint"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Web Audio API
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function beep(type) {
+  try {
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.connect(g);
+    g.connect(audioCtx.destination);
+    if (type === 'click') {
+      osc.frequency.setValueAtTime(480, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+    } else if (type === 'win') {
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+      osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.1);
+      g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+    }
+  } catch(e){}
+}
+
+// ---------------- ПЕСОЧНИЦА ----------------
+let isNot = true;
+let filterProp = 'even'; // 'even', 'odd', 'none'
+
+function initSvgAxis() {
+  const g = document.getElementById('axisTicks');
+  g.innerHTML = '';
+  // Рисуем деления 0..14 (шаг 50px от x=80 до x=740)
+  for (let i = 0; i <= 13; i++) {
+    const x = 70 + i * 50;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x); line.setAttribute('y1', '72');
+    line.setAttribute('x2', x); line.setAttribute('y2', '88');
+    line.setAttribute('class', 'tick');
+    g.appendChild(line);
+
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', x); txt.setAttribute('y', '104');
+    txt.setAttribute('class', 'tick-text');
+    txt.textContent = i;
+    g.appendChild(txt);
+  }
+}
+
+function updateSandbox() {
+  const val = parseInt(document.getElementById('sliderA').value);
+  document.getElementById('valA').textContent = val;
+  const boundX = 70 + val * 50;
+
+  const pt = document.getElementById('boundPoint');
+  const shade = document.getElementById('zoneShade');
+  const banner = document.getElementById('bannerLive');
+  const pLabel = document.getElementById('pointLabel');
+  pLabel.setAttribute('x', boundX);
+
+  let condStr = "";
+  let finalCond = "";
+  let nums = [];
+
+  if (isNot) {
+    // НЕ (X < A) => X >= A (закрашенная точка, вправо)
+    pt.setAttribute('class', 'point-solid');
+    pt.setAttribute('cx', boundX);
+    shade.setAttribute('x', boundX);
+    shade.setAttribute('width', Math.max(0, 750 - boundX));
+    condStr = `НЕ (X < ${val})`;
+    finalCond = `X >= ${val} (число ${val} входит!)`;
+    pLabel.textContent = `X >= ${val}`;
+
+    for (let i = val; i <= 14; i++) {
+      if (filterProp === 'even' && i % 2 === 0) nums.push(i);
+      else if (filterProp === 'odd' && i % 2 !== 0) nums.push(i);
+      else if (filterProp === 'none') nums.push(i);
+    }
+  } else {
+    // (X < A) => строго меньше (выколотая точка, влево)
+    pt.setAttribute('class', 'point-hollow');
+    pt.setAttribute('cx', boundX);
+    shade.setAttribute('x', 70);
+    shade.setAttribute('width', Math.max(0, boundX - 70));
+    condStr = `(X < ${val})`;
+    finalCond = `X < ${val} (число ${val} выколото!)`;
+    pLabel.textContent = `X < ${val}`;
+
+    for (let i = 1; i < val; i++) {
+      if (filterProp === 'even' && i % 2 === 0) nums.push(i);
+      else if (filterProp === 'odd' && i % 2 !== 0) nums.push(i);
+      else if (filterProp === 'none') nums.push(i);
+    }
+  }
+
+  let propLabel = filterProp === 'even' ? "И (X чётное)" : (filterProp === 'odd' ? "И (X нечётное)" : "");
+  banner.textContent = `УСЛОВИЕ: ${condStr} ${propLabel}  ===>  ${finalCond}`;
+
+  const listEl = document.getElementById('filteredList');
+  if (nums.length > 0) {
+    const minVal = nums[0];
+    const maxVal = nums[nums.length - 1];
+    listEl.innerHTML = `Подходят: <strong>${nums.join(', ')}</strong> ... <br><span style="color:var(--accent-purple);">Наименьшее: ${minVal}</span> | <span style="color:var(--accent-blue);">Наибольшее (до 14): ${maxVal}</span>`;
+  } else {
+    listEl.innerHTML = `<span style="color:var(--accent-rose);">Нет подходящих целых чисел в диапазоне!</span>`;
+  }
+}
+
+function setNot(val) {
+  beep('click');
+  isNot = val;
+  document.getElementById('btnNotOn').classList.toggle('active', isNot);
+  document.getElementById('btnNotOff').classList.toggle('active', !isNot);
+  updateSandbox();
+}
+
+function setFilterType(type) {
+  beep('click');
+  filterProp = type;
+  document.getElementById('btnEven').classList.toggle('active', type === 'even');
+  document.getElementById('btnOdd').classList.toggle('active', type === 'odd');
+  document.getElementById('btnNone').classList.toggle('active', type === 'none');
+  updateSandbox();
+}
+
+// ---------------- РЕЖИМ МИССИЙ (8 ЗАДАЧ ОГЭ) ----------------
+const questBank = [
+  {
+    badge: "НЕРАВЕНСТВО + ЧЁТНОСТЬ",
+    cond: "Напишите НАИМЕНЬШЕЕ натуральное число X, для которого ИСТИННО:\nНЕ (X < 7) И (X чётное)",
+    cands: [5, 6, 7, 8, 9, 10, 11],
+    ans: "8",
+    hint: "1) НЕ (X < 7) => X >= 7 (7 входит!)\n2) Чётные натуральные числа от 7: 8, 10, 12...\nНаименьшее: 8."
+  },
+  {
+    badge: "НЕРАВЕНСТВО + НАИБОЛЬШЕЕ",
+    cond: "Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО:\nНЕ (X <= 12) И (X < 20)",
+    cands: [12, 13, 18, 19, 20, 21],
+    ans: "19",
+    hint: "1) НЕ (X <= 12) => X > 12.\n2) 12 < X < 20 => числа 13, 14, ..., 19.\nНаибольшее целое: 19."
+  },
+  {
+    badge: "ЧЁТНОСТЬ + НЕРАВЕНСТВО",
+    cond: "Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО:\nНЕ (X <= 15) И (X нечётное)",
+    cands: [15, 16, 17, 18, 19],
+    ans: "17",
+    hint: "1) НЕ (X <= 15) => X > 15.\n2) Нечётные числа больше 15: 17, 19...\nНаименьшее: 17."
+  },
+  {
+    badge: "КРАТНОСТЬ НА 4",
+    cond: "Напишите НАИМЕНЬШЕЕ двузначное число X, для которого ИСТИННО:\nНЕ (X < 25) И (X делится на 4)",
+    cands: [24, 25, 26, 28, 32],
+    ans: "28",
+    hint: "1) НЕ (X < 25) => X >= 25.\n2) Кратные 4 от 25: 28, 32...\nОтвет: 28."
+  },
+  {
+    badge: "ВОПРОС: ЛОЖНО",
+    cond: "Для какого НАИБОЛЬШЕГО целого числа X ЛОЖНО высказывание:\n(X > 8) ИЛИ НЕ (X > 3)",
+    cands: [3, 4, 7, 8, 9, 10],
+    ans: "8",
+    hint: "ИЛИ ложно, когда ОБЕ части ложны:\n1) X > 8 ложно => X <= 8\n2) НЕ (X > 3) ложно => X > 3\nИнтервал: 3 < X <= 8. Наибольшее: 8."
+  },
+  {
+    badge: "ОТРИЦАТЕЛЬНЫЕ ЧИСЛА",
+    cond: "Напишите НАИМЕНЬШЕЕ целое число X, для которого ИСТИННО:\nНЕ (X < -6) И (X <= 2)",
+    cands: [-7, -6, -5, 0, 1, 2],
+    ans: "-6",
+    hint: "1) НЕ (X < -6) => X >= -6.\n2) -6 <= X <= 2.\nНаименьшее целое: -6."
+  },
+  {
+    badge: "КРАТНОСТЬ НА 9",
+    cond: "Напишите НАИБОЛЬШЕЕ целое число X, для которого ИСТИННО:\n(X <= 54) И НЕ (X не делится на 9)",
+    cands: [45, 53, 54, 55, 63],
+    ans: "54",
+    hint: "НЕ (не делится на 9) => делится на 9.\nX <= 54 и делится на 9 => число 54 входит!"
+  },
+  {
+    badge: "ПОДСЧЁТ КОЛИЧЕСТВА",
+    cond: "Сколько существует целых чисел X, для которых ИСТИННО:\nНЕ (X <= 8) И (X < 17)",
+    cands: [7, 8, 9, 10],
+    ans: "8",
+    hint: "НЕ (X <= 8) => X > 8.\n8 < X < 17 => числа 9, 10, 11, 12, 13, 14, 15, 16.\nКоличество: 17 - 8 - 1 = 8."
+  }
+];
+
+let qIdx = 0;
+let qAnswers = {};
+let qStreak = 0;
+
+function renderQ() {
+  const item = questBank[qIdx];
+  document.getElementById('qTitle').textContent = `МИССИЯ #${qIdx + 1} ИЗ ${questBank.length}`;
+  document.getElementById('qBadge').textContent = item.badge;
+  document.getElementById('qCond').innerHTML = item.cond.replace(/\n/g, '<br>');
+
+  const row = document.getElementById('numRow');
+  row.innerHTML = '';
+  item.cands.forEach(val => {
+    const pill = document.createElement('div');
+    pill.className = 'num-pill';
+    pill.textContent = val;
+    pill.onclick = () => {
+      beep('click');
+      document.getElementById('qInput').value = val;
+      document.querySelectorAll('.num-pill').forEach(p => p.classList.remove('selected'));
+      pill.classList.add('selected');
+    };
+    row.appendChild(pill);
+  });
+
+  const inp = document.getElementById('qInput');
+  inp.value = qAnswers[qIdx] ? qAnswers[qIdx].val : '';
+  inp.focus();
+
+  const fb = document.getElementById('qFeedback');
+  fb.className = 'feedback'; fb.textContent = '';
+  const hb = document.getElementById('qHintBox');
+  hb.className = 'feedback hint'; hb.style.display = 'none';
+
+  const btn = document.getElementById('hintBtn');
+  if (qAnswers[qIdx]) {
+    btn.disabled = false;
+    btn.textContent = '💡 Ход решения';
+    if (qAnswers[qIdx].status === 'solved') {
+      fb.className = 'feedback show correct';
+      fb.innerHTML = `✔ Верно! Ответ: <code>${item.ans}</code>`;
+    } else {
+      fb.className = 'feedback show wrong';
+      fb.innerHTML = `❌ Ошибка. Нажмите '💡 Ход решения', чтобы проверить разбор.`;
+    }
+  } else {
+    btn.disabled = true;
+    btn.textContent = '🔒 Разбор (доступен после ответа)';
+  }
+
+  updateQStats();
+}
+
+function checkQuest() {
+  const item = questBank[qIdx];
+  const inp = document.getElementById('qInput');
+  const val = inp.value.trim().toLowerCase();
+  const fb = document.getElementById('qFeedback');
+
+  if (!val) {
+    fb.className = 'feedback show wrong';
+    fb.textContent = 'Сначала выберите или введите число!';
+    return;
+  }
+
+  document.getElementById('hintBtn').disabled = false;
+  document.getElementById('hintBtn').textContent = '💡 Ход решения';
+
+  if (val === item.ans.trim().toLowerCase()) {
+    beep('win');
+    if (!qAnswers[qIdx] || qAnswers[qIdx].status !== 'solved') qStreak++;
+    qAnswers[qIdx] = { status: 'solved', val: inp.value.trim() };
+    fb.className = 'feedback show correct';
+    fb.innerHTML = `🎉 <strong>Верно! Точный ответ ОГЭ!</strong> (+1 балл)`;
+  } else {
+    beep('click');
+    qStreak = 0;
+    qAnswers[qIdx] = { status: 'failed', val: inp.value.trim() };
+    fb.className = 'feedback show wrong';
+    fb.innerHTML = `🔒 <strong>Неверно.</strong> Теперь вы можете открыть разбор.`;
+  }
+  updateQStats();
+}
+
+function toggleHint() {
+  const item = questBank[qIdx];
+  const hb = document.getElementById('qHintBox');
+  if (hb.style.display === 'block') hb.style.display = 'none';
+  else {
+    hb.style.display = 'block';
+    hb.innerHTML = `<strong>Подробный разбор:</strong><br>${item.hint.replace(/\n/g, '<br>')}`;
+  }
+}
+
+function prevQ() { if (qIdx > 0) { qIdx--; renderQ(); } }
+function nextQ() { if (qIdx < questBank.length - 1) { qIdx++; renderQ(); } }
+
+function updateQStats() {
+  const solved = Object.values(qAnswers).filter(a => a.status === 'solved').length;
+  document.getElementById('statSolved').textContent = `${solved} / ${questBank.length}`;
+  document.getElementById('statStreak').textContent = `${qStreak} 🔥`;
+  let rank = "Новичок";
+  if (solved >= 7) rank = "Магистр Оси ⚡";
+  else if (solved >= 4) rank = "Логик";
+  else if (solved >= 2) rank = "Юниор";
+  document.getElementById('statRank').textContent = rank;
+}
+
+function setScreen(mode) {
+  beep('click');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'sandbox') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('sandboxScreen').style.display = 'flex';
+    document.getElementById('questScreen').style.display = 'none';
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('sandboxScreen').style.display = 'none';
+    document.getElementById('questScreen').style.display = 'flex';
+    renderQ();
+  }
+}
+
+document.getElementById('qInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkQuest(); });
+
+initSvgAxis();
+updateSandbox();
+</script>
+</body>
+</html>
